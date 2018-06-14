@@ -1,2 +1,2 @@
 # Politics_of_Sermons
-Repository to study political communications in sermons
+Repository to analyze political communications in sermons
