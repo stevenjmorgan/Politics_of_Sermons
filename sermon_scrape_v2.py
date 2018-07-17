@@ -52,6 +52,7 @@ url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&key
 browser.get(url)
 
 serms = []
+elems = []
 
 # Set seed for pseudo-randomness
 seed = 24519
@@ -84,7 +85,9 @@ for i in range(0,2): #10,960 or something crazy big
     # Iterate through list of desired sermon links and append to master list
     for elem in elems:
         #print elem.get_attribute("href")
-        serms.append(elem.get_attribute('href'))
+
+        print elem
+        #serms.append(elem.get_attribute('href'))
 
         ### Development: Scrape through desired links within search for loop
         title = ""
@@ -95,6 +98,7 @@ for i in range(0,2): #10,960 or something crazy big
 
         counter = 0
 
+        time.sleep(random.randint(0,10))
         browser.get(elem.get_attribute('href'))
         # Scrape title
         title = browser.find_element_by_tag_name('h1').text
@@ -112,8 +116,8 @@ for i in range(0,2): #10,960 or something crazy big
 
         # Scrape tags for all p contents
         content = browser.find_element_by_class_name('detail-text').text.encode('utf-8', 'ignore') ### 'utf-8'
-        content = re.sub('Preach Better with PRO', '', content)
-        content = re.sub('Add your email to get started, plus get updates & offers from SermonCentral. Privacy Policy.', '', content)
+        content = re.sub(ur'Preach Better with PRO', '', content)
+        content = re.sub(ur'Add your email to get started, plus get updates & offers from SermonCentral. Privacy Policy.', '', content)
         #print content
         fullContent = []
         fullContent.append(content)
@@ -122,7 +126,7 @@ for i in range(0,2): #10,960 or something crazy big
         for j in range(0, 100):
             try:
                 elm2 = browser.find_element_by_class_name('pagination-next')
-                time.sleep(random.randint(0,10))
+                #time.sleep(random.randint(0,10))
                 elm2.click()
                 #print browser.find_element_by_class_name('detail-text').text.encode("utf-8")
                 fullContent.append(browser.find_element_by_class_name('detail-text').text.encode('utf-8', 'ignore')) ### 'utf-8'
