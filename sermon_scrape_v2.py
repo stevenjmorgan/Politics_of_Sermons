@@ -10,17 +10,52 @@ from selenium.webdriver.common.by import By
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+# Function to convert unicode to ASCII -> needs improvement
+'''def unicodetoascii(text):
+    TEXT = (text.
+            replace('\\xe2\\x80\\x99', "'").
+            replace('\\xe2\\x80\\x90', '-').
+            replace('\\xe2\\x80\\x91', '-').
+            replace('\\xe2\\x80\\x92', '-').
+            replace('\\xe2\\x80\\x93', '-').
+            replace('\\xe2\\x80\\x94', '-').
+            replace('\\xe2\\x80\\x94', '-').
+            replace('\\xe2\\x80\\x98', "'").
+            replace('\\xe2\\x80\\x9b', "'").
+            replace('\\xe2\\x80\\x9c', '"').
+            replace('\\xe2\\x80\\x9c', '"').
+            replace('\\xe2\\x80\\x9d', '"').
+            replace('\\xe2\\x80\\x9e', '"').
+            replace('\\xe2\\x80\\x9f', '"').
+            replace('\\xe2\\x80\\xa6', '...').#
+            replace('\\xe2\\x80\\xb2', "'").
+            replace('\\xe2\\x80\\xb3', "'").
+            replace('\\xe2\\x80\\xb4', "'").
+            replace('\\xe2\\x80\\xb5', "'").
+            replace('\\xe2\\x80\\xb6', "'").
+            replace('\\xe2\\x80\\xb7', "'").
+            replace('\\xe2\\x81\\xba', "+").
+            replace('\\xe2\\x81\\xbb', "-").
+            replace('\\xe2\\x81\\xbc', "=").
+            replace('\\xe2\\x81\\xbd', "(").
+            replace('\\xe2\\x81\\xbe', ")")
+            )
+    return TEXT
+'''
+
 # Initiate web driver
 path_to_chromedriver = 'C:/Users/smorgan/Desktop/chromedriver'
 browser = webdriver.Chrome(executable_path = path_to_chromedriver)
 
 # Open initial webpage
-url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&keyword=&denominationFreeText=&maxAge=&ref=AdvancedSearch-HomeSermon'
+#url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&keyword=&denominationFreeText=&maxAge=&ref=AdvancedSearch-HomeSermon'
+url = 'https://www.sermoncentral.com/Sermons/Search/?page=826&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
 #browser.get(url)
 
 serms = []
 elems = []
-counter = 0
+counter = 12747
+#counter = 0
 
 # Set seed for pseudo-randomness
 seed = 24519
@@ -34,10 +69,14 @@ browser.get(url)
 ### Itereate through each search result page
 for i in range(0,10960): #10,960 or something crazy big
 
-    #time.sleep(random.randint(0,10))
+    if i % 5 == 2:
+        time.sleep(120)
+
+    time.sleep(random.randint(0,10))
 
     # Save current location to return after navigating to search result links
     url = browser.current_url ### get_attribute ???
+    print url
 
     ### For each search result page
     # Store all href attributes in a list
@@ -47,6 +86,7 @@ for i in range(0,10960): #10,960 or something crazy big
     elems = [x for x in elems if re.search("https://www.sermoncentral.com/sermons/", str(x.get_attribute("href")))]
     elems = [x for x in elems if not re.search("sermons-on-", str(x.get_attribute("href")))]
     elems = [x for x in elems if not re.search("sermons-about-", str(x.get_attribute("href")))]
+    elems = [x for x in elems if not re.search('https://www.sermoncentral.com/pastors-preaching-articles/steven-fuller-finding-strength-when-you-don-t-feel-like-preaching-1225?ref=Footer', str(x.get_attribute("href")))]
 
     # Only retain every other link since each desired link appears twice as href
     elems = elems[::2]
@@ -72,7 +112,7 @@ for i in range(0,10960): #10,960 or something crazy big
         denom = ""
         content = ""
 
-        #time.sleep(random.randint(0,10))
+        time.sleep(random.randint(0,10))
         browser.get(elem)
         #browser.get(elem.get_attribute('href'))
         # Scrape title
@@ -86,8 +126,11 @@ for i in range(0,10960): #10,960 or something crazy big
         author = author.split(' on ')[0]
 
         # Scrape tag for denomination
-        denom = browser.find_elements_by_class_name('meta-links')[2].text
-        denom = denom.split('Denomination: ')[1]
+        try:
+            denom = browser.find_elements_by_class_name('meta-links')[2].text
+            denom = denom.split('Denomination: ')[1]
+        except:
+            pass
 
         # Scrape tags for all p contents
         content = browser.find_element_by_class_name('detail-text').text.encode('utf-8', 'ignore') ### 'utf-8'
@@ -124,7 +167,7 @@ for i in range(0,10960): #10,960 or something crazy big
         textFile.write(denom)
         textFile.write('\n')
         textFile.write('\n')
-        textFile.write(title)
+        textFile.write(title) # Sometimes above info is included in content; nothing I can really do
         textFile.write('\n')
         textFile.write('\n')
         #print type("\n\n".join(item.decode('utf-8', 'ignore') for item in fullContent)) ### str() may be issue with non-ASCII characters
