@@ -23,3 +23,5 @@ serm.dtm <- DocumentTermMatrix(serms,
                               control = list(wordLengths=c(1,Inf)))
 rm(serms)
 dim(serm.dtm)[1]
+
+#17324-14474
