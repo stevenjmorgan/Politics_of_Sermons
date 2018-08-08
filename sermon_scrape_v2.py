@@ -49,12 +49,12 @@ browser = webdriver.Chrome(executable_path = path_to_chromedriver)
 
 # Open initial webpage
 #url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&keyword=&denominationFreeText=&maxAge=&ref=AdvancedSearch-HomeSermon'
-url = 'https://www.sermoncentral.com/Sermons/Search/?page=826&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
+url = 'https://www.sermoncentral.com/Sermons/Search/?page=1104&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
 #browser.get(url)
 
 serms = []
 elems = []
-counter = 12747
+counter = 18403
 #counter = 0
 
 # Set seed for pseudo-randomness
@@ -69,9 +69,11 @@ browser.get(url)
 ### Itereate through each search result page
 for i in range(0,10960): #10,960 or something crazy big
 
+    # Sleep program every fifth search result page for 2 minutes
     if i % 5 == 2:
         time.sleep(120)
 
+    # Sleep program every search result page randomly from 1-10 sec.
     time.sleep(random.randint(0,10))
 
     # Save current location to return after navigating to search result links
@@ -86,7 +88,11 @@ for i in range(0,10960): #10,960 or something crazy big
     elems = [x for x in elems if re.search("https://www.sermoncentral.com/sermons/", str(x.get_attribute("href")))]
     elems = [x for x in elems if not re.search("sermons-on-", str(x.get_attribute("href")))]
     elems = [x for x in elems if not re.search("sermons-about-", str(x.get_attribute("href")))]
+    elems = [x for x in elems if not re.search("pastors-preaching-articles", str(x.get_attribute("href")))]
     elems = [x for x in elems if not re.search('https://www.sermoncentral.com/pastors-preaching-articles/steven-fuller-finding-strength-when-you-don-t-feel-like-preaching-1225?ref=Footer', str(x.get_attribute("href")))]
+    elems = [x for x in elems if not re.search('https://www.sermoncentral.com/pastors-preaching-articles/', str(x.get_attribute("href")))]
+    elems = [x for x in elems if not re.search('/pastors-preaching-articles/', str(x.get_attribute("href")))]
+
 
     # Only retain every other link since each desired link appears twice as href
     elems = elems[::2]
@@ -112,6 +118,7 @@ for i in range(0,10960): #10,960 or something crazy big
         denom = ""
         content = ""
 
+        # Sleep program randomly for each sermon link for 1-10 sec.
         time.sleep(random.randint(0,10))
         browser.get(elem)
         #browser.get(elem.get_attribute('href'))
