@@ -49,12 +49,12 @@ browser = webdriver.Chrome(executable_path = path_to_chromedriver)
 
 # Open initial webpage
 #url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&keyword=&denominationFreeText=&maxAge=&ref=AdvancedSearch-HomeSermon'
-url = 'https://www.sermoncentral.com/Sermons/Search/?page=1104&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
+url = 'https://www.sermoncentral.com/Sermons/Search/?page=1365&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
 #browser.get(url)
 
 serms = []
 elems = []
-counter = 18403
+counter = 22325
 #counter = 0
 
 # Set seed for pseudo-randomness
@@ -70,11 +70,11 @@ browser.get(url)
 for i in range(0,10960): #10,960 or something crazy big
 
     # Sleep program every fifth search result page for 2 minutes
-    if i % 5 == 2:
-        time.sleep(120)
+    #if i % 5 == 2:
+    #    time.sleep(120)
 
     # Sleep program every search result page randomly from 1-10 sec.
-    time.sleep(random.randint(0,10))
+    #time.sleep(random.randint(0,10))
 
     # Save current location to return after navigating to search result links
     url = browser.current_url ### get_attribute ???
@@ -119,7 +119,7 @@ for i in range(0,10960): #10,960 or something crazy big
         content = ""
 
         # Sleep program randomly for each sermon link for 1-10 sec.
-        time.sleep(random.randint(0,10))
+        ###time.sleep(random.randint(0,10))
         browser.get(elem)
         #browser.get(elem.get_attribute('href'))
         # Scrape title
@@ -151,7 +151,7 @@ for i in range(0,10960): #10,960 or something crazy big
         for j in range(0, 100):
             try:
                 elm2 = browser.find_element_by_class_name('pagination-next')
-                #time.sleep(random.randint(0,10))
+                #time.sleep(random.randint(0,2))
                 elm2.click()
                 #print browser.find_element_by_class_name('detail-text').text.encode("utf-8")
                 contentNext = browser.find_element_by_class_name('detail-text').text.encode('utf-8', 'ignore')
