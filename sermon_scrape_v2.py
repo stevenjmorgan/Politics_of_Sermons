@@ -44,17 +44,17 @@ sys.setdefaultencoding('utf8')
 '''
 
 # Initiate web driver
-path_to_chromedriver = 'C:/Users/smorgan/Desktop/chromedriver'
+path_to_chromedriver = 'C:/Users/Steve/Desktop/chromedriver'
 browser = webdriver.Chrome(executable_path = path_to_chromedriver)
 
 # Open initial webpage
 #url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&keyword=&denominationFreeText=&maxAge=&ref=AdvancedSearch-HomeSermon'
-url = 'https://www.sermoncentral.com/Sermons/Search/?page=1369&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
+url = 'https://www.sermoncentral.com/Sermons/Search/?page=1434&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
 #browser.get(url)
 
 serms = []
 elems = []
-counter = 22385
+counter = 23165
 #counter = 0
 
 # Set seed for pseudo-randomness
@@ -62,7 +62,7 @@ seed = 24519
 random.seed(seed)
 
 # Set directory to store .txt files
-os.chdir("C:/Users/smorgan/Desktop/scraping/dynamic/sermons")
+os.chdir("C:/Users/Steve/Desktop/Politics_of_Sermons/Sermons")
 
 browser.get(url)
 
@@ -194,3 +194,4 @@ for i in range(0,10960): #10,960 or something crazy big
         elm.click()
     except:
         pass
+		
