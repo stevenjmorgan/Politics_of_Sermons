@@ -11,6 +11,6 @@ Each text file is named "Sermon#.txt" where the "#" corresponds to a counter inc
 
 ## Running scripts
 
-* Run three scraping files (sermon_scrapeXXXXXX.py) simultaneously (create/change directories first)
-* Run convert2json.py to save .txt files into .JSON (single file).
-* Run loadjson.R to load in .JSON file and calculate descriptive statistics.
+1. Run three scraping files (sermon_scrapeXXXXXX.py) simultaneously (create/change directories first)
+2. Run convert2json.py to save .txt files into .JSON (single file).
+3. Run loadjson.R to load in .JSON file and calculate descriptive statistics.
