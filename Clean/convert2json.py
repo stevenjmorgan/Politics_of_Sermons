@@ -8,7 +8,8 @@ import json
 import os
 import csv
 
-dir = 'C:/Users/Steve/Dropbox/PoliticsOfSermons/MasterList/'
+dir = 'C:/Users/sum410/Dropbox/PoliticsOfSermons/MasterList/'
+#dir = 'C:/Users/Steve/Dropbox/PoliticsOfSermons/MasterList/'
 
 all_txt_files = os.listdir(dir)
 
