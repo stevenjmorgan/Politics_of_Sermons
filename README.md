@@ -8,3 +8,9 @@ sermon_scrape.py utilizes the Selenium library in Python to navigate across web 
 A loop iterates through this list of links and navigates to each link. Metadata (author, date, denomination, and title) and the contents of the sermon are scraped and the text of each are stored in separate variables. Since many sermons are displayed across multiple pages, another loop is utilized to iterate through and click "Next" buttons and scrape additional sermon content on these pages.
 
 Each text file is named "Sermon#.txt" where the "#" corresponds to a counter incremented by one each iteration through the list of URL's.
+
+## Running scripts
+
+* Run three scraping files (sermon_scrapeXXXXXX.py) simultaneously (create/change directories first)
+* Run convert2json.py to save .txt files into .JSON (single file).
+* Run loadjson.R to load in .JSON file and calculate descriptive statistics.
