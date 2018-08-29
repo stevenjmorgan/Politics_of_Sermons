@@ -15,48 +15,51 @@ all_txt_files = os.listdir(dir)
 sermon = ""
 
 sermDict = {}
+sermDict['sermonData'] = []
+
+# Write dictionary to JSON file (saved as .txt)
+with open('sermon.JSON', 'w') as outfile:
 
 # Iterate through all files
-for txt in all_txt_files:
+    for txt in all_txt_files:
 
-    txt_dir = dir + txt
+        txt_dir = dir + txt
 
-    # Open each .txt files
-    with open(txt_dir, 'rb') as f:
+        # Open each .txt files
+        with open(txt_dir, 'rb') as f:
 
         # Initialize counter
-        i = 0
+            i = 0
 
-        for line in f:
+            for line in f:
 
             # Increment counter each line in each file
-            i += 1
+                i += 1
 
             # Store first line as value for author key
-            if i == 1:
-                #author = line.strip()
-                sermDict['author'] = line.strip()
+                if i == 1:
+                    author = line.strip()
+                    #sermDict['author'] = line.strip()
+                    #sermDict['author'].append(line.strip())
 
             # Store second line as value for date key
-            if i == 2:
-                #date = line.strip()
-                sermDict['date'] = line.strip()
+                if i == 2:
+                    date = line.strip()
+                    #sermDict['date'] = line.strip()
 
             # Store third line as value for denomination key
-            if i == 3:
-                #denom = line.strip()
-                sermDict['denom'] = line.strip()
+                if i == 3:
+                    denom = line.strip()
+                    #sermDict['denom'] = line.strip()
 
             # Store fifth line as value for title key
-            if i == 5:
-                title = line.strip()
+                if i == 5:
+                    title = line.strip()
 
             # After the sixth line, save every line as value to sermon key
             if i > 6:
                 sermon = sermon + line.strip()
 
-                sermDict['sermon'] = sermon
+        sermDict['sermonData'].append({'author':author, 'date':date, 'denom':denom, 'title':title, 'sermon':sermon})
 
-# Write dictionary to JSON file (saved as .txt)
-with open('sermonJSON.txt', 'w') as outfile:
     json.dump(sermDict, outfile)
