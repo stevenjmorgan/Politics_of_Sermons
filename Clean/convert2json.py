@@ -23,7 +23,7 @@ sermDict['sermonData'] = []
 with open('sermon.JSON', 'w') as outfile:
 
 # Iterate through all files
-    for txt in all_txt_files[0:2]:
+    for txt in all_txt_files:
 
         txt_dir = dir + txt
 
@@ -36,7 +36,7 @@ with open('sermon.JSON', 'w') as outfile:
         denom = ""
         title = ""
         sermon = ""
-        
+
         # Open each .txt files
         with open(txt_dir, 'rb') as f:
 
