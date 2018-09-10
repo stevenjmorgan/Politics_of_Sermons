@@ -1,0 +1,11 @@
+[0826/125712.658:ERROR:file_io_win.cc(170)] CreateFile C:\Users\sum410\AppData\Local\Temp\scoped_dir492_22850\Crashpad\reports\beb69173-000a-46ca-9620-45a61d11abd3.dmp: The system cannot find the path specified. (0x3)
+[0826/125712.659:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0901/144334.745:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
+[0902/144336.131:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
+[0903/144337.593:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
+[0904/144339.007:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
+[0905/144340.389:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
+[0906/144342.014:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
+[0907/144343.428:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
+[0908/144344.881:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
+[0909/144346.380:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports

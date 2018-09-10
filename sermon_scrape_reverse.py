@@ -50,12 +50,12 @@ browser = webdriver.Chrome(executable_path = path_to_chromedriver)
 
 # Open initial webpage
 #url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&keyword=&denominationFreeText=&maxAge=&ref=AdvancedSearch-HomeSermon'
-url = 'https://www.sermoncentral.com/Sermons/Search/?page=10438&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
+url = 'https://www.sermoncentral.com/Sermons/Search/?page=9842&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
 #browser.get(url)
 
 serms = []
 elems = []
-counter = 1008728
+counter = 1017683
 #counter = 0
 
 # Set seed for pseudo-randomness
