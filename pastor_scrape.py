@@ -16,13 +16,6 @@ from urlparse import urljoin
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-# Initialize variables to store pastor data
-name = ''
-church = ''
-job = ''
-denom = ''
-address = ''
-location = ''
 
 # 7,288 search result pages, 15 results per page
 
@@ -84,16 +77,45 @@ for i in range(1, 485):
         pastor_page = urllib2.urlopen(pastor_page)
         pastor_soup = BeautifulSoup(pastor_page, from_encoding=resp.info().getparam('charset'), features = 'html.parser')
 
+        # Initialize variables to store pastor data
+        name = ''
+        church = ''
+        job = ''
+        denom = ''
+        address = ''
+        location = ''
+        
         # Scrape pastor info
-        name = pastor_soup.find('div', class_='info offset-100').find('h4').text.strip()
-        church = pastor_soup.find('div', class_='info offset-100').find('p').text.split(':')[1].strip()
-        job = pastor_soup.find('div', class_='info offset-100').select('p')[1].text.split(':')[1].strip()
-        denom = pastor_soup.find('div', class_='info offset-100').select('p')[3].text.split(':')[1].strip()
-        location = pastor_soup.find('div', class_='detail-txt').find('p').text.strip()
+        try:
+            name = pastor_soup.find('div', class_='info offset-100').find('h4').text.strip()
+        except:
+            pass
+        try:
+            church = pastor_soup.find('div', class_='info offset-100').find('p').text.split(':')[1].strip()
+        except:
+            pass
+        try:
+            job = pastor_soup.find('div', class_='info offset-100').select('p')[1].text.split(':')[1].strip()
+        except:
+            pass
+        try:
+            denom = pastor_soup.find('div', class_='info offset-100').select('p')[3].text.split(':')[1].strip()
+        except:
+            pass
+        try:
+            location = pastor_soup.find('div', class_='detail-txt').find('p').text.strip()
+        except:
+            pass
         #print repr(location.replace('\n', '\n'))
         #print re.sub('\r', '', str(location))
-        location =  " ".join(location.split())
-        address = pastor_soup.find('div', class_='detail-txt').find('p').text.split('\n')[2].strip()
+        try:
+            location =  " ".join(location.split())
+        except:
+            pass
+        try:
+            address = pastor_soup.find('div', class_='detail-txt').find('p').text.split('\n')[2].strip()
+        except:
+            pass
 
         localrow = []
         localrow.append(name)
