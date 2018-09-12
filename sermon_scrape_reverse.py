@@ -42,7 +42,7 @@ sys.setdefaultencoding('utf8')
             )
     return TEXT
 '''
-time.sleep(900)
+time.sleep(14400)
 
 # Initiate web driver
 path_to_chromedriver = 'C:/Users/sum410/Desktop/chromedriver'
@@ -50,12 +50,12 @@ browser = webdriver.Chrome(executable_path = path_to_chromedriver)
 
 # Open initial webpage
 #url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&keyword=&denominationFreeText=&maxAge=&ref=AdvancedSearch-HomeSermon'
-url = 'https://www.sermoncentral.com/Sermons/Search/?page=9842&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
+url = 'https://www.sermoncentral.com/Sermons/Search/?page=9780&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
 #browser.get(url)
 
 serms = []
 elems = []
-counter = 1017683
+counter = 1018643
 #counter = 0
 
 # Set seed for pseudo-randomness
@@ -93,7 +93,7 @@ for i in range(0,10960): #10,960 or something crazy big
     elems = [x for x in elems if not re.search('https://www.sermoncentral.com/pastors-preaching-articles/steven-fuller-finding-strength-when-you-don-t-feel-like-preaching-1225?ref=Footer', str(x.get_attribute("href")))]
     elems = [x for x in elems if not re.search('https://www.sermoncentral.com/pastors-preaching-articles/', str(x.get_attribute("href")))]
     elems = [x for x in elems if not re.search('/pastors-preaching-articles/', str(x.get_attribute("href")))]
-
+    elems = [x for x in elems if not re.search('/sermons/search', str(x.get_attribute('href')))]
 
     # Only retain every other link since each desired link appears twice as href
     elems = elems[::2]
@@ -195,4 +195,3 @@ for i in range(0,10960): #10,960 or something crazy big
         elm.click()
     except:
         pass
-		

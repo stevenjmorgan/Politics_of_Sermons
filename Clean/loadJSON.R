@@ -3,7 +3,8 @@
 
 rm(list=ls())
 #setwd("~/GitHub/Politics_of_Sermons/Clean")
-setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
+#setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
+setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 
 library(readtext)
 library(plyr)
@@ -13,12 +14,13 @@ library(ngram)
 
 # Read in .JSON of sermons and change variable names
 #file <- 'C:/Users/sum410/Documents/GitHub/Politics_of_Sermons/Clean/sermon.JSON'
-file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/sermon.JSON'
+#file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/sermon.JSON'
+file <- 'C:/Users/sum410/Dropbox/PoliticsOfSermons/sermon.JSON'
 serms <- readtext(file, text_field = 'sermonData')
 colnames(serms) <- c('doc_id', 'date', 'denom', 'title', 'sermon', 'author')
 
-save(serms, file = 'sermsDF.R')
-load('sermsDF.R')
+save(serms, file = 'sermsDF.RData')
+load('sermsDF.RData')
 
 # Remove duplicates
 deduped.serms <- serms[!duplicated(serms$sermon),]
@@ -100,7 +102,6 @@ deduped.serms$unique <- lengths(lapply(strsplit(deduped.serms$sermon,
 
 # Plot distribution of word counts and unique word counts for each sermon
 wc.plot <- ggplot(deduped.serms[which(deduped.serms$wc <10000),], aes(x=wc)) + 
-ggplot(deduped.serms[which(deduped.serms$wc <10000),], aes(x=wc)) + 
   geom_histogram(binwidth=500, color="darkblue", fill="lightblue") +
   labs(x = 'Number of Sermons', y = "Number of Words") + 
   ggtitle("Distribution of Word Counts in Sermons")
@@ -108,9 +109,11 @@ ggplot(deduped.serms[which(deduped.serms$wc <10000),], aes(x=wc)) +
 ggsave("wordcountplot.pdf")
 
 uniquewc.plot <- ggplot(deduped.serms[which(deduped.serms$unique < 3000),], aes(x=unique)) + 
-ggplot(deduped.serms[which(deduped.serms$unique < 3000),], aes(x=unique)) + 
   geom_histogram(binwidth=50, color="red", fill="orange") +
   labs(x = 'Number of Sermons', y = "Number of Unique Words") + 
   ggtitle("Distribution of Unique Word Counts in Sermons")
 
 ggsave("uniquewordcountplot.pdf")
+
+### Save deduped sermons df
+save(deduped.serms, file = 'dedupedSerms.RData')
