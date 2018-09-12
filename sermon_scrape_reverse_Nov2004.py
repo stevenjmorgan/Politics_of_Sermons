@@ -42,7 +42,7 @@ sys.setdefaultencoding('utf8')
             )
     return TEXT
 '''
-#time.sleep(10800)
+time.sleep(10800)
 
 # Initiate web driver
 path_to_chromedriver = 'C:/Users/sum410/Desktop/chromedriver'
@@ -50,12 +50,12 @@ browser = webdriver.Chrome(executable_path = path_to_chromedriver)
 
 # Open initial webpage
 #url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&keyword=&denominationFreeText=&maxAge=&ref=AdvancedSearch-HomeSermon'
-url = 'https://www.sermoncentral.com/Sermons/Search/?page=6895&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
+url = 'https://www.sermoncentral.com/Sermons/Search/?page=6700&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
 #browser.get(url)
 
 serms = []
 elems = []
-counter = 2024096
+counter = 2027020
 #counter = 0
 
 # Set seed for pseudo-randomness
