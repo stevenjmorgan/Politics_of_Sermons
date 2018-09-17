@@ -1,7 +1,8 @@
 # This code runs a series of LDA models varying the number of topics returned.
 # Models are saved and topics are evaluated for prevalence of political content.
 
-from nltk.stem import WordNetLemmatizer, SnowballStemmer
+from nltk.stem import PorterStemmer
+from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem.porter import *
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
@@ -27,7 +28,7 @@ tf_feature_names = tf_vectorizer.get_feature_names()
 no_topics = 20
 
 # Run LDA
-lda = LatentDirichletAllocation(n_topics=no_topics, max_iter=5, learning_method='online', learning_offset=50.,random_state=0).fit(tf)
+lda = LatentDirichletAllocation(n_components=no_topics, max_iter=5, learning_method='online', learning_offset=50.,random_state=0).fit(tf)
 
 # Display topics
 def display_topics(model, feature_names, no_top_words):

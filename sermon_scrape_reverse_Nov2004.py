@@ -42,7 +42,7 @@ sys.setdefaultencoding('utf8')
             )
     return TEXT
 '''
-#time.sleep(10800)
+time.sleep(28800)
 
 # Initiate web driver
 path_to_chromedriver = 'C:/Users/sum410/Desktop/chromedriver'
