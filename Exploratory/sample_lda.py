@@ -23,7 +23,7 @@ os.chdir('C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/SampleLDA')
 file_list = glob.glob(os.path.join(os.getcwd(),
     "C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/MasterList", "*.txt"))
 sample_serms = []
-for file_path in file_list[1:10000]:
+for file_path in file_list[1:5000]:
     with open(file_path) as f_input:
         sample_serms.append(f_input.read())
 
@@ -40,10 +40,11 @@ def clean(doc):
     normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
     return normalized
 
-doc_clean = [clean(doc).split() for doc in sample_serms]
+#doc_clean = [clean(doc).split() for doc in sample_serms]
 print type(sample_serms[1])
 #sample_serms = [preprocessing(x) for x in sample_serms]
 
+'''
 # Converting list of documents (corpus) into Document Term Matrix using dictionary prepared above.
 dictionary = corpora.Dictionary(doc_clean)
 doc_term_matrix = [dictionary.doc2bow(doc) for doc in doc_clean]
@@ -67,17 +68,17 @@ print topic_words[0]
 print topic_words[1]
 print topic_words[2]
 print topic_words[3]
-print topic_words[4]
+print topic_words[4]'''
 
-'''
+
 # Vectorize data
-tf_vectorizer = CountVectorizer(max_df=0.95, min_df=1, max_features=1000, stop_words='english')
-tf = tf_vectorizer.fit_transform(doc_clean)
+tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2, max_features=100000, stop_words='english')
+tf = tf_vectorizer.fit_transform(sample_serms)
 tf_feature_names = tf_vectorizer.get_feature_names()
 #print tf_feature_names[250:260]
 
 # Set number of topics to be calculated
-no_topics = 5
+no_topics = 25
 
 # Run LDA
 lda = LatentDirichletAllocation(n_components=no_topics, max_iter=999, learning_method='online', learning_offset=50.,random_state=0).fit(tf)
@@ -90,4 +91,4 @@ def display_topics(model, feature_names, no_top_words):
                         for i in topic.argsort()[:-no_top_words - 1:-1]])
 
 no_top_words = 10
-display_topics(lda, tf_feature_names, no_top_words)'''
+display_topics(lda, tf_feature_names, no_top_words)
