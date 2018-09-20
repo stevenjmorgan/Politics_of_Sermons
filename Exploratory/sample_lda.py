@@ -23,14 +23,29 @@ os.chdir('C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/SampleLDA')
 file_list = glob.glob(os.path.join(os.getcwd(),
     "C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/MasterList", "*.txt"))
 sample_serms = []
-for file_path in file_list[1:5000]:
+for file_path in file_list[1:5]:
     with open(file_path) as f_input:
         sample_serms.append(f_input.read())
+
+print type(sample_serms[0])
 
 # Pre-process data
 from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 import string
+
+import numpy as np
+from numpy import array
+
+serms = array.empty(5)
+serms['text'] = array(sample_serms)
+
+sys.exit()
+
+serms['wordcount'] = serms.apply(lambda x: len(str(x).split(" ")))
+
+
+'''
 stop = set(stopwords.words('english'))
 exclude = set(string.punctuation)
 lemma = WordNetLemmatizer()
@@ -40,9 +55,13 @@ def clean(doc):
     normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
     return normalized
 
-#doc_clean = [clean(doc).split() for doc in sample_serms]
-print type(sample_serms[1])
+doc_clean = [clean(doc).split() for doc in sample_serms]
+#print type(sample_serms[1])
+print doc_clean
+
 #sample_serms = [preprocessing(x) for x in sample_serms]
+
+sys.exit()'''
 
 '''
 # Converting list of documents (corpus) into Document Term Matrix using dictionary prepared above.

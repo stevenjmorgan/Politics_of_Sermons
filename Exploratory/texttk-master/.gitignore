@@ -1,0 +1,12 @@
+stanford-ner-2015-12-09
+stanford-ner-2015-12-09/*
+.DS_Store
+*.txt
+dist/*
+dist
+build/*
+build
+debug/*
+debug
+texttk.egg-info/*
+texttk.egg-info
