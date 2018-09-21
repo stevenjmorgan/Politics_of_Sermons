@@ -16,9 +16,10 @@ load('dedupedSerms.RData')
 # Remove all non-graphical characters
 #deduped.serms$usableText = str_replace_all(deduped.serms$sermon,"[^[:graph:]]", " ") #might need to use ""
 deduped.serms$usableText <- sapply(deduped.serms$sermon,function(row) iconv(row, "latin1", "ASCII", sub=""))
+#tweets$text <- iconv(tweets$text, "ASCII", "UTF-8", sub="byte")
 
 # Create corpus
-serm.Corp <- Corpus(VectorSource(deduped.serms$sermon))
+serm.Corp <- Corpus(VectorSource(deduped.serms$usableText))
 #inspect(serm.Corp[1])
 
 # Pre-process corpus
@@ -27,11 +28,16 @@ serm.Corp <- tm_map(serm.Corp, content_transformer(tolower))
 serm.Corp <- tm_map(serm.Corp, removeWords, stopwords("english"))
 serm.Corp <- tm_map(serm.Corp, stemDocument)
 
+#save(serm.Corp, file ='sermCorpus.Rdata')
+
 # Create dtm
 serm.dtm <- DocumentTermMatrix(serm.Corp)
+save(serm.dtm, file = 'sermDTM.Rdata')
 
 # Look at the data
-findFreqTerms(serm.dtm, 1000)
+findFreqTerms(serm.dtm, 5000)
+inspect(DocumentTermMatrix(serm.Corp,
+                           list(dictionary = c("abortion", "abort", "gay", "candidate", 'election', 'vote'))))
 
 # inspect(removeSparseTerms(serm.dtm, 0.4))
 
