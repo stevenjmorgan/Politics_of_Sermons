@@ -83,6 +83,7 @@ for doc in nonstemmed_docs:
 print(len(stemmed_docs))
 
 # Delete intermediate lists
+
 del tokenized_serms_no_punctuation, tokenized_serms_no_stopwords
 
 # Save stemmed and non-stemmed docs 
