@@ -24,7 +24,7 @@ os.chdir('C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/SampleLDA')
 file_list = glob.glob(os.path.join(os.getcwd(),
     "C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/MasterList", "*.txt"))
 sample_serms = []
-for file_path in file_list[1:5]:
+for file_path in file_list[1:50]:
     with open(file_path, encoding="utf8") as f_input:
         sample_serms.append(f_input.read())
 
@@ -69,7 +69,7 @@ print(doc_clean)
 
 
 # Converting list of documents (corpus) into Document Term Matrix using dictionary prepared above.
-dictionary = corpora.Dictionary(doc_clean)
+dictionary = corpora.Dictionary(sample_serms) #doc_clean
 doc_term_matrix = [dictionary.doc2bow(doc) for doc in doc_clean]
 
 Lda = gensim.models.ldamodel.LdaModel
