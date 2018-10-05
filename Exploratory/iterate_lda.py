@@ -80,19 +80,20 @@ print(coherence_lda)
 '''
 
 ### Iteratively LDA
+#os.chdir('C:/Users/sum410/Documents/Github/Politics_of_Sermons/Exploratory/SampleLDA')
 coherence_values = []
 perplex_values = []
 model_list = []
 Lda = gensim.models.ldamodel.LdaModel
-for num_topics in range(5, 10):
+for num_topics in range(25, 201):
     model = Lda(doc_term_matrix, num_topics=num_topics, id2word = dictionary)
     model_list.append(model)
     coherencemodel = CoherenceModel(model=model, texts=texts, dictionary=dictionary, coherence='u_mass')
     coherence_values.append(coherencemodel.get_coherence())
     #perplexmodel = ldamodel.log_perplexity(doc_term_matrix)
     perplex_values.append(model.log_perplexity(doc_term_matrix))
-    temp_file = datapath("model")
-    model.save(temp_file)
+    #temp_file = datapath("model")
+    #model.save(temp_file)
     
 # Graph coherence and perplexity by # of topics
 import matplotlib.pyplot as plt
