@@ -28,7 +28,10 @@ from gensim.models import CoherenceModel
 import gensim.corpora as corpora
 from gensim.utils import simple_preprocess
 from gensim.test.utils import datapath
+import pandas as pd
+import random
 
+random.seed(24519)
 nltk.download('stopwords')
 
 reload(sys)
@@ -85,8 +88,8 @@ coherence_values = []
 perplex_values = []
 model_list = []
 Lda = gensim.models.ldamodel.LdaModel
-for num_topics in range(25, 201):
-    model = Lda(doc_term_matrix, num_topics=num_topics, id2word = dictionary)
+for num_topics in range(25, 201): #25, 201
+    model = Lda(doc_term_matrix, num_topics=num_topics, id2word = dictionary, passes = 20)
     model_list.append(model)
     coherencemodel = CoherenceModel(model=model, texts=texts, dictionary=dictionary, coherence='u_mass')
     coherence_values.append(coherencemodel.get_coherence())
@@ -95,18 +98,27 @@ for num_topics in range(25, 201):
     #temp_file = datapath("model")
     #model.save(temp_file)
     
+    top_words_per_topic = []
+    for t in range(model.num_topics):
+        top_words_per_topic.extend([(t, ) + x for x in model.show_topic(t, topn = 10)])
+    pd.DataFrame(top_words_per_topic, columns=['Topic', 'Word', 'P']).to_csv("top_words" + str(num_topics) + ".csv", index = False)
+    
+####
+
 # Graph coherence and perplexity by # of topics
 import matplotlib.pyplot as plt
 limit=10; start=5;
-x = range(5, 10)
+x = range(25, 201)
 plt.plot(x, coherence_values)
 plt.xlabel("Num Topics")
 plt.ylabel("Coherence score")
-plt.legend(("coherence_values"), loc='best')
+#plt.legend(("coherence_values"), loc='best')
+plt.savefig('coherence.png')
 plt.show()
 
 plt.plot(x, perplex_values)
 plt.xlabel("Num Topics")
 plt.ylabel("Perplexity score")
-plt.legend(("perplexity_values"), loc='best')
+#plt.legend(("perplexity_values"), loc='best')
+plt.savefig('perplexity.png')
 plt.show()
