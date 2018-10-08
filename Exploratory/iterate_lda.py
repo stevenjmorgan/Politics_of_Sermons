@@ -98,15 +98,17 @@ for num_topics in range(25, 201):
 # Graph coherence and perplexity by # of topics
 import matplotlib.pyplot as plt
 limit=10; start=5;
-x = range(5, 10)
+x = range(25, 201)
 plt.plot(x, coherence_values)
 plt.xlabel("Num Topics")
 plt.ylabel("Coherence score")
-plt.legend(("coherence_values"), loc='best')
+#plt.legend(("coherence_values"), loc='best')
+plt.savefig('coherence.png')
 plt.show()
 
 plt.plot(x, perplex_values)
 plt.xlabel("Num Topics")
 plt.ylabel("Perplexity score")
-plt.legend(("perplexity_values"), loc='best')
+#plt.legend(("perplexity_values"), loc='best')
+plt.savefig('perplexity.png')
 plt.show()
