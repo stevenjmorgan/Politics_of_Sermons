@@ -130,7 +130,10 @@ for i in range(0,10960): #10,960 or something crazy big
 
         # Scrape tags for author and date; split to parse appropriate data
         author = browser.find_element_by_tag_name('h2').text
-        author = author.split('Contributed by ')[1]
+        try:
+            author = author.split('Contributed by ')[1]
+        except:
+            pass
         date = author.split(' on ')[1]
         date = date.split(' (message ')[0]
         author = author.split(' on ')[0]
