@@ -43,7 +43,7 @@ sys.setdefaultencoding('utf8')
     return TEXT
 '''
 
-#time.sleep(10800)
+#time.sleep(14400)
 
 # Initiate web driver
 path_to_chromedriver = 'C:/Users/Steve/Desktop/chromedriver'
@@ -51,12 +51,12 @@ browser = webdriver.Chrome(executable_path = path_to_chromedriver)
 
 # Open initial webpage
 #url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&keyword=&denominationFreeText=&maxAge=&ref=AdvancedSearch-HomeSermon'
-url = 'https://www.sermoncentral.com/Sermons/Search/?page=4895&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
+url = 'https://www.sermoncentral.com/Sermons/Search/?page=5342&sortBy=Newest&keyword=&contributorId=&rewrittenurltype=&searchResultSort=Newest&CheckedScriptureBookId=&minRating=&maxAge=&denominationFreeText='
 #browser.get(url)
 
 serms = []
 elems = []
-counter = 88541
+counter = 95523
 #counter = 0
 
 # Set seed for pseudo-randomness
@@ -130,7 +130,10 @@ for i in range(0,10960): #10,960 or something crazy big
 
         # Scrape tags for author and date; split to parse appropriate data
         author = browser.find_element_by_tag_name('h2').text
-        author = author.split('Contributed by ')[1]
+        try:
+            author = author.split('Contributed by ')[1]
+        except:
+            pass
         date = author.split(' on ')[1]
         date = date.split(' (message ')[0]
         author = author.split(' on ')[0]
