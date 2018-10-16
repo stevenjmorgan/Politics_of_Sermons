@@ -131,14 +131,26 @@ for i in range(0,10960): #10,960 or something crazy big
 
         # Scrape tags for author and date; split to parse appropriate data
         author = browser.find_element_by_tag_name('h2').text
-        author = author.split('Contributed by ')[1]
-        date = author.split(' on ')[1]
-        date = date.split(' (message ')[0]
-        author = author.split(' on ')[0]
+        try:
+            author = author.split('Contributed by ')[1]
+        except:
+            pass
+        try:
+            date = author.split(' on ')[1]
+            date = date.split(' (message ')[0]
+        except:
+            pass
+        try:
+            author = author.split(' on ')[0]
+        except:
+            pass
 
         # Scrape tag for denomination
         try:
             denom = browser.find_elements_by_class_name('meta-links')[2].text
+        except:
+            pass
+        try:
             denom = denom.split('Denomination: ')[1]
         except:
             pass
