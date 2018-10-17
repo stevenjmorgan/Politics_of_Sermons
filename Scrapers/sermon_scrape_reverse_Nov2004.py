@@ -42,7 +42,7 @@ sys.setdefaultencoding('utf8')
             )
     return TEXT
 '''
-time.sleep(14400)
+#time.sleep(14400)
 
 # Initiate web driver
 path_to_chromedriver = 'C:/Users/sum410/Desktop/chromedriver'
@@ -139,7 +139,7 @@ for i in range(0,10960): #10,960 or something crazy big
             date = author.split(' on ')[1]
             date = date.split(' (message ')[0]
         except:
-            pass
+            date = author.strip()
         try:
             author = author.split(' on ')[0]
         except:
