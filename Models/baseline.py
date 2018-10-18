@@ -4,7 +4,8 @@ from sklearn import model_selection, preprocessing, linear_model, naive_bayes, m
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn import decomposition, ensemble
 
-import numpy, string #xgboost, textblob
+import numpy
+import string #xgboost, textblob
 import pandas as pd
 from keras.preprocessing import text, sequence
 from keras import layers, models, optimizers
@@ -27,16 +28,16 @@ trainDF = pd.DataFrame()
 trainDF['text'] = texts
 trainDF['label'] = labels
 
-# split the dataset into training and validation datasets
+# Split the dataset into training and testing subsets
 train_x, valid_x, train_y, valid_y = model_selection.train_test_split(trainDF['text'], trainDF['label'])
 
-# label encode the target variable
+# Label encode the response variable
 encoder = preprocessing.LabelEncoder()
 train_y = encoder.fit_transform(train_y)
 valid_y = encoder.fit_transform(valid_y)
 print('Data encoded')
 
-# create a count vectorizer object
+# Create a count vectorizer object
 count_vect = CountVectorizer(analyzer='word', token_pattern=r'\w{1,}')
 count_vect.fit_transform(trainDF['text'])
 print("Vectorized")
