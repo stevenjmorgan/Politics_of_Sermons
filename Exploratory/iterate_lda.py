@@ -88,7 +88,8 @@ coherence_values = []
 perplex_values = []
 model_list = []
 Lda = gensim.models.ldamodel.LdaModel
-for num_topics in range(84, 201): #25, 201
+for num_topics in range(84
+                        , 201): #25, 201
     model = Lda(doc_term_matrix, num_topics=num_topics, id2word = dictionary, passes = 20)
     model_list.append(model)
     coherencemodel = CoherenceModel(model=model, texts=texts, dictionary=dictionary, coherence='u_mass')
