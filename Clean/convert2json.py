@@ -7,6 +7,9 @@
 import json
 import os
 import csv
+import time
+
+time.sleep(7200)
 
 dir = 'C:/Users/sum410/Dropbox/PoliticsOfSermons/MasterList/'
 #dir = 'C:/Users/Steve/Dropbox/PoliticsOfSermons/MasterList/'
