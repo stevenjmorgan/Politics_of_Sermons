@@ -38,7 +38,6 @@ pat <- paste(c('abortion', 'republican', 'democrat', 'vote',
                'senate', 'bureaucracy', 'liberties',
                'constitution', 'politics', 'legislation', 'gay marriage',
                'same sex marriage', 'political'), collapse='|')
-#serms.merge$political <- grepl(pat, serms.merge$sermon_usable)
 
 #test <- serms.merge[0:10,]
 #test$sermon <- iconv(test$sermon, "latin1", "ASCII", sub="")
@@ -51,9 +50,8 @@ pat <- paste(c('abortion', 'republican', 'democrat', 'vote',
 #test$sermon <- stripWhitespace(test$sermon)
 #test$sermon <- trimws(test$sermon)
 #test$sermon[1]
-
-pattern <- paste(c('rejoice', 'grace'), collapse='|')
-test$find.word <- grepl(pattern, test$sermon)
+#pattern <- paste(c('rejoice', 'grace'), collapse='|')
+#test$find.word <- grepl(pattern, test$sermon)
 
 # Clean full dataframe of sermons
 serms.merge$sermon.clean <- iconv(serms.merge$sermon, "latin1", "ASCII", sub="") #utf-8 instead of ASCII?
@@ -90,45 +88,3 @@ ggplot(tab_sum, aes(year, trues, group = 1)) + geom_point(color='steelblue', siz
       title = 'Number of Occurences of "Socialism" in Dataset of 160,000 Sermons')
 ggsave('socialism_sermon.pdf')
 
-# Create vector source
-serms.merge$sermon_usable <- str_replace_all(serms.merge$sermon,"[^[:graph:]]", " ")
-serms.merge$sermon_usable <- iconv(serms.merge$sermon, "ASCII", "UTF-8", sub="")
-serm.source <- VectorSource(serms.merge$sermon)
-
-# Create a volatile corpus: coffee_corpus (memory efficient)
-serm.corpus <- VCorpus(serm.source)
-
-# Print data on the 15th doc. in serm.corpus
-serm.corpus[[15]]
-#serm.corpus[[15]]$content
-
-# Fix bad characters, create the toSpace content transformer
-toSpace <- content_transformer(function(x, pattern) {return (gsub(pattern," ",
-                                                                  x))})
-# Apply it for substituting the regular expression given in one of the former answers by " "
-serm.corpus <- tm_map(serm.corpus,toSpace,"[^[:graph:]]")
-#urlPat<-function(x) gsub("(ftp|http)(s?)://.*\\b", "", x)
-#SampCrps<-tm_map(SampCrps, urlPat)
-
-# Lowercase all documents
-serm.corpus <- tm_map(serm.corpus, content_transformer(tolower))
-
-# Remove standard English stop words
-serm.corpus <- tm_map(serm.corpus, removeWords, stopwords("english"))
-
-# Remove numbers and punctuation
-serm.corpus <- tm_map(serm.corpus, content_transformer(removeNumbers))
-#serm.corpus <- tm_map(serm.corpus, removeNumbers)
-serm.corpus <- tm_map(serm.corpus, content_transformer(removePunctuation))
-
-# Remove words less than three characters and strip extra whitespace
-short <- function(x) gsub('\\b\\w{1,2}\\b','', x)
-serm.corpus <- tm_map(serm.corpus, content_transformer(short))
-serm.corpus <- tm_map(serm.corpus, content_transformer(stripWhitespace))
-
-# Create document-term matrix
-serm.dtm <- DocumentTermMatrix(serm.corpus)
-save(serm.dtm, file = 'sermsDTM.RData')
-
-# Convert serm.dtm to a matrix
-serm.m <- as.matrix(serm.dtm)
