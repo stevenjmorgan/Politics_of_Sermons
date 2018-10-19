@@ -11,7 +11,7 @@ import time
 
 time.sleep(7200)
 
-dir = 'C:/Users/sum410/Dropbox/PoliticsOfSermons/MasterList/'
+dir = 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/MasterList/'
 #dir = 'C:/Users/Steve/Dropbox/PoliticsOfSermons/MasterList/'
 
 all_txt_files = os.listdir(dir)
