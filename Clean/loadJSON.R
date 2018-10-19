@@ -6,6 +6,7 @@ rm(list=ls())
 #setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
 setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 
+#install.packages('readtext', dependencies = TRUE)
 library(readtext)
 library(plyr)
 library(stargazer)
@@ -14,9 +15,10 @@ library(ngram)
 
 # Read in .JSON of sermons and change variable names
 #file <- 'C:/Users/sum410/Documents/GitHub/Politics_of_Sermons/Clean/sermon.JSON'
-#file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/sermon.JSON'
-file <- 'C:/Users/sum410/Dropbox/PoliticsOfSermons/sermon.JSON'
+#file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/sermon_sep.JSON'
+file <- 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/sermon_10-19.JSON'
 serms <- readtext(file, text_field = 'sermonData')
+
 colnames(serms) <- c('doc_id', 'date', 'denom', 'title', 'sermon', 'author')
 
 save(serms, file = 'sermsDF.RData')
@@ -24,14 +26,14 @@ load('sermsDF.RData')
 
 # Remove duplicates
 deduped.serms <- serms[!duplicated(serms$sermon),]
-rm(serms)
+#rm(serms)
 
 # Add year variable
 deduped.serms$year <- sapply(strsplit(deduped.serms$date, split=', ', 
                                       fixed=TRUE), `[`, 2)
 
 # Subset from 2011-2018
-deduped.serms <- deduped.serms[which(as.integer(deduped.serms$year) >= 2011),]
+#deduped.serms <- deduped.serms[which(as.integer(deduped.serms$year) >= 2011),]
 
 # Group number of sermons in each year
 year.group <- count(deduped.serms, "year")
@@ -46,6 +48,9 @@ stargazer(year.group, type = 'latex', summary = FALSE, rownames = FALSE,
 ## Month
 # Convert dates to R style dates (this could be done above in liue of sapply())
 deduped.serms$date.conv <- as.Date(deduped.serms$date, '%b %d, %Y')
+
+# Drop observations with no date
+deduped.serms <- deduped.serms[!is.na(deduped.serms$date.conv),]
 
 # Parse month and group by month, save to new df
 deduped.serms$month <- as.Date(cut(deduped.serms$date.conv, breaks = "month"))
@@ -85,7 +90,7 @@ stargazer(denom.group, type ='latex', summary = FALSE, rownames = FALSE,
 pastor.group <- count(deduped.serms, 'author')
 
 # Plot distribution of sermons per pastor
-sermonspastor<- ggplot(pastor.group[which(pastor.group$freq < 100), ], aes(x=freq)) + 
+#sermonspastor<- ggplot(pastor.group[which(pastor.group$freq < 100), ], aes(x=freq)) + 
 ggplot(pastor.group[which(pastor.group$freq < 150), ], aes(x=freq)) + 
   geom_histogram(binwidth=5, color="darkblue", fill="lightblue") +
   labs(x = 'Number of Sermons', y = "Pastors") + 
@@ -94,6 +99,7 @@ ggplot(pastor.group[which(pastor.group$freq < 150), ], aes(x=freq)) +
 ggsave("sermonspastor.pdf")
 
 # Count number of words in each sermon
+# WARNING: Takes a few minutes to run
 #deduped.serms$wc <- wordcount(deduped.serms$sermon, sep = " ", 
 #                              count.function = sum)
 deduped.serms$wc <- sapply(strsplit(deduped.serms$sermon, " "), length)
@@ -105,6 +111,7 @@ wc.plot <- ggplot(deduped.serms[which(deduped.serms$wc <10000),], aes(x=wc)) +
   geom_histogram(binwidth=500, color="darkblue", fill="lightblue") +
   labs(x = 'Number of Sermons', y = "Number of Words") + 
   ggtitle("Distribution of Word Counts in Sermons")
+wc.plot
 
 ggsave("wordcountplot.pdf")
 
@@ -113,6 +120,7 @@ uniquewc.plot <- ggplot(deduped.serms[which(deduped.serms$unique < 3000),], aes(
   labs(x = 'Number of Sermons', y = "Number of Unique Words") + 
   ggtitle("Distribution of Unique Word Counts in Sermons")
 
+uniquewc.plot
 ggsave("uniquewordcountplot.pdf")
 
 ### Save deduped sermons df
