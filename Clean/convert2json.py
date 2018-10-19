@@ -9,8 +9,6 @@ import os
 import csv
 import time
 
-time.sleep(7200)
-
 dir = 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/MasterList/'
 #dir = 'C:/Users/Steve/Dropbox/PoliticsOfSermons/MasterList/'
 
