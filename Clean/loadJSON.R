@@ -3,8 +3,8 @@
 
 rm(list=ls())
 #setwd("~/GitHub/Politics_of_Sermons/Clean")
-#setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
-setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
+setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
+#setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 
 #install.packages('readtext', dependencies = TRUE)
 library(readtext)
@@ -15,8 +15,8 @@ library(ngram)
 
 # Read in .JSON of sermons and change variable names
 #file <- 'C:/Users/sum410/Documents/GitHub/Politics_of_Sermons/Clean/sermon.JSON'
-#file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/sermon_sep.JSON'
-file <- 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/sermon_10-19.JSON'
+file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
+#file <- 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/sermon_10-19.JSON'
 serms <- readtext(file, text_field = 'sermonData')
 
 colnames(serms) <- c('doc_id', 'date', 'denom', 'title', 'sermon', 'author')
@@ -58,9 +58,10 @@ month.group <- count(deduped.serms, 'month')
 month.group$relat <- round(100 * month.group$freq / sum(month.group$freq),2)
 
 # Table of sermons by month
-stargazer(month.group, type ='text', summary = FALSE, rownames = FALSE,
-          covariate.labels = c('Month', '# of Sermons', '% of Corpus'), 
-          column.sep.width = '10pt', digits=2, header = FALSE)
+#stargazer(month.group, type ='text', summary = FALSE, rownames = FALSE,
+#          covariate.labels = c('Month', '# of Sermons', '% of Corpus'), 
+#          column.sep.width = '10pt', digits=2, header = FALSE)
+
 # Plot by month
 ggplot(data=month.group, aes(x=month, y=freq)) +
   geom_bar(stat="identity") # Make nicer
@@ -73,7 +74,7 @@ week.group <- count(deduped.serms, 'week')
 week.group$relat <- round(100 * week.group$freq / sum(week.group$freq),2)
 
 # Plot of sermons by week
-ggplot(data=week.group, aes(x=week, y=freq)) +
+ggplot(data=week.group, aes(x=week, y=freq)) + ylim(0, 200) +
   geom_bar(stat="identity") # Make nicer
 
 

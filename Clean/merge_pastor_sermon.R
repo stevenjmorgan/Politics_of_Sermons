@@ -1,7 +1,8 @@
 # This code reads in pastor meta data and merges to the sermon dataframe
 
 rm(list=ls())
-setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
+setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
+#setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 #setwd("~/GitHub/Politics_of_Sermons/Clean")
 
 library(tm)
@@ -24,20 +25,22 @@ dim(serms.merge)
 # Too many rows
 #sum(!is.na(serms.merge$sermon))
 serms.merge <- serms.merge[!duplicated(serms.merge$sermon),]
-save(serms.merge, file = 'serms_merged.RData')
+#save(serms.merge, file = 'serms_merged.RData')
 
 ### Lexical level analysis ###
 # Create dictionary of explicitly political unigrams
 pat <- paste(c('abortion', 'republican', 'democrat', 'vote', 
-               'candidate', 'campaign', 'gop', 'politic',
+               'candidate', 'campaign', 'politic',
                'congress', 'poll', 'democracy', 'obama', 'clinton', 
                'government', 'constituent', 'capitalism', 'socialism',
                'liberal', 'conservative', 'beltway', 'healthcare', 
-               'LGBTQ', 'policy', 'obamacare', 'partisan', 'welfare',
-               'progressive', 'economic', 'economy', 'constituent',
+               'LGBTQ', 'obamacare', 'partisan', 'welfare',
+               'progressive', 'constituent', 'george bush', 'john kerry',
                'senate', 'bureaucracy', 'liberties',
                'constitution', 'politics', 'legislation', 'gay marriage',
                'same sex marriage', 'political'), collapse='|')
+# 'economy', 'economic', 'policy', 'gop', 'election'
+
 
 #test <- serms.merge[0:10,]
 #test$sermon <- iconv(test$sermon, "latin1", "ASCII", sub="")
@@ -77,8 +80,28 @@ serms.merge$gay <- grepl('same sex marriage', serms.merge$sermon.clean)
 summary(serms.merge$gay)
 min(which(serms.merge$gay == TRUE))
 serms.merge$poll <- grepl('poll', serms.merge$sermon.clean)
+summary(serms.merge$poll)
+min(which(serms.merge$poll == TRUE))
+serms.merge$obama <- grepl('obamacare', serms.merge$sermon.clean)
+summary(serms.merge$obama)
+min(which(serms.merge$obama == TRUE))
+
+# Binary measure of whether sermons contain any political content
+serms.merge$pol.docs <- grepl(pat, serms.merge$sermon.clean)
+summary(serms.merge$pol.docs)
+
+save(serms.merge, file = 'political_sermons_data.RData')
 
 # Visualize distribution of political speech across time
+tab_sum_pol <- serms.merge %>% group_by(year) %>%
+  filter(pol.docs) %>%
+  summarise(trues = n())
+
+ggplot(tab_sum_pol, aes(year, trues, group = 1)) + geom_point(color='steelblue', size = 2) + geom_line(color='steelblue', size = 1) +
+  labs(x = "Year", y = 'Number of Sermons', 
+       title = 'Number of Sermons with Political Content by Year')
+ggsave('socialism_sermon.pdf')
+
 tab_sum <- serms.merge %>% group_by(year) %>%
   filter(social) %>%
   summarise(trues = n())
