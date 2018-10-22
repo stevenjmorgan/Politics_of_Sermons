@@ -29,17 +29,17 @@ serms.merge <- serms.merge[!duplicated(serms.merge$sermon),]
 
 ### Lexical level analysis ###
 # Create dictionary of explicitly political unigrams
-pat <- paste(c('abortion', 'republican', 'democrat', 'vote', 
+pat <- paste(c('abortion', 'republican', 'democrat',  
                'candidate', 'campaign', 'politic',
-               'congress', 'poll', 'democracy', 'obama', 'clinton', 
+               'congress', 'democracy', 'obama', 'clinton', 
                'government', 'constituent', 'capitalism', 'socialism',
                'liberal', 'conservative', 'beltway', 'healthcare', 
-               'LGBTQ', 'obamacare', 'partisan', 'welfare',
+               'LGBTQ', 'obamacare', 'partisan',
                'progressive', 'constituent', 'george bush', 'john kerry',
                'senate', 'bureaucracy', 'liberties',
                'constitution', 'politics', 'legislation', 'gay marriage',
                'same sex marriage', 'political'), collapse='|')
-# 'economy', 'economic', 'policy', 'gop', 'election'
+# 'economy', 'economic', 'policy', 'gop', 'election', 'poll', 'vote'
 
 
 #test <- serms.merge[0:10,]
@@ -70,8 +70,8 @@ serms.merge$sermon.clean <- trimws(serms.merge$sermon.clean)
 save(serms.merge, file = 'serms_cleaned_df.RData')
 
 # Search for political speech in cleaned sermons (non-stemmed)
-serms.merge$political <- grepl('abortion', serms.merge$sermon.clean)
-summary(serms.merge$political)
+serms.merge$abort <- grepl('abortion', serms.merge$sermon.clean)
+summary(serms.merge$abort)
 serms.merge$social <- grepl('socialism', serms.merge$sermon.clean)
 summary(serms.merge$social)
 serms.merge$congress <- grepl('congress', serms.merge$sermon.clean)
@@ -85,12 +85,24 @@ min(which(serms.merge$poll == TRUE))
 serms.merge$obama <- grepl('obamacare', serms.merge$sermon.clean)
 summary(serms.merge$obama)
 min(which(serms.merge$obama == TRUE))
+serms.merge$liber <- grepl('liberties', serms.merge$sermon.clean)
+summary(serms.merge$liber)
+min(which(serms.merge$liber == TRUE))
+serms.merge$pol.gen <- grepl('politic', serms.merge$sermon.clean)
+summary(serms.merge$pol.gen)
+min(which(serms.merge$pol.gen == TRUE))
+
 
 # Binary measure of whether sermons contain any political content
 serms.merge$pol.docs <- grepl(pat, serms.merge$sermon.clean)
 summary(serms.merge$pol.docs)
 
+drops <- c('job','social', 'congress', 'poll', 'liber', 'pol.gen')
+serms.merge <- serms.merge[, !names(serms.merge) %in% drops]
+colnames(serms.merge)
+
 save(serms.merge, file = 'political_sermons_data.RData')
+
 
 # Visualize distribution of political speech across time
 tab_sum_pol <- serms.merge %>% group_by(year) %>%
