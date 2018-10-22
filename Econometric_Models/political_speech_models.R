@@ -8,6 +8,8 @@ setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 
 library(tidyverse)
 library(car)
+library(datasets)
+library(lubridate)
 
 load('political_sermons_data.RData')
 
@@ -35,8 +37,139 @@ serms.merge <- serms.merge[which(!is.na(serms.merge$zip)),]
 serms.merge <- serms.merge[!nchar(as.character(serms.merge$state_parse)) < 3,]
 serms.merge <- within(serms.merge, rm(state))
 
-# Check to ensure all obs. have dates
+# Group states by Census region
+state.data <- as.data.frame(matrix(c(state.name, state.abb, as.character(state.region)), 
+                                   nrow = 50))
+temp <- as.data.frame(matrix(c("District of Columbia", "DC", "South"), 
+                             nrow = 1))
+state.data <- rbind(state.data, temp)
+colnames(state.data) <- c('name', 'abb', 'region')
+rm(temp)
+
+# Merge by Census region
+serms.merge <- merge(serms.merge, state.data, by.x = c('state_parse'), 
+              by.y = c('name'))
+serms.merge$region <- as.character(serms.merge$region)
+
+# Create dichotomous variables for region
+serms.merge$south <- recode(serms.merge$region, "'South' = 1; else = 0")
+serms.merge$west <- recode(serms.merge$region, "'West' = 1; else = 0")
+serms.merge$ne <- recode(serms.merge$region, "'Northeast' = 1; else = 0")
+serms.merge$nc <- recode(serms.merge$region, "'North Central' = 1; else = 0")
+table(serms.merge$region)
+
+### Temporal Covariates
+### Check to ensure all obs. have dates
 summary(is.na(serms.merge$date))
+class(serms.merge$date)
+serms.merge$date.con <- as.Date(serms.merge$date,format='%B %d, %Y')
+serms.merge$year <- year(serms.merge$date.con)
+serms.merge$y2016 <- ifelse(serms.merge$year == 2016, 1, 0)
+serms.merge$y2015 <- ifelse(serms.merge$year == 2015, 1, 0)
+serms.merge$y2014 <- ifelse(serms.merge$year == 2014, 1, 0)
+serms.merge$y2013 <- ifelse(serms.merge$year == 2013, 1, 0)
+serms.merge$y2012 <- ifelse(serms.merge$year == 2012, 1, 0)
+serms.merge$y2011 <- ifelse(serms.merge$year == 2011, 1, 0)
+serms.merge$y2010 <- ifelse(serms.merge$year == 2010, 1, 0)
+serms.merge$y2009 <- ifelse(serms.merge$year == 2009, 1, 0)
+serms.merge$y2008 <- ifelse(serms.merge$year == 2008, 1, 0)
+serms.merge$y2007 <- ifelse(serms.merge$year == 2007, 1, 0)
+serms.merge$y2006 <- ifelse(serms.merge$year == 2006, 1, 0)
+serms.merge$y2005 <- ifelse(serms.merge$year == 2005, 1, 0)
+serms.merge$y2004 <- ifelse(serms.merge$year == 2004, 1, 0)
+serms.merge$y2003 <- ifelse(serms.merge$year == 2003, 1, 0)
+serms.merge$y2002 <- ifelse(serms.merge$year == 2002, 1, 0)
+serms.merge$y2001 <- ifelse(serms.merge$year == 2001, 1, 0)
+serms.merge$y2000 <- ifelse(serms.merge$year == 2000, 1, 0)
+
+# Calculate dates 1-, 3-, and 6-months out from presidential elections
+election <- as.Date(c('2016-11-08', '2012-11-06', '2008-11-04', '2004-11-02', 
+                      '2000-11-07', '2014-11-04', '2010-11-02', '2006-11-07',
+                      '2002-11-05'))
+pre2016 <- seq(election[1], length = 2, by = "-6 months")[2]
+pre2012 <- seq(election[2], length = 2, by = "-6 months")[2]
+pre2008 <- seq(election[3], length = 2, by = "-6 months")[2]
+pre2004 <- seq(election[4], length = 2, by = "-6 months")[2]
+pre2000 <- seq(election[5], length = 2, by = "-6 months")[2]
+pre2016.3 <- seq(election[1], length = 2, by = "-3 months")[2]
+pre2012.3 <- seq(election[2], length = 2, by = "-3 months")[2]
+pre2008.3 <- seq(election[3], length = 2, by = "-3 months")[2]
+pre2004.3 <- seq(election[4], length = 2, by = "-3 months")[2]
+pre2000.3 <- seq(election[5], length = 2, by = "-3 months")[2]
+pre2016.1 <- seq(election[1], length = 2, by = "-1 months")[2]
+pre2012.1 <- seq(election[2], length = 2, by = "-1 months")[2]
+pre2008.1 <- seq(election[3], length = 2, by = "-1 months")[2]
+pre2004.1 <- seq(election[4], length = 2, by = "-1 months")[2]
+pre2000.1 <- seq(election[5], length = 2, by = "-1 months")[2]
+pre2016.2wk <- seq(election[1], length = 2, by = "-2 weeks")[2]
+pre2012.2wk <- seq(election[2], length = 2, by = "-2 weeks")[2]
+pre2008.2wk <- seq(election[3], length = 2, by = "-2 weeks")[2]
+pre2004.2wk <- seq(election[4], length = 2, by = "-2 weeks")[2]
+pre2000.2wk <- seq(election[5], length = 2, by = "-2 weeks")[2]
+pre2016.after <- seq(election[1], length = 2, by = "+2 weeks")[2]
+pre2012.after <- seq(election[2], length = 2, by = "+2 weeks")[2]
+pre2008.after <- seq(election[3], length = 2, by = "+2 weeks")[2]
+pre2004.after <- seq(election[4], length = 2, by = "+2 weeks")[2]
+pre2000.after <- seq(election[5], length = 2, by = "+2 weeks")[2]
+
+# Calculate for midterms (1 month prior)
+mid2014 <- seq(election[6], length = 2, by = "-1 months")[2]
+mid2010 <- seq(election[7], length = 2, by = "-1 months")[2]
+mid2006 <- seq(election[8], length = 2, by = "-1 months")[2]
+mid2002 <- seq(election[9], length = 2, by = "-1 months")[2]
+
+# Function to determine if sermon date is between election and pre-election period
+is.between <- function(x,a,b){ 
+  x < a & x >= b 
+} 
+
+# 6 month
+serms.merge$pre2016 <- ifelse(is.between(serms.merge$date.con, election[1], pre2016), 1, 0)
+serms.merge$pre2012 <- ifelse(is.between(serms.merge$date.con, election[2], pre2012), 1, 0)
+serms.merge$pre2008 <- ifelse(is.between(serms.merge$date.con, election[3], pre2008), 1, 0)
+serms.merge$pre2004 <- ifelse(is.between(serms.merge$date.con, election[4], pre2004), 1, 0)
+serms.merge$pre2000 <- ifelse(is.between(serms.merge$date.con, election[5], pre2000), 1, 0)
+serms.merge$elect.szn <- rowSums(serms.merge[,c("pre2016", "pre2012", "pre2008", "pre2004", "pre2000")])
+
+# 3 month
+serms.merge$pre2016.3 <- ifelse(is.between(serms.merge$date.con, election[1], pre2016.3), 1, 0)
+serms.merge$pre2012.3 <- ifelse(is.between(serms.merge$date.con, election[2], pre2012.3), 1, 0)
+serms.merge$pre2008.3 <- ifelse(is.between(serms.merge$date.con, election[3], pre2008.3), 1, 0)
+serms.merge$pre2004.3 <- ifelse(is.between(serms.merge$date.con, election[4], pre2004.3), 1, 0)
+serms.merge$pre2000.3 <- ifelse(is.between(serms.merge$date.con, election[5], pre2000.3), 1, 0)
+serms.merge$elect.szn.3 <- rowSums(serms.merge[,c("pre2016.3", "pre2012.3", "pre2008.3", "pre2004.3", "pre2000.3")])
+
+# 1 month
+serms.merge$pre2016.1 <- ifelse(is.between(serms.merge$date.con, election[1], pre2016.1), 1, 0)
+serms.merge$pre2012.1 <- ifelse(is.between(serms.merge$date.con, election[2], pre2012.1), 1, 0)
+serms.merge$pre2008.1 <- ifelse(is.between(serms.merge$date.con, election[3], pre2008.1), 1, 0)
+serms.merge$pre2004.1 <- ifelse(is.between(serms.merge$date.con, election[4], pre2004.1), 1, 0)
+serms.merge$pre2000.1 <- ifelse(is.between(serms.merge$date.con, election[5], pre2000.1), 1, 0)
+serms.merge$elect.szn.1 <- rowSums(serms.merge[,c("pre2016.1", "pre2012.1", "pre2008.1", "pre2004.1", "pre2000.1")])
+
+# 2 weeks
+serms.merge$pre2016.2wk <- ifelse(is.between(serms.merge$date.con, election[1], pre2016.2wk), 1, 0)
+serms.merge$pre2012.2wk <- ifelse(is.between(serms.merge$date.con, election[2], pre2012.2wk), 1, 0)
+serms.merge$pre2008.2wk <- ifelse(is.between(serms.merge$date.con, election[3], pre2008.2wk), 1, 0)
+serms.merge$pre2004.2wk <- ifelse(is.between(serms.merge$date.con, election[4], pre2004.2wk), 1, 0)
+serms.merge$pre2000.2wk <- ifelse(is.between(serms.merge$date.con, election[5], pre2000.2wk), 1, 0)
+serms.merge$elect.szn.2wk <- rowSums(serms.merge[,c("pre2016.2wk", "pre2012.2wk", "pre2008.2wk", "pre2004.2wk", "pre2000.2wk")])
+
+# 2 weeks after
+serms.merge$pre2016.after <- ifelse(is.between(serms.merge$date.con, pre2016.after, election[1]), 1, 0)
+serms.merge$pre2012.after <- ifelse(is.between(serms.merge$date.con, pre2012.after, election[2]), 1, 0)
+serms.merge$pre2008.after <- ifelse(is.between(serms.merge$date.con, pre2008.after, election[3]), 1, 0)
+serms.merge$pre2004.after <- ifelse(is.between(serms.merge$date.con, pre2004.after, election[4]), 1, 0)
+serms.merge$pre2000.after <- ifelse(is.between(serms.merge$date.con, pre2000.after, election[5]), 1, 0)
+serms.merge$elect.szn.after <- rowSums(serms.merge[,c("pre2016.after", "pre2012.after", "pre2008.after", "pre2004.after", "pre2000.after")])
+
+# Midterm (1 month prior)
+serms.merge$mid2014 <- ifelse(is.between(serms.merge$date.con, election[6], mid2014), 1, 0)
+serms.merge$mid2010 <- ifelse(is.between(serms.merge$date.con, election[7], mid2010), 1, 0)
+serms.merge$mid2006 <- ifelse(is.between(serms.merge$date.con, election[8], mid2006), 1, 0)
+serms.merge$mid2002 <- ifelse(is.between(serms.merge$date.con, election[9], mid2002), 1, 0)
+serms.merge$midterm <- rowSums(serms.merge[,c("mid2014", "mid2010", "mid2006", "mid2002")])
+
 
 ### Denomination covariates
 # Bin denominations by religious traditions
@@ -85,3 +218,120 @@ serms.merge$rel.trad <- recode(serms.merge$denom,
                                'Other' = 'other'; else = 'other'")
 table(serms.merge$rel.trad)
 
+# Create dichotomous variables for religious traditions
+serms.merge$evang <- recode(serms.merge$rel.trad, "'evang' = 1; else = 0")
+serms.merge$main <- recode(serms.merge$rel.trad, "'mainline' = 1; else = 0")
+serms.merge$cath <- recode(serms.merge$rel.trad, "'cath' = 1; else = 0")
+serms.merge$other <- recode(serms.merge$rel.trad, "'other' = 1; else = 0")
+
+
+### Model political content overall
+# Logit model
+logit.pc <- glm(pol.docs ~ evang + other + cath + south + west + nc, 
+                family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.pc)
+
+#logit.main <- glm(pol.docs ~ evang + main + cath + south + west + nc, 
+#                family = binomial(link = 'logit'), data = serms.merge)
+#summary(logit.main)
+
+# Logit model w/ 6-month pre-election covariates
+logit.6mo <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                 elect.szn, family = binomial(link = 'logit'), 
+                 data = serms.merge)
+summary(logit.6mo)
+
+# Logit model w/ 6-month pre-election covariates interacted w/ evangelical
+logit.6mo.evan <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                   elect.szn + evang:elect.szn, 
+                   family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.6mo.evan)
+
+# Logit model w/ 3-month pre-election covariates
+logit.3mo <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                   elect.szn.3, family = binomial(link = 'logit'), 
+                 data = serms.merge)
+summary(logit.3mo)
+
+# Logit model w/ 3-month pre-election interacted w/ evangelical
+logit.3mo.evan <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                        elect.szn.3 + evang:elect.szn.3, 
+                      family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.3mo.evan)
+
+# Logit model w/ 1-month pre-election covariates
+logit.1mo <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                   elect.szn.1, family = binomial(link = 'logit'), 
+                 data = serms.merge)
+summary(logit.1mo)
+
+# Logit model w/ 1-month pre-election interacted w/ evangelical
+logit.1mo.evan <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                   elect.szn.1 + evang:elect.szn.1, 
+                   family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.1mo.evan)
+
+# Logit model w/ 2-week pre-election covariate
+logit.2wk <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                 elect.szn.2wk, 
+                 family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.2wk)
+
+
+# Logit model w/ 2 week pre-election interacted w/ evangelical
+logit.2wk.evan <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                        elect.szn.2wk + evang:elect.szn.2wk, 
+                      family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.2wk.evan)
+
+# Logit model w/ after election covariate
+logit.after <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                   elect.szn.after, 
+                 family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.after)
+
+
+# Logit model w/ after election interacted w/ evangelical
+logit.after.evan <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                          elect.szn.after + evang:elect.szn.after, 
+                      family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.after.evan)
+
+
+### Modeling abortion-speak
+# Logit model
+logit.abort <- glm(abort ~ evang + cath + other+ south + west + nc, 
+                family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.abort)
+
+# Six-months out of election
+logit.abort.6 <- glm(abort ~ evang + cath + other+ south + west + nc + elect.szn, 
+                   family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.abort.6)
+
+# 2 weeks before elction interacted w/ evangelical
+logit.abort.2wk.int <- glm(abort ~ evang + cath + other+ south + west + nc + 
+                        elect.szn.2wk + evang:elect.szn.2wk, 
+                     family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.abort.2wk.int)
+
+# Model by year
+logit.pc.yr <- glm(pol.docs ~ evang + other + cath + south + west + nc + y2016 +
+                     y2015 + y2014 + y2013 + y2012 + y2011 + y2010 + y2009 + 
+                     y2008 + y2007 + y2006 + y2005 + y2004 + y2003 + y2002 +
+                     y2001 + y2000, 
+                family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.pc.yr)
+
+
+# Model 1-month prior to midterm elections
+logit.mid <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                     midterm, 
+                   family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.mid)
+
+# Model 1-month prior to midterm elections interacted w/ evangelical
+logit.mid.int <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+                   midterm + evang:midterm, 
+                 family = binomial(link = 'logit'), data = serms.merge)
+summary(logit.mid.int)
