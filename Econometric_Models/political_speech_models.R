@@ -64,6 +64,8 @@ summary(is.na(serms.merge$date))
 class(serms.merge$date)
 serms.merge$date.con <- as.Date(serms.merge$date,format='%B %d, %Y')
 serms.merge$year <- year(serms.merge$date.con)
+serms.merge$y2018 <- ifelse(serms.merge$year == 2018, 1, 0)
+serms.merge$y2017 <- ifelse(serms.merge$year == 2017, 1, 0)
 serms.merge$y2016 <- ifelse(serms.merge$year == 2016, 1, 0)
 serms.merge$y2015 <- ifelse(serms.merge$year == 2015, 1, 0)
 serms.merge$y2014 <- ifelse(serms.merge$year == 2014, 1, 0)
@@ -279,10 +281,11 @@ summary(logit.2wk)
 
 
 # Logit model w/ 2 week pre-election interacted w/ evangelical
-logit.2wk.evan <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+logit.2wk.evan <- glm(pol.docs ~ evang + other + south + west + nc + 
                         elect.szn.2wk + evang:elect.szn.2wk, 
                       family = binomial(link = 'logit'), data = serms.merge)
 summary(logit.2wk.evan)
+stargazer(logit.2wk.evan, no.space=TRUE)
 
 # Logit model w/ after election covariate
 logit.after <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
@@ -331,7 +334,39 @@ logit.mid <- glm(pol.docs ~ evang + other + cath + south + west + nc +
 summary(logit.mid)
 
 # Model 1-month prior to midterm elections interacted w/ evangelical
-logit.mid.int <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
+logit.mid.int <- glm(pol.stringent.bi ~ evang + other + cath + south + west + nc + 
                    midterm + evang:midterm, 
                  family = binomial(link = 'logit'), data = serms.merge)
 summary(logit.mid.int)
+
+
+### Model rule of three-based measure of political speech
+library(Zelig)
+serms.merge$stringent.dich <- ifelse(serms.merge$pol.stringent.bi == TRUE, 1, 0)
+re.logit <- zelig(stringent.dich ~ evang + other + south + west + nc +
+                    elect.szn.2wk + evang:elect.szn.2wk, model = 'relogit', 
+                  data = serms.merge,
+                  tau = 3432/86723, case.control = c('weighting'))
+summary(re.logit)
+
+tab_sum_pol <- serms.merge %>% group_by(year) %>%
+  filter(pol.stringent.bi) %>%
+  summarise(trues = n())
+
+ggplot(tab_sum_pol, aes(year, trues, group = 1)) + geom_point(color='steelblue', size = 2) + geom_line(color='steelblue', size = 1) +
+  labs(x = "Year", y = 'Number of Sermons', 
+       title = 'Number of Sermons with Political Content by Year')
+ggsave('pol_binary_stringent_sermon.pdf')
+
+library(dotwhisker)
+dwplot(logit.2wk.evan, conf.level = .90,
+       vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2)) %>% # plot line at zero _behind_ coefs
+  relabel_predictors(c(evang = "Evangelical",                       
+                       other = "Other/Non-Denom.", 
+                       south = "South", 
+                       west = "West", 
+                       nc = "North Central", 
+                       elect.szn.2wk = "Election in 4 Weeks",
+                       'evang:elect.szn.2wk' = "Evangelical * Election"))
+ggsave('logit_dotplot.pdf')
+

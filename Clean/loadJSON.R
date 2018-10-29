@@ -3,8 +3,8 @@
 
 rm(list=ls())
 #setwd("~/GitHub/Politics_of_Sermons/Clean")
-setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
-#setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
+#setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
+setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 
 #install.packages('readtext', dependencies = TRUE)
 library(readtext)
@@ -15,8 +15,8 @@ library(ngram)
 
 # Read in .JSON of sermons and change variable names
 #file <- 'C:/Users/sum410/Documents/GitHub/Politics_of_Sermons/Clean/sermon.JSON'
-file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
-#file <- 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/sermon_10-19.JSON'
+#file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
+file <- 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
 serms <- readtext(file, text_field = 'sermonData')
 
 colnames(serms) <- c('doc_id', 'date', 'denom', 'title', 'sermon', 'author')
@@ -92,8 +92,8 @@ pastor.group <- count(deduped.serms, 'author')
 
 # Plot distribution of sermons per pastor
 #sermonspastor<- ggplot(pastor.group[which(pastor.group$freq < 100), ], aes(x=freq)) + 
-ggplot(pastor.group[which(pastor.group$freq < 150), ], aes(x=freq)) + 
-  geom_histogram(binwidth=5, color="darkblue", fill="lightblue") +
+ggplot(pastor.group[which(pastor.group$freq < 35), ], aes(x=freq)) + 
+  geom_histogram(binwidth=1, color="darkblue", fill="lightblue") +
   labs(x = 'Number of Sermons', y = "Pastors") + 
   ggtitle("Distribution of Sermons Uploaded by Pastor")
 
@@ -108,18 +108,18 @@ deduped.serms$unique <- lengths(lapply(strsplit(deduped.serms$sermon,
                                                 split = ' '), unique))
 
 # Plot distribution of word counts and unique word counts for each sermon
-wc.plot <- ggplot(deduped.serms[which(deduped.serms$wc <10000),], aes(x=wc)) + 
+wc.plot <- ggplot(deduped.serms[which(deduped.serms$wc <8000),], aes(x=wc)) + 
   geom_histogram(binwidth=500, color="darkblue", fill="lightblue") +
   labs(x = 'Number of Sermons', y = "Number of Words") + 
-  ggtitle("Distribution of Word Counts in Sermons")
+  ggtitle("Distribution of Word Counts across Sermons")
 wc.plot
 
 ggsave("wordcountplot.pdf")
 
-uniquewc.plot <- ggplot(deduped.serms[which(deduped.serms$unique < 3000),], aes(x=unique)) + 
+uniquewc.plot <- ggplot(deduped.serms[which(deduped.serms$unique < 2200),], aes(x=unique)) + 
   geom_histogram(binwidth=50, color="red", fill="orange") +
   labs(x = 'Number of Sermons', y = "Number of Unique Words") + 
-  ggtitle("Distribution of Unique Word Counts in Sermons")
+  ggtitle("Distribution of Unique Word Counts across Sermons")
 
 uniquewc.plot
 ggsave("uniquewordcountplot.pdf")
