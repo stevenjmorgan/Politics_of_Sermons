@@ -1,8 +1,8 @@
 # This code reads in pastor meta data and merges to the sermon dataframe
 
 rm(list=ls())
-#setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
-setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
+setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
+#setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 #setwd("~/GitHub/Politics_of_Sermons/Clean")
 
 library(tm)

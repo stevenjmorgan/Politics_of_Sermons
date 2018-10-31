@@ -15,8 +15,8 @@ library(ngram)
 
 # Read in .JSON of sermons and change variable names
 #file <- 'C:/Users/sum410/Documents/GitHub/Politics_of_Sermons/Clean/sermon.JSON'
-#file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
-file <- 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
+file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
+#file <- 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
 serms <- readtext(file, text_field = 'sermonData')
 
 colnames(serms) <- c('doc_id', 'date', 'denom', 'title', 'sermon', 'author')
