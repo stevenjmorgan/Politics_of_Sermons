@@ -370,3 +370,4 @@ dwplot(logit.2wk.evan, conf.level = .90,
                        'evang:elect.szn.2wk' = "Evangelical * Election"))
 ggsave('logit_dotplot.pdf')
 
+save(serms.merge, file = 'merge_geo.RData')
