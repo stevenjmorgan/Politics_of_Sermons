@@ -371,3 +371,7 @@ dwplot(logit.2wk.evan, conf.level = .90,
 ggsave('logit_dotplot.pdf')
 
 save(serms.merge, file = 'merge_geo.RData')
+
+keep <- c('sermon.clean', 'pol.docs')
+subSerms <- serms.merge[, which(names(serms.merge) %in% keep)]
+save(subSerms, file = 'subsetSerms.RData')
