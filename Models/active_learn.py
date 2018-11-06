@@ -39,8 +39,7 @@ reload(sys)
 
 #os.chdir('C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/SampleLDA')
 #os.chdir('C:/Users/Steve/Dropbox/PoliticsOfSermons/Data/SampleLDA')
-
-os.environ['R_USER'] = 'D:/Anaconda3/Lib/site-packages/rpy2'
+os.environ['R_USER'] = "C:/'Program Files'/Anaconda3/Lib/site-packages/rpy2"
 
 import rpy2.robjects as robjects
 from rpy2.robjects import pandas2ri
