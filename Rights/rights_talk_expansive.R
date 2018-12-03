@@ -1,4 +1,8 @@
+rm(list=ls())
+setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
+
 library(datasets)
+library(stargazer)
 
 load('serms_cleaned_df.RData')
 
@@ -13,6 +17,11 @@ summary(serms.merge$rights)
 serms.merge$rights.count <- str_count(serms.merge$sermon.clean, pat)
 serms.merge$rights.stringent <- ifelse(serms.merge$rights.count < 2, 0, 1)
 serms.merge$rights.tr <- ifelse(serms.merge$rights.count < 2, FALSE, TRUE)
+serms.merge$ind.lib <- str_count(serms.merge$sermon.clean, 'religious freedom')
+
+# Most rights-talk
+max(serms.merge$ind.lib)
+x <- serms.merge[which(serms.merge$ind.lib == max(serms.merge$ind.lib)),]
 
 ### Geographic covariates
 # Subset data to only include obs. w/ geographic info

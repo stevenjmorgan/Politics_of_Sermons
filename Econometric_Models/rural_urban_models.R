@@ -1,4 +1,5 @@
 rm(list=ls())
+setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
 
 library(stringr)
 library(car)
@@ -37,7 +38,7 @@ re.logit <- zelig(stringent.dich ~ evang + other + south + west + nc + rural +
 summary(re.logit)
 
 library(dotwhisker)
-dwplot(logit.rural, conf.level = .90, dot_args = list(size = 3, pch = 21, fill = "white"),
+dwplot(logit.rural, dodge_size = 0.8, conf.level = .90, dot_args = list(size = 3, pch = 21, fill = "white"),
        vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2)) %>% # plot line at zero _behind_ coefs
   relabel_predictors(c(evang = "Evangelical",                       
                        other = "Other/Non-Denom.", 
@@ -46,7 +47,8 @@ dwplot(logit.rural, conf.level = .90, dot_args = list(size = 3, pch = 21, fill =
                        nc = "North Central", 
                        rural = 'Rural',
                        elect.szn.2wk = "Election in 4 Weeks",
-                       'evang:rural' = "Evangelical * Rural"))
+                       'evang:rural' = "Evangelical * Rural")) +
+  theme_bw() + theme(legend.position="none")
 ggsave('logit_rural_int_dotplot.pdf')
 
 ## No interaction
@@ -55,7 +57,7 @@ logit.rural <- glm(stringent.dich ~ evang + other + elect.szn.2wk + south + west
 summary(logit.rural)
 
 library(dotwhisker)
-dwplot(logit.rural, conf.level = .90, dot_args = list(size = 3, pch = 21, fill = "white"),
+dwplot(logit.rural, conf.level = .90, dot_args = list(size = 3, pch = 21, fill = "red"),
        vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2)) %>% # plot line at zero _behind_ coefs
   relabel_predictors(c(evang = "Evangelical",                       
                        other = "Other/Non-Denom.", 
@@ -63,7 +65,9 @@ dwplot(logit.rural, conf.level = .90, dot_args = list(size = 3, pch = 21, fill =
                        west = "West", 
                        nc = "North Central", 
                        rural = 'Rural',
-                       elect.szn.2wk = "Election in 4 Weeks"))
+                       elect.szn.2wk = "Election in 4 Weeks")) +
+  theme_bw() + theme(legend.position="none")
+#        theme(scale_colour_grey())
 ggsave('logit_rural_dotplot.pdf')
 
 
