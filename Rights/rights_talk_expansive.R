@@ -1,3 +1,6 @@
+# This script counts the number of occurences of rights talk in each sermon and 
+# merges geographic data and prepares data for modeling.
+
 rm(list=ls())
 setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
 
@@ -167,3 +170,5 @@ denom.group$rel <- round(100 * denom.group$freq / sum(denom.group$freq),2)
 stargazer(denom.group, type ='latex', summary = FALSE, rownames = FALSE,
           covariate.labels = c('Religious Tradition', '# of Sermons', '% of Corpus'), 
           column.sep.width = '10pt', digits=2, header = FALSE)
+
+save(serms.merge, file = 'merge_geo.RData')

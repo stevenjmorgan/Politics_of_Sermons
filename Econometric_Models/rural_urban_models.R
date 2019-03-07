@@ -3,6 +3,9 @@ setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
 
 library(stringr)
 library(car)
+library(dotwhisker)
+library(dotwhisker)
+library(Zelig)
 
 load('merge_geo.RData')
 
@@ -30,15 +33,15 @@ logit.rural <- glm(stringent.dich ~ evang + other + elect.szn.2wk + south + west
                 family = binomial(link = 'logit'), data = serms.merge)
 summary(logit.rural)
 
-library(Zelig)
+
 re.logit <- zelig(stringent.dich ~ evang + other + south + west + nc + rural +
                     elect.szn.2wk + evang:rural, model = 'relogit', 
                   data = serms.merge,
                   tau = 3432/86723, case.control = c('weighting'))
 summary(re.logit)
 
-library(dotwhisker)
-dwplot(logit.rural, dodge_size = 0.8, conf.level = .90, dot_args = list(size = 3, pch = 21, fill = "white"),
+
+dwplot(logit.rural, dodge_size = 0.8, conf.level = .95, dot_args = list(size = 3, pch = 21, fill = "white"),
        vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2)) %>% # plot line at zero _behind_ coefs
   relabel_predictors(c(evang = "Evangelical",                       
                        other = "Other/Non-Denom.", 
@@ -56,7 +59,7 @@ logit.rural <- glm(stringent.dich ~ evang + other + elect.szn.2wk + south + west
                    family = binomial(link = 'logit'), data = serms.merge)
 summary(logit.rural)
 
-library(dotwhisker)
+
 dwplot(logit.rural, conf.level = .90, dot_args = list(size = 3, pch = 21, fill = "red"),
        vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2)) %>% # plot line at zero _behind_ coefs
   relabel_predictors(c(evang = "Evangelical",                       
