@@ -3,6 +3,7 @@ library("devtools")
 devtools::install_github("matthewjdenny/SpeedReader")
 library(SpeedReader)
 library(stargazer)
+library(quanteda)
 
 #s <- Source(serms.merge$sermon.clean)
 corpus <- Corpus(VectorSource(serms.merge$sermon.clean))
@@ -20,8 +21,6 @@ c2 <- tm_map(corpus, removeWords, stopwords("english"))
 m2 <- DocumentTermMatrix(c2)
 findFreqTerms(m2, 400) # words appearing more than 500 times
 
-
-require(quanteda)
 
 # bi-grams
 top <- topfeatures(dfm(serms.merge$sermon.clean, ngrams = 1, verbose = FALSE))
