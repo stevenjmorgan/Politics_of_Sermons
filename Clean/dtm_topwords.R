@@ -2,6 +2,7 @@ library("tm")
 library("devtools")
 devtools::install_github("matthewjdenny/SpeedReader")
 library(SpeedReader)
+library(stargazer)
 
 #s <- Source(serms.merge$sermon.clean)
 corpus <- Corpus(VectorSource(serms.merge$sermon.clean))
@@ -103,7 +104,6 @@ year.group <- count(serms.merge, "year")
 year.group$rel <- round(100 * year.group$freq / sum(year.group$freq),2)
 
 # Table of sermons by year
-library(stargazer)
 stargazer(year.group, type = 'latex', summary = FALSE, rownames = FALSE,
           covariate.labels = c('Year', '# of Sermons', '% of Corpus'), 
           column.sep.width = '10pt', digits = 2, header = FALSE)
