@@ -58,6 +58,8 @@ serms.merge$ne <- recode(serms.merge$region, "'Northeast' = 1; else = 0")
 serms.merge$nc <- recode(serms.merge$region, "'North Central' = 1; else = 0")
 table(serms.merge$region)
 
+
+
 ### Temporal Covariates
 ### Check to ensure all obs. have dates
 summary(is.na(serms.merge$date))
