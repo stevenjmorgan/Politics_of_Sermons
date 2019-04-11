@@ -5,6 +5,12 @@ library(SpeedReader)
 library(stargazer)
 library(quanteda)
 
+setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
+
+#file <- 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
+
+#load('political_sermons_data.RData')
+
 #s <- Source(serms.merge$sermon.clean)
 corpus <- Corpus(VectorSource(serms.merge$sermon.clean))
 
@@ -106,3 +112,20 @@ year.group$rel <- round(100 * year.group$freq / sum(year.group$freq),2)
 stargazer(year.group, type = 'latex', summary = FALSE, rownames = FALSE,
           covariate.labels = c('Year', '# of Sermons', '% of Corpus'), 
           column.sep.width = '10pt', digits = 2, header = FALSE)
+
+
+
+##### MF
+# Create quanteda corpus
+#unsc <- unsc[,-10]
+colnames(serms.merge)[names(serms.merge) == "sermon"] <- "text"
+colnames(serms.merge)[names(serms.merge) == "doc_id"] <- "doc"
+serms.merge.corp <- corpus(serms.merge)
+
+install_github("kbenoit/quanteda.dictionaries") #input int corresponding w/ "None"
+library(quanteda.dictionaries)
+
+mf.serms <- liwcalike(serms.merge.corp,
+                     dictionary = data_dictionary_MFD)
+
+serms.merge <- cbind(serms.merge, mf.serms)
