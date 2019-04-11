@@ -3,8 +3,8 @@
 
 rm(list=ls())
 
-#setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
-setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
+setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
+#setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 
 library(tidyverse)
 library(car)
@@ -58,6 +58,7 @@ serms.merge$ne <- recode(serms.merge$region, "'Northeast' = 1; else = 0")
 serms.merge$nc <- recode(serms.merge$region, "'North Central' = 1; else = 0")
 table(serms.merge$region)
 
+save(serms.merge,file='final_clean.RData')
 
 
 ### Temporal Covariates
