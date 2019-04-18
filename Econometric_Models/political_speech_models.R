@@ -231,6 +231,23 @@ serms.merge$cath <- recode(serms.merge$rel.trad, "'cath' = 1; else = 0")
 serms.merge$other <- recode(serms.merge$rel.trad, "'other' = 1; else = 0")
 
 save(serms.merge, file = 'sermons_covariates_final.RData')
+colnames(serms.merge)
+serms.merge <- serms.merge[,-c(20:55)] 
+colnames(serms.merge)
+
+# Dictionary-based approach to measuring rights talk
+pat <- paste(c('individual right', 'individual liberty', 'individual liberties', 
+               'supreme court', 'fetus right', 'religious freedom', 
+               'freedom religion','civil liberty', 'civil liberties',
+               'fundamental right', 'life liberty', 'unborn', 'abortion',
+               'protect right', 'individual mandate', 'right life',
+               'individuals right', 'our right', 'your right', 'liberals',
+               'my right'), collapse='|')
+
+serms.merge$rights.talk.count <- str_count(serms.merge$sermon.clean, pat)
+summary(serms.merge$rights.talk.count)
+serms.merge$rights.stringent <- ifelse(serms.merge$rights.talk.count < 1, 0, 1)
+summary(serms.merge$rights.stringent==1)
 
 
 ### Model political content overall
