@@ -3,8 +3,8 @@
 
 rm(list=ls())
 
-setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
-#setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
+#setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
+setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 
 library(tidyverse)
 library(car)
@@ -59,6 +59,7 @@ serms.merge$nc <- recode(serms.merge$region, "'North Central' = 1; else = 0")
 table(serms.merge$region)
 
 save(serms.merge,file='final_clean.RData')
+#####
 
 
 ### Temporal Covariates
@@ -228,6 +229,8 @@ serms.merge$evang <- recode(serms.merge$rel.trad, "'evang' = 1; else = 0")
 serms.merge$main <- recode(serms.merge$rel.trad, "'mainline' = 1; else = 0")
 serms.merge$cath <- recode(serms.merge$rel.trad, "'cath' = 1; else = 0")
 serms.merge$other <- recode(serms.merge$rel.trad, "'other' = 1; else = 0")
+
+save(serms.merge, file = 'sermons_covariates_final.RData')
 
 
 ### Model political content overall
