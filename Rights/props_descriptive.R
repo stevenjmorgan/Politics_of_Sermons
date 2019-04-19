@@ -1,4 +1,7 @@
+rm(list=ls())
 
+setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
+#setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 
 load('final_clean.RData')
 
@@ -11,6 +14,7 @@ library(ggplot2)
 library(maps)
 library(mapdata)
 library(ggplot2); library(mapproj)
+library(tidyverse)
 
 ##Name US State Map
 us <- map_data("state")
@@ -33,6 +37,23 @@ ggplot() + geom_map(data=us, map=us, aes(long, lat, map_id=region), color="#2b2b
         axis.text = element_blank()) + guides(fill = guide_colorbar(title=NULL)) + coord_map() + 
   ggtitle("Number of Sermons by State")
 ggsave('sermons_state.png')
+
+
+state.pop <- read.csv('state_pop.csv')
+state.pop$state.lower <- tolower(state.pop$State..federal.district..or.territory)
+test <- merge(group.state, state.pop, by = 'state.lower', all.x = TRUE)
+test <- test[,-3]
+test$prop <- test$trues/test$Population.estimate..July.1..2018.1.
+
+# Plot sermons per person by state
+ggplot() + geom_map(data=us, map=us, aes(long, lat, map_id=region), color="#2b2b2b", fill=NA, size=0.15) +
+  geom_map(data=test, map=us, aes(fill=prop, map_id=state.lower), color="#ffffff", size=0.15) + labs(x=NULL, y=NULL) +
+  scale_fill_continuous(low='gray80', high='gray20',  guide='colorbar') +
+  theme(panel.border = element_blank(), panel.background = element_blank(), 
+        plot.title = element_text(hjust = 0.5,size = 25, face = "bold"), axis.ticks = element_blank(),
+        axis.text = element_blank()) + guides(fill = guide_colorbar(title=NULL)) + coord_map() + 
+  ggtitle("Number of Sermons per Person by State")
+ggsave('sermons_person_state.png')
 
 
 serms.merge$rights.count <- str_count(serms.merge$sermon.clean, 'right')

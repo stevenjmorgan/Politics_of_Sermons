@@ -3,8 +3,8 @@
 
 rm(list=ls())
 
-#setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
-setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
+setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
+#setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 
 library(tidyverse)
 library(car)
@@ -59,6 +59,7 @@ serms.merge$nc <- recode(serms.merge$region, "'North Central' = 1; else = 0")
 table(serms.merge$region)
 
 save(serms.merge,file='final_clean.RData')
+load('final_clean.RData')
 #####
 
 
@@ -231,6 +232,7 @@ serms.merge$cath <- recode(serms.merge$rel.trad, "'cath' = 1; else = 0")
 serms.merge$other <- recode(serms.merge$rel.trad, "'other' = 1; else = 0")
 
 save(serms.merge, file = 'sermons_covariates_final.RData')
+load('sermons_covariates_final.RData')
 colnames(serms.merge)
 serms.merge <- serms.merge[,-c(20:55)] 
 colnames(serms.merge)
@@ -249,10 +251,19 @@ summary(serms.merge$rights.talk.count)
 serms.merge$rights.stringent <- ifelse(serms.merge$rights.talk.count < 1, 0, 1)
 summary(serms.merge$rights.stringent==1)
 
+test <- serms.merge[order(-serms.merge$rights.talk.count),]
+test$denom[3]
+test$year[3]
+test$state_parse[3]
+
+write.csv(test$sermon[1], file = 'sermon1ex.txt')
+write.csv(test$sermon[2], file = 'sermon2ex.txt')
+write.csv(test$sermon[3], file = 'sermon3ex.txt')
+
 
 ### Model political content overall
 # Logit model
-logit.pc <- glm(pol.docs ~ evang + other + cath + south + west + nc, 
+logit.pc <- glm(rights.stringent ~ evang + other + cath + south + west + nc + factor(year), 
                 family = binomial(link = 'logit'), data = serms.merge)
 summary(logit.pc)
 
@@ -261,10 +272,13 @@ summary(logit.pc)
 #summary(logit.main)
 
 # Logit model w/ 6-month pre-election covariates
-logit.6mo <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
-                 elect.szn, family = binomial(link = 'logit'), 
+logit.6mo <- glm(rights.stringent ~ evang + other + cath + south + west + nc + 
+                   elect.szn.2wk + factor(year), family = binomial(link = 'logit'), 
                  data = serms.merge)
 summary(logit.6mo)
+library(stargazer)
+stargazer(logit.6mo, single.row = T)
+
 
 # Logit model w/ 6-month pre-election covariates interacted w/ evangelical
 logit.6mo.evan <- glm(pol.docs ~ evang + other + cath + south + west + nc + 
