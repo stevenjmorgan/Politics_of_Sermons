@@ -79,7 +79,7 @@ for i in range(0,10960): #10,960 or something crazy big
 
     # Save current location to return after navigating to search result links
     url = browser.current_url ### get_attribute ???
-    print url
+    print(url)
 
     ### For each search result page
     # Store all href attributes in a list
@@ -109,7 +109,7 @@ for i in range(0,10960): #10,960 or something crazy big
     for elem in elems:
         #print elem.get_attribute("href")
 
-        print elem
+        print(elem)
         #serms.append(elem.get_attribute('href'))
 
         ### Development: Scrape through desired links within search for loop
