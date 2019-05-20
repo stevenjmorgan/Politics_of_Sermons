@@ -16,10 +16,11 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 # Initiate web driver
-#path_to_chromedriver = 'C:/Users/sum410/Desktop/geckodriver'
+#path_to_chromedriver = 'C:/Users/Steve/Desktop/chromedriver'
 #binary = FirefoxBinary('C:/Users/sum410/Desktop/geckodriver')
 #browser = webdriver.Chrome(executable_path = path_to_chromedriver)
-browser = webdriver.Firefox(executable_path='C:/Users/sum410/Desktop/geckodriver.exe')
+browser = webdriver.Firefox(executable_path='C:/Users/Steve/Dropbox/geckodriver.exe')
+#browser = webdriver.Firefox(executable_path='C:/Users/sum410/Dropbox/geckodriver.exe')
 
 # Open initial webpage
 #url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&keyword=&denominationFreeText=&maxAge=&ref=AdvancedSearch-HomeSermon'
@@ -43,6 +44,15 @@ serm_page1 = [x.replace("?ref=SermonSerps","?page=1&wc=800") for x in serm_links
 serm_page1 = ['https://www.sermoncentral.com' + x for x in serm_page1]
 
 # Iterate through all pages
-x = serm_page1[0]
+x = serm_page1[2]
 #for i in range(0,20):
-    
+
+
+html = urlopen(x)
+bsObj = BeautifulSoup(html.read())
+bsObj.find_all('a')
+bsObj.find_all('a', class_ = 'page')
+
+found = re.findall('value = (.+?);', str(bsObj.find_all('a', class_ = 'page')))
+found = [int(x) for x in found]
+max_pages = max(found)
