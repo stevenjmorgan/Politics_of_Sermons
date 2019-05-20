@@ -44,5 +44,5 @@ serm_page1 = ['https://www.sermoncentral.com' + x for x in serm_page1]
 
 # Iterate through all pages
 x = serm_page1[0]
-for i in range(0,20):
+#for i in range(0,20):
     
