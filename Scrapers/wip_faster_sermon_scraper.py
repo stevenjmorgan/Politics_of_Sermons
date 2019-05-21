@@ -63,8 +63,21 @@ for serm in range(0, len(serm_page1)):
         
     print(max_pages)
     
+#    #Place in outer loop
+#    title = ""
+#    author = ""
+#    date = ""
+#    denom = ""
+#    content = "" 
+    
+        
     ### Scrape page 1 contents
     print(serm_page1[serm])
+    
+    title = bsObj.title
+    author = re.split(' on ', re.split('Contributed by ', bsObj.h2.text.strip())[1])[0]
+    date = re.split(' on ', re.split('Contributed by ', bsObj.h2.text.strip())[1])[1].split(' (message ')[0]
+    denom = re.split('Denomination: ', bsObj.findAll(class_ = "meta-links")[1].text)[1].strip()
     
     for page in range(1, max_pages):
         
