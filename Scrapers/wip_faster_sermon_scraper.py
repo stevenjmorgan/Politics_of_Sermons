@@ -15,6 +15,8 @@ from selenium.webdriver.common.by import By
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
+os.chdir("C:/Users/steve/OneDrive/Desktop/test")
+
 # Initiate web driver
 #path_to_chromedriver = 'C:/Users/Steve/Desktop/chromedriver'
 #binary = FirefoxBinary('C:/Users/sum410/Desktop/geckodriver')
@@ -47,6 +49,8 @@ serm_page1 = ['https://www.sermoncentral.com' + x for x in serm_page1]
 x = serm_page1[2]
 #for i in range(0,20):
 
+counter = 0
+
 for serm in range(0, len(serm_page1)):
     
     # Open sermon link
@@ -75,7 +79,7 @@ for serm in range(0, len(serm_page1)):
     print(serm_page1[serm])
     
     try:
-        title = bsObj.title
+        title = bsObj.title.text.strip()
         author = re.split(' on ', re.split('Contributed by ', bsObj.h2.text.strip())[1])[0]
         date = re.split(' on ', re.split('Contributed by ', bsObj.h2.text.strip())[1])[1].split(' (message ')[0]
         denom = re.split('Denomination: ', bsObj.findAll(class_ = "meta-links")[1].text)[1].strip()
@@ -102,7 +106,27 @@ for serm in range(0, len(serm_page1)):
         #print(soup.findAll(text=True))
         
         ### Append to sermon data
-        soup.findAll(text=True)
+        content = ''
+        content = soup.find(class_='detail-text', ).findAll('p')
+        for element in content:
+            sermon_text += '\n' + ''.join(element.findAll(text = True))
+            
+    # Write to .txt files
+    counter += 1
+    fileName = "Sermon" +  str(counter) + ".txt"
+    print('Writing:', fileName)
+    textFile = open(fileName, 'w')
+    textFile.write(author)
+    textFile.write('\n')
+    textFile.write(date)
+    textFile.write('\n')
+    textFile.write(denom)
+    textFile.write('\n')
+    textFile.write('\n')
+    textFile.write(title) # Sometimes above info is included in content; nothing I can really do
+    textFile.write('\n')
+    textFile.write(sermon_text) 
+    textFile.close()
         
         
         
