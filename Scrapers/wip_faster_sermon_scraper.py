@@ -142,7 +142,8 @@ for i in range(0,11503): #range(0,11503)
             except:
                 print('Error scraping other pages!')
                 print(serm_page1[serm])
-                pass
+                break
+                #pass
             
             ### Append to sermon data
             content = ''
