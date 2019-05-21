@@ -8,12 +8,16 @@ Created on Mon May 20 12:54:34 2019
 import os
 import re
 #import random
+import warnings
 import time
 #from selenium import webdriver
 #from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 #from selenium.webdriver.common.by import By
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+
+
+warnings.filterwarnings("ignore")
 
 os.chdir("C:/Users/steve/OneDrive/Desktop/test")
 
@@ -54,8 +58,8 @@ for i in range(0,11503): #range(0,11503)
     serm_links = list(set(serm_links))
     
     # Change links to set to first page of sermon
-    serm_page1 = [x.replace("?ref=SermonSerps","?page=1&wc=800") for x in serm_links]
-    serm_page1 = ['https://www.sermoncentral.com' + x for x in serm_page1]
+    #serm_page1 = [x.replace("?ref=SermonSerps","?page=1&wc=800") for x in serm_links]
+    serm_page1 = ['https://www.sermoncentral.com' + x for x in serm_links]
      
     # Iterate through each sermon scraped from each search result page
     for serm in range(0, len(serm_page1)):
@@ -63,8 +67,12 @@ for i in range(0,11503): #range(0,11503)
         time.sleep(1)
         
         # Open sermon link
-        html = urlopen(serm_page1[serm])
-        bsObj = BeautifulSoup(html.read())
+        try:
+            html = urlopen(serm_page1[serm])
+            bsObj = BeautifulSoup(html.read())
+        except:
+            print('Error accessing URL!')
+            pass
         
         # Determine number of pages sermon spans
         try:
@@ -116,6 +124,9 @@ for i in range(0,11503): #range(0,11503)
             print(serm_page1[serm])
             sermon_text = ''
             pass
+        
+        # Change name of link
+        serm_page1 = [x.replace("?ref=SermonSerps","?page=1&wc=800") for x in serm_page1]
             
         # Iterate through pages of each sermon
         for page in range(1, max_pages):
