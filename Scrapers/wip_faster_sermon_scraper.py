@@ -62,6 +62,7 @@ for i in range(0,11503): #range(0,11503)
     #serm_page1 = [x.replace("?ref=SermonSerps","?page=1&wc=800") for x in serm_links]
     serm_page1 = ['https://www.sermoncentral.com' + x for x in serm_links]
     
+    # Stop running if blocked
     if error_counter > 100:
         break
      
