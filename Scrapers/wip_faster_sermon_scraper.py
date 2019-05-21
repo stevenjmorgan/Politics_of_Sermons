@@ -34,13 +34,13 @@ author = ""
 date = ""
 denom = ""
 sermon_text = "" 
-counter = 0
+counter = 2747
 error_counter = 0
 
 # Iterate through all search result pages
-for i in range(0,11503): #range(0,11503)
+for i in range(183,11503): #range(0,11503)
 
-    time.sleep(2)
+    time.sleep(1)
     
     # Open initial webpage
     #url = 'https://www.sermoncentral.com/Sermons/Search/?CheckedScriptureBookId=&keyword=&denominationFreeText=&maxAge=&ref=AdvancedSearch-HomeSermon'
@@ -63,13 +63,13 @@ for i in range(0,11503): #range(0,11503)
     serm_page1 = ['https://www.sermoncentral.com' + x for x in serm_links]
     
     # Stop running if blocked
-    if error_counter > 100:
+    if error_counter > 150:
         break
      
     # Iterate through each sermon scraped from each search result page
     for serm in range(0, len(serm_page1)):
         
-        time.sleep(1)
+        #time.sleep(1)
         
         # Open sermon link
         try:
@@ -166,16 +166,49 @@ for i in range(0,11503): #range(0,11503)
         counter += 1
         fileName = "Sermon" +  str(counter) + ".txt"
         print('Writing:', fileName)
-        textFile = open(fileName, 'w')
-        textFile.write(author)
-        textFile.write('\n')
-        textFile.write(date)
-        textFile.write('\n')
-        textFile.write(denom)
-        textFile.write('\n')
-        textFile.write('\n')
-        textFile.write(title) # Sometimes above info is included in content; nothing I can really do
-        textFile.write('\n')
-        textFile.write(sermon_text) 
-        textFile.close()
+        textFile = open(fileName, 'w', encoding='utf-8')
+        try:
+            textFile.write(author)
+        except:
+            pass
+        try:
+            textFile.write('\n')
+        except:
+            pass
+        try:
+            textFile.write(date)
+        except:
+            pass
+        try:
+            textFile.write('\n')
+        except:
+            pass
+        try:
+            textFile.write(denom)
+        except:
+            pass
+        try:
+            textFile.write('\n')
+        except:
+            pass
+        try:
+            textFile.write('\n')
+        except:
+            pass
+        try:
+            textFile.write(title)
+        except:
+            pass
+        try:
+            textFile.write('\n')
+        except:
+            pass
+        try:
+            textFile.write(sermon_text) 
+        except:
+            pass
+        try:
+            textFile.close()
+        except:
+            pass
         
