@@ -35,6 +35,7 @@ date = ""
 denom = ""
 sermon_text = "" 
 counter = 0
+error_counter = 0
 
 # Iterate through all search result pages
 for i in range(0,11503): #range(0,11503)
@@ -60,6 +61,9 @@ for i in range(0,11503): #range(0,11503)
     # Change links to set to first page of sermon
     #serm_page1 = [x.replace("?ref=SermonSerps","?page=1&wc=800") for x in serm_links]
     serm_page1 = ['https://www.sermoncentral.com' + x for x in serm_links]
+    
+    if error_counter > 100:
+        break
      
     # Iterate through each sermon scraped from each search result page
     for serm in range(0, len(serm_page1)):
@@ -73,6 +77,7 @@ for i in range(0,11503): #range(0,11503)
         except:
             print('Error accessing URL!')
             print(serm_page1[serm])
+            error_counter += 1
             pass
         
         # Determine number of pages sermon spans
