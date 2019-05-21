@@ -63,7 +63,7 @@ for i in range(183,11503): #range(0,11503)
     serm_page1 = ['https://www.sermoncentral.com' + x for x in serm_links]
     
     # Stop running if blocked
-    if error_counter > 150:
+    if error_counter > 200:
         break
      
     # Iterate through each sermon scraped from each search result page
