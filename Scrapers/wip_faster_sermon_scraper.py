@@ -47,7 +47,42 @@ serm_page1 = ['https://www.sermoncentral.com' + x for x in serm_page1]
 x = serm_page1[2]
 #for i in range(0,20):
 
-
+for serm in range(0, len(serm_page1)):
+    
+    # Open sermon link
+    html = urlopen(serm_page1[serm])
+    bsObj = BeautifulSoup(html.read())
+    
+    # Determine number of pages sermon spans
+    try:
+        found = re.findall('value = (.+?);', str(bsObj.find_all('a', class_ = 'page')))
+        found = [int(x) for x in found]
+        max_pages = max(found)
+    except:
+        max_pages = 1
+        
+    print(max_pages)
+    
+    ### Scrape page 1 contents
+    print(serm_page1[serm])
+    
+    for page in range(1, max_pages):
+        
+        ### Scrape other pages' contents
+        page = serm_page1[serm].replace(str("?page=1&wc=800"),str("?page=" + str(page+1) + "&wc=800"))
+        print(page)
+        
+        soup = BeautifulSoup(urlopen(page).read())
+        #print(soup.findAll(text=True))
+        
+        ### Append to sermon data
+        soup.findAll(text=True)
+        
+        
+        
+        
+    
+# Determine number of pages for each sermon link
 html = urlopen(x)
 bsObj = BeautifulSoup(html.read())
 bsObj.find_all('a')
