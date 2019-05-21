@@ -72,6 +72,7 @@ for i in range(0,11503): #range(0,11503)
             bsObj = BeautifulSoup(html.read())
         except:
             print('Error accessing URL!')
+            print(serm_page1[serm])
             pass
         
         # Determine number of pages sermon spans
@@ -135,14 +136,24 @@ for i in range(0,11503): #range(0,11503)
             page = serm_page1[serm].replace(str("?page=1&wc=800"),str("?page=" + str(page+1) + "&wc=800"))
             #print(page)
             
-            soup = BeautifulSoup(urlopen(page).read())
+            try:
+                soup = BeautifulSoup(urlopen(page).read())
             #print(soup.findAll(text=True))
+            except:
+                print('Error scraping other pages!')
+                print(serm_page1[serm])
+                pass
             
             ### Append to sermon data
             content = ''
-            content = soup.find(class_='detail-text', ).findAll('p')
-            for element in content:
-                sermon_text += '\n' + ''.join(element.findAll(text = True))
+            try:
+                content = soup.find(class_='detail-text', ).findAll('p')
+                for element in content:
+                    sermon_text += '\n' + ''.join(element.findAll(text = True))
+            except:
+                print('Error scraping other page text!')
+                pass
+                    
                 
         # Write to .txt files
         counter += 1
