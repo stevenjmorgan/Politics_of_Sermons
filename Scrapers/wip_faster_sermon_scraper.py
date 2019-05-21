@@ -68,16 +68,29 @@ for serm in range(0, len(serm_page1)):
 #    author = ""
 #    date = ""
 #    denom = ""
-#    content = "" 
+#    sermon_text = "" 
     
         
     ### Scrape page 1 contents
     print(serm_page1[serm])
     
-    title = bsObj.title
-    author = re.split(' on ', re.split('Contributed by ', bsObj.h2.text.strip())[1])[0]
-    date = re.split(' on ', re.split('Contributed by ', bsObj.h2.text.strip())[1])[1].split(' (message ')[0]
-    denom = re.split('Denomination: ', bsObj.findAll(class_ = "meta-links")[1].text)[1].strip()
+    try:
+        title = bsObj.title
+        author = re.split(' on ', re.split('Contributed by ', bsObj.h2.text.strip())[1])[0]
+        date = re.split(' on ', re.split('Contributed by ', bsObj.h2.text.strip())[1])[1].split(' (message ')[0]
+        denom = re.split('Denomination: ', bsObj.findAll(class_ = "meta-links")[1].text)[1].strip()
+        content = bsObj.find(class_='detail-text', ).findAll('p')
+        sermon_text = ''
+        for element in content:
+            sermon_text += '\n' + ''.join(element.findAll(text = True))
+        
+    except:
+        title = ''
+        author = ''
+        date = ''
+        denom = ''
+        sermon_text = ''
+        print('Error scraping first page!')
     
     for page in range(1, max_pages):
         
