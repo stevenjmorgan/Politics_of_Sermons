@@ -7,10 +7,12 @@
 import json
 import os
 import csv
-import time
 
-dir = 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/MasterList/'
+os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
+
+#dir = 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/MasterList/'
 #dir = 'C:/Users/Steve/Dropbox/PoliticsOfSermons/MasterList/'
+dir = 'C:/Users/steve/Dropbox/reverse_scraper/'
 
 all_txt_files = os.listdir(dir)
 
@@ -21,7 +23,7 @@ sermDict = {}
 sermDict['sermonData'] = []
 
 # Write dictionary to JSON file (saved as .txt)
-with open('sermon.JSON', 'w') as outfile:
+with open('sermon5-27.JSON', 'w') as outfile:
 
 # Iterate through all files
     for txt in all_txt_files:
@@ -29,8 +31,8 @@ with open('sermon.JSON', 'w') as outfile:
         txt_dir = dir + txt
 
         j += 1
-        if j % 1000 == 0:
-            print "Iterate through " + str(j) + " sermons."
+        if j % 10000 == 0:
+            print("Iterate through " + str(j) + " sermons.")
 
         author = ""
         date = ""
