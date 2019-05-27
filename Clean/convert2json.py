@@ -22,6 +22,8 @@ j = 0
 sermDict = {}
 sermDict['sermonData'] = []
 
+print('Beginning to ingest data...')
+
 # Write dictionary to JSON file (saved as .txt)
 with open('sermon5-27.JSON', 'w') as outfile:
 
