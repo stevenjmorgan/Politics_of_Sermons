@@ -34,7 +34,7 @@ with open('sermon5-27.JSON', 'w') as outfile:
         txt_dir = dir + txt
 
         j += 1
-        if j % 10000 == 0:
+        if j % 1000 == 0:
             print("Iterate through " + str(j) + " sermons.")
 
         author = ""
