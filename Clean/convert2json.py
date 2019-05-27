@@ -7,6 +7,7 @@
 import json
 import os
 import csv
+import pandas as pd
 
 os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
 
@@ -80,3 +81,8 @@ with open('sermon5-27.JSON', 'w') as outfile:
         sermDict['sermonData'].append({'author':author, 'date':date, 'denom':denom, 'title':title, 'sermon':sermon})
 
     json.dump(sermDict, outfile)
+    
+    
+# Convert dictionary to csv
+sermon_df = pd.DataFrame.from_dict(sermDict)
+sermon_df.to_csv('sermon_dataset5-27.csv')
