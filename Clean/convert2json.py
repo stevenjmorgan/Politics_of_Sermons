@@ -6,7 +6,6 @@
 
 import json
 import os
-import csv
 import pandas as pd
 
 os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
