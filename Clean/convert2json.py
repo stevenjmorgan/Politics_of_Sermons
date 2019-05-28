@@ -59,7 +59,7 @@ with open('sermon5-27.JSON', 'w', encoding="utf8", errors='ignore') as outfile:
                     #sermDict['author'] = line.strip()
                     #sermDict['author'].append(line.strip())
 
-                    # Store second line as value for date key
+                # Store second line as value for date key
                 if i == 2:
                     date = line.strip()
                     #sermDict['date'] = line.strip()
@@ -73,7 +73,7 @@ with open('sermon5-27.JSON', 'w', encoding="utf8", errors='ignore') as outfile:
                 if i == 5:
                     title = line.strip()
 
-                    # After the sixth line, save every line as value to sermon key
+                # After the sixth line, save every line as value to sermon key
                 if i > 6:
                     sermon = sermon + line.strip()
 
