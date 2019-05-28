@@ -3,21 +3,29 @@
 
 rm(list=ls())
 #setwd("~/GitHub/Politics_of_Sermons/Clean")
-setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
+#setwd("C:/Users/Steve/Dropbox/PoliticsOfSermons")
 #setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
+setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 
-#install.packages('readtext', dependencies = TRUE)
 library(readtext)
+library(rjson)
+library(jsonlite)
 library(plyr)
 library(stargazer)
 library(ggplot2)
-library(ngram)
+#library(ngram)
 
 # Read in .JSON of sermons and change variable names
 #file <- 'C:/Users/sum410/Documents/GitHub/Politics_of_Sermons/Clean/sermon.JSON'
-file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
+#file <- 'C:/Users/Steve/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
 #file <- 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/sermon_10-21.JSON'
-serms <- readtext(file, text_field = 'sermonData')
+file <- 'C:/Users/sum410/Dropbox/Dissertation/Data/sermon5-27.JSON'
+serms <- readtext(file, text_field = 'sermonData', encoding = "latin1")
+#serms <- read.csv('sermon_dataset5-27.csv')
+
+#x <- fromJSON(readLines(file))
+#validate(file)
+
 
 colnames(serms) <- c('doc_id', 'date', 'denom', 'title', 'sermon', 'author')
 
