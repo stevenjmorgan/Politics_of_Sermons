@@ -25,7 +25,7 @@ sermDict['sermonData'] = []
 print('Beginning to ingest data...')
 
 # Write dictionary to JSON file (saved as .txt)
-with open('sermon5-27.JSON', 'w') as outfile:
+with open('sermon5-27.JSON', 'w', encoding="utf8", errors='ignore') as outfile:
 
 # Iterate through all files
     for txt in all_txt_files:
@@ -43,7 +43,7 @@ with open('sermon5-27.JSON', 'w') as outfile:
         sermon = ""
 
         # Open each .txt files
-        with open(txt_dir, 'rb') as f:
+        with open(txt_dir, 'r', encoding="utf8", errors='ignore') as f:
 
             # Initialize counter
             i = 0
@@ -78,10 +78,11 @@ with open('sermon5-27.JSON', 'w') as outfile:
                     sermon = sermon + line.strip()
 
         sermDict['sermonData'].append({'author':author, 'date':date, 'denom':denom, 'title':title, 'sermon':sermon})
+        #sermDict['sermonData'].append({'author':author, 'date':date, 'denom':denom, 'title':title, 'sermon':sermon})
 
-    json.dump(sermDict, outfile)
+    json.dump(sermDict, outfile, ensure_ascii=False) #encoding="utf8", errors='ignore'
     
     
 # Convert dictionary to csv
-sermon_df = pd.DataFrame.from_dict(sermDict)
+sermon_df = pd.DataFrame.from_dict(sermDict['sermonData'])
 sermon_df.to_csv('sermon_dataset5-27.csv')
