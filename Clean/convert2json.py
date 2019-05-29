@@ -85,4 +85,5 @@ with open('sermon5-27.JSON', 'w', encoding="utf8", errors='ignore') as outfile:
     
 # Convert dictionary to csv
 sermon_df = pd.DataFrame.from_dict(sermDict['sermonData'])
+sermon_df = sermon_df.drop_duplicates()
 sermon_df.to_csv('sermon_dataset5-27.csv')

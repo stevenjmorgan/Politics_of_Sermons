@@ -1,8 +1,8 @@
 # This code reads in pastor meta data and merges to the sermon dataframe
 
 rm(list=ls())
-#setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
-setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
+setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
+#setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 #setwd("~/GitHub/Politics_of_Sermons/Clean")
 
 library(tm)
@@ -15,6 +15,7 @@ library(stringr)
 pastors <- read.csv('pastor_meta_hc.csv', stringsAsFactors = FALSE)
 load('dedupedSerms.RData')
 
+deduped.serms <- serms
 dim(deduped.serms)
 
 # Merge pastor meta data into sermon df based on pastor name and denomination
