@@ -51,16 +51,19 @@ warnings.filterwarnings(action = 'ignore')
 os.chdir('C:/Users/sum410/Dropbox/Dissertation/Data/')
 
 # Read in data
-#serms = pd.read_csv('deduped_sermons.csv')
+file_encoding = 'utf8'        # set file_encoding to the file encoding (utf8, latin1, etc.)
+input_fd = open('us_sermons.csv', encoding=file_encoding, errors = 'backslashreplace')
+serms = pd.read_csv(input_fd, encoding="utf-8")
+serms = serms.drop("Unnamed: 0", axis=1)
 #serms = pd.read_csv('deduped_sermons.csv', iterator=True, chunksize=20000000, low_memory = False)
 #serms = pd.concat(serms, ignore_index=True)
 
-mylist = []
-for chunk in pd.read_csv('sermon_dataset5-27.csv', chunksize=20000, index_col=False):
-    mylist.append(chunk)
-serms = pd.concat(mylist, axis= 0)
-serms = serms.drop("Unnamed: 0", axis=1)
-del(mylist,chunk)
+#mylist = []
+#for chunk in pd.read_csv('sermon_dataset5-27.csv', chunksize=20000, index_col=False):
+#    mylist.append(chunk)
+#serms = pd.concat(mylist, axis= 0)
+#serms = serms.drop("Unnamed: 0", axis=1)
+#del(mylist,chunk)
 #ex = serms['sermon'][0]
 
 # Clean text data
