@@ -49,7 +49,8 @@ def display_closestwords_tsnescatterplot(model, word):
   
 # Ignore warnings, set directory   
 warnings.filterwarnings(action = 'ignore')
-os.chdir('C:/Users/sum410/Dropbox/Dissertation/Data/')
+#os.chdir('C:/Users/sum410/Dropbox/Dissertation/Data/')
+os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
 
 # Read in data
 print('Reading in data...')
@@ -87,9 +88,11 @@ print('Running w2v!')
 w2v = gensim.models.word2vec.Word2Vec(sentences=train_phrased,workers=4)
 w2v.save('w2v_sermons_v1')
  
-print(w2v.most_similar('abortion'))
+print(w2v.most_similar('abort'))
 print(w2v.most_similar('gay'))
 print(w2v.most_similar('government'))
+
+print(w2v.most_similar('living'))
  
  
  
@@ -98,7 +101,7 @@ model1 = gensim.models.Word2Vec(train_phrased, min_count = 5,
                               size = 300, window = 3) 
 model1.save('dim300_sermons')
  
-print(model1.most_similar('abortion'))
+print(model1.most_similar('abort'))
 print(model1.most_similar('democrat'))
 print(model1.most_similar('republican'))
 print(model1.most_similar('government'))
