@@ -51,7 +51,15 @@ warnings.filterwarnings(action = 'ignore')
 os.chdir('C:/Users/sum410/Dropbox/Dissertation/Data/')
 
 # Read in data
-serms = pd.read_csv('sermon_dataset5-27.csv')
+#serms = pd.read_csv('deduped_sermons.csv')
+#serms = pd.read_csv('deduped_sermons.csv', iterator=True, chunksize=20000000, low_memory = False)
+#serms = pd.concat(serms, ignore_index=True)
+
+mylist = []
+for chunk in pd.read_csv('sermon_dataset5-27.csv', chunksize=20000, index_col=False):
+    mylist.append(chunk)
+serms = pd.concat(mylist, axis= 0)
+del(mylist,chunk)
 #ex = serms['sermon'][0]
 
 # Clean text data

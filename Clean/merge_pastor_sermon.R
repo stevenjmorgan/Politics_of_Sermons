@@ -5,6 +5,8 @@ setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
 #setwd("C:/Users/sum410/Dropbox/PoliticsOfSermons")
 #setwd("~/GitHub/Politics_of_Sermons/Clean")
 
+setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
+
 library(tm)
 library(qdap)
 library(dplyr)
