@@ -59,6 +59,7 @@ mylist = []
 for chunk in pd.read_csv('sermon_dataset5-27.csv', chunksize=20000, index_col=False):
     mylist.append(chunk)
 serms = pd.concat(mylist, axis= 0)
+serms = serms.drop("Unnamed: 0", axis=1)
 del(mylist,chunk)
 #ex = serms['sermon'][0]
 

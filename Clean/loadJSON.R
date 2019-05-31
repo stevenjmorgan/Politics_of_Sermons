@@ -75,6 +75,7 @@ serms.merge <- within(serms.merge, rm(state))
 
 dim(serms.merge) #130380 x 17
 save(serms.merge, file = 'final_serms.RData')
+write.csv(serms.merge, 'us_sermons.csv')
 ####
 
 
