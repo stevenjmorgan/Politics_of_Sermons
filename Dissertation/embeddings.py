@@ -45,12 +45,14 @@ def display_closestwords_tsnescatterplot(model, word):
     plt.xlim(x_coords.min()-50, x_coords.max()+50)
     plt.ylim(y_coords.min()-50, y_coords.max()+50)
     plt.show()
+    plt.savefig(word+'.png')
   
 # Ignore warnings, set directory   
 warnings.filterwarnings(action = 'ignore')
 os.chdir('C:/Users/sum410/Dropbox/Dissertation/Data/')
 
 # Read in data
+print('Reading in data...')
 file_encoding = 'utf8'        # set file_encoding to the file encoding (utf8, latin1, etc.)
 input_fd = open('us_sermons.csv', encoding=file_encoding, errors = 'backslashreplace')
 serms = pd.read_csv(input_fd, encoding="utf-8")
@@ -67,11 +69,13 @@ serms = serms.drop("Unnamed: 0", axis=1)
 #ex = serms['sermon'][0]
 
 # Clean text data
+print('Cleaning data...')
 serms['sermon'] = serms['sermon'].str.replace('[^a-zA-Z]',' ').str.lower()
 stop_re = '\\b'+'\\b|\\b'.join(nltk.corpus.stopwords.words('english'))+'\\b'
 serms['sermon'] = serms['sermon'].str.replace(stop_re, '')
  
 # Detect common phrases so that we may treat each one as its own word
+print('Detecting phrases...')
 phrases = gensim.models.phrases.Phrases(serms['sermon'].tolist())
 phraser = gensim.models.phrases.Phraser(phrases)
 train_phrased = phraser[serms['sermon'].tolist()]
@@ -79,30 +83,28 @@ train_phrased = phraser[serms['sermon'].tolist()]
 multiprocessing.cpu_count()
  
 # Run w2v w/ default parameters
+print('Running w2v!')
 w2v = gensim.models.word2vec.Word2Vec(sentences=train_phrased,workers=4)
-w2v.save('w2v_v1')
+w2v.save('w2v_sermons_v1')
  
-w2v.most_similar('abortion')
-w2v.most_similar('gay')
-w2v.most_similar('government')
+print(w2v.most_similar('abortion'))
+print(w2v.most_similar('gay'))
+print(w2v.most_similar('government'))
  
  
  
 # Create CBOW model 
-model1 = gensim.models.Word2Vec(train_phrased, min_count = 10,  
+model1 = gensim.models.Word2Vec(train_phrased, min_count = 5,  
                               size = 300, window = 3) 
-model1.save('dim300')
+model1.save('dim300_sermons')
  
-model1.most_similar('treaty')
-model1.most_similar('legal')
-model1.most_similar('violence')
- 
- 
+print(model1.most_similar('abortion'))
+print(model1.most_similar('democrat'))
+print(model1.most_similar('republican'))
+print(model1.most_similar('government'))
 
-     
-     
- 
-display_closestwords_tsnescatterplot(model1, 'violence')
-display_closestwords_tsnescatterplot(model1, 'legal')
-display_closestwords_tsnescatterplot(model1, 'democracy')
-display_closestwords_tsnescatterplot(model1, 'security')
+display_closestwords_tsnescatterplot(model1, 'abortion')
+display_closestwords_tsnescatterplot(model1, 'democrat')
+display_closestwords_tsnescatterplot(model1, 'republican')
+display_closestwords_tsnescatterplot(model1, 'government')
+display_closestwords_tsnescatterplot(model1, 'fetus')
