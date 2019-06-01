@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 
 def display_closestwords_tsnescatterplot(model, word):
      
-    arr = np.empty((0,300), dtype='f')
+    arr = np.empty((0,100), dtype='f')
     word_labels = [word]
  
     # get close words
@@ -46,8 +46,8 @@ def display_closestwords_tsnescatterplot(model, word):
         plt.annotate(label, xy=(x, y), xytext=(0, 0), textcoords='offset points')
     plt.xlim(x_coords.min()-50, x_coords.max()+50)
     plt.ylim(y_coords.min()-50, y_coords.max()+50)
+    plt.savefig(word+'.png')
     plt.show()
-    #plt.savefig(word+'.png')
   
 # Ignore warnings, set directory   
 warnings.filterwarnings(action = 'ignore')
@@ -153,4 +153,12 @@ words = list(model.wv.vocab)
 for i, word in enumerate(words):
 	plt.annotate(word, xy=(result[i, 0], result[i, 1]))
     
-    
+display_closestwords_tsnescatterplot(model, 'abortion')
+display_closestwords_tsnescatterplot(model, 'rights')
+display_closestwords_tsnescatterplot(model, 'liberties')
+display_closestwords_tsnescatterplot(model, 'immigration')
+display_closestwords_tsnescatterplot(model, 'gay')
+display_closestwords_tsnescatterplot(model, 'homosexuality')
+display_closestwords_tsnescatterplot(model, 'freedom')
+display_closestwords_tsnescatterplot(model, 'religion')
+display_closestwords_tsnescatterplot(model, 'muslim')
