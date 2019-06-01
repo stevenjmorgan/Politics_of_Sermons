@@ -45,7 +45,7 @@ def display_closestwords_tsnescatterplot(model, word):
     plt.xlim(x_coords.min()-50, x_coords.max()+50)
     plt.ylim(y_coords.min()-50, y_coords.max()+50)
     plt.show()
-    plt.savefig(word+'.png')
+    #plt.savefig(word+'.png')
   
 # Ignore warnings, set directory   
 warnings.filterwarnings(action = 'ignore')
@@ -101,13 +101,36 @@ model1 = gensim.models.Word2Vec(train_phrased, min_count = 5,
                               size = 300, window = 3) 
 model1.save('dim300_sermons')
  
-print(model1.most_similar('abort'))
+print(model1.most_similar('abortion'))
 print(model1.most_similar('democrat'))
 print(model1.most_similar('republican'))
 print(model1.most_similar('government'))
+print(model1.most_similar('attain'))
+
 
 display_closestwords_tsnescatterplot(model1, 'abortion')
 display_closestwords_tsnescatterplot(model1, 'democrat')
 display_closestwords_tsnescatterplot(model1, 'republican')
 display_closestwords_tsnescatterplot(model1, 'government')
 display_closestwords_tsnescatterplot(model1, 'fetus')
+
+
+# W/o phrases
+sentences = serms['sermon'].tolist()
+sent = [x.split() for x in sentences]
+model = Word2Vec(sent, min_count=5)
+model.save('unphrased')
+
+print(model.most_similar('abortion'))
+print(model.most_similar('democrat'))
+print(model.most_similar('obama'))
+print(model.most_similar('gay'))
+print(model.most_similar('trump'))
+print(model.most_similar('liberty'))
+print(model.most_similar('right'))
+print(model.most_similar('amendment'))
+print(model.most_similar('fetus'))
+print(model.most_similar('unborn'))
+print(model.most_similar('women'))
+
+display_closestwords_tsnescatterplot(model, 'abortion')
