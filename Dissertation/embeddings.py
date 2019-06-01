@@ -146,9 +146,11 @@ plt.scatter(result[:, 0], result[:, 1])
 
 words = list(model.wv.vocab)
 for i, word in enumerate(words):
-	pyplot.annotate(word, xy=(result[i, 0], result[i, 1]))
+	plt.annotate(word, xy=(result[i, 0], result[i, 1]))
 
 
 words = list(model.wv.vocab)
 for i, word in enumerate(words):
-	pyplot.annotate(word, xy=(result[i, 0], result[i, 1]))
+	plt.annotate(word, xy=(result[i, 0], result[i, 1]))
+    
+    
