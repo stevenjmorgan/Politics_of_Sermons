@@ -13,7 +13,9 @@ from gensim.models import Word2Vec
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 import numpy as np
-
+import sklearn
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 def display_closestwords_tsnescatterplot(model, word):
      
@@ -133,4 +135,20 @@ print(model.most_similar('fetus'))
 print(model.most_similar('unborn'))
 print(model.most_similar('women'))
 
-display_closestwords_tsnescatterplot(model, 'abortion')
+#display_closestwords_tsnescatterplot(model, 'abortion')
+
+X = model[model.wv.vocab]
+pca = PCA(n_components=2)
+result = pca.fit_transform(X)
+
+plt.scatter(result[:, 0], result[:, 1])
+
+
+words = list(model.wv.vocab)
+for i, word in enumerate(words):
+	pyplot.annotate(word, xy=(result[i, 0], result[i, 1]))
+
+
+words = list(model.wv.vocab)
+for i, word in enumerate(words):
+	pyplot.annotate(word, xy=(result[i, 0], result[i, 1]))
