@@ -16,6 +16,14 @@ import numpy as np
 import sklearn
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
+from nltk.stem import *
+from nltk.stem import PorterStemmer
+from nltk.tokenize import word_tokenize
+
+def stem_sentences(sentence):
+    tokens = sentence.split()
+    stemmed_tokens = [ps.stem(token) for token in tokens]
+    return ' '.join(stemmed_tokens)
 
 def display_closestwords_tsnescatterplot(model, word):
      
@@ -78,47 +86,49 @@ stop_re = '\\b'+'\\b|\\b'.join(nltk.corpus.stopwords.words('english'))+'\\b'
 serms['sermon'] = serms['sermon'].str.replace(stop_re, '')
  
 # Porter stem tokens
+ps = PorterStemmer()
+serms['sermon'] = serms['sermon'].apply(stem_sentences)
 
 
 
 # Detect common phrases so that we may treat each one as its own word
-print('Detecting phrases...')
-phrases = gensim.models.phrases.Phrases(serms['sermon'].tolist())
-phraser = gensim.models.phrases.Phraser(phrases)
-train_phrased = phraser[serms['sermon'].tolist()]
+#print('Detecting phrases...')
+#phrases = gensim.models.phrases.Phrases(serms['sermon'].tolist())
+#phraser = gensim.models.phrases.Phraser(phrases)
+#train_phrased = phraser[serms['sermon'].tolist()]
  
 multiprocessing.cpu_count()
  
 # Run w2v w/ default parameters
 print('Running w2v!')
-w2v = gensim.models.word2vec.Word2Vec(sentences=train_phrased,workers=4)
-w2v.save('w2v_sermons_v1')
+#w2v = gensim.models.word2vec.Word2Vec(sentences=train_phrased,workers=4)
+#w2v.save('w2v_sermons_v1')
  
-print(w2v.most_similar('abort'))
-print(w2v.most_similar('gay'))
-print(w2v.most_similar('government'))
+#print(w2v.most_similar('abort'))
+#print(w2v.most_similar('gay'))
+#print(w2v.most_similar('government'))
 
-print(w2v.most_similar('living'))
+#print(w2v.most_similar('living'))
  
  
  
 # Create CBOW model 
-model1 = gensim.models.Word2Vec(train_phrased, min_count = 5,  
-                              size = 300, window = 3) 
-model1.save('dim300_sermons')
- 
-print(model1.most_similar('abortion'))
-print(model1.most_similar('democrat'))
-print(model1.most_similar('republican'))
-print(model1.most_similar('government'))
-print(model1.most_similar('attain'))
-
-
-display_closestwords_tsnescatterplot(model1, 'abortion')
-display_closestwords_tsnescatterplot(model1, 'democrat')
-display_closestwords_tsnescatterplot(model1, 'republican')
-display_closestwords_tsnescatterplot(model1, 'government')
-display_closestwords_tsnescatterplot(model1, 'fetus')
+#model1 = gensim.models.Word2Vec(train_phrased, min_count = 5,  
+#                              size = 300, window = 3) 
+#model1.save('dim300_sermons')
+# 
+#print(model1.most_similar('abortion'))
+#print(model1.most_similar('democrat'))
+#print(model1.most_similar('republican'))
+#print(model1.most_similar('government'))
+#print(model1.most_similar('attain'))
+#
+#
+#display_closestwords_tsnescatterplot(model1, 'abortion')
+#display_closestwords_tsnescatterplot(model1, 'democrat')
+#display_closestwords_tsnescatterplot(model1, 'republican')
+#display_closestwords_tsnescatterplot(model1, 'government')
+#display_closestwords_tsnescatterplot(model1, 'fetus')
 
 
 # W/o phrases
