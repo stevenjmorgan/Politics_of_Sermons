@@ -77,6 +77,10 @@ serms['sermon'] = serms['sermon'].str.replace('[^a-zA-Z]',' ').str.lower()
 stop_re = '\\b'+'\\b|\\b'.join(nltk.corpus.stopwords.words('english'))+'\\b'
 serms['sermon'] = serms['sermon'].str.replace(stop_re, '')
  
+# Porter stem tokens
+
+
+
 # Detect common phrases so that we may treat each one as its own word
 print('Detecting phrases...')
 phrases = gensim.models.phrases.Phrases(serms['sermon'].tolist())
