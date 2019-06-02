@@ -135,7 +135,7 @@ print('Running w2v!')
 sentences = serms['sermon'].tolist()
 sent = [x.split() for x in sentences]
 model = Word2Vec(sent, min_count=5)
-model.save('unphrased')
+model.save('unphrased_stemmed')
 
 print(model.most_similar('abortion'))
 print(model.most_similar('democrat'))
