@@ -135,7 +135,7 @@ stargazer(denom.group, type ='latex', summary = FALSE, rownames = FALSE,
           column.sep.width = '10pt', digits=2, header = FALSE)
 
 # Group number of sermons per pastor
-pastor.group <- count(serms, 'author')
+pastor.group <- count(serms.merge, 'author')
 
 # Plot distribution of sermons per pastor
 #sermonspastor<- ggplot(pastor.group[which(pastor.group$freq < 100), ], aes(x=freq)) + 
