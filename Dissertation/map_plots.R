@@ -1,3 +1,5 @@
+# This script creates maps of church locations in the sermon dataset.
+
 rm(list=ls())
 setwd("C:/Users/steve/Dropbox/PoliticsOfSermons")
 
