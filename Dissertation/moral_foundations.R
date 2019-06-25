@@ -34,7 +34,7 @@ output_mfd <- liwcalike(serms$sermon[1:4], tolower = TRUE,
 mfd.df <- as.data.frame(matrix(nrow = length(serms$sermon), ncol = 28))
 colnames(mfd.df) <- colnames(output_mfd)
 rm(output_mfd)
-for (i in 1:length(serms$sermon[1:20])) {
+for (i in 1:length(serms$sermon)) {
   
   try(
   # Calculate MFD score for sermon
