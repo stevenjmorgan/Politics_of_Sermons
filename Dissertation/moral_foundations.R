@@ -1,17 +1,16 @@
 # This script runs the moral foundations dictionary on the sermons corpus.
 
 rm(list=ls())
-setwd("C:/Users/steve/Dropbox/Dissertation/Data")
+#setwd("C:/Users/steve/Dropbox/Dissertation/Data")
+setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 
 library(quanteda)
 library(quanteda.dictionaries)
 
 load('final_sermons_deduped.RData')
 
-
-
-output_mfd <- liwcalike(serms$sermon[1:4], tolower = TRUE,
-                        dictionary = data_dictionary_MFD) # 4456
+#output_mfd <- liwcalike(serms$sermon[1:4], tolower = TRUE,
+#                        dictionary = data_dictionary_MFD) # 4456
 
 # sapply(strsplit(serms$sermon[1], " "), length) # 3732
 # lengths(gregexpr("\\W+", serms$sermon[1])) + 1 #3999
@@ -29,6 +28,8 @@ output_mfd <- liwcalike(serms$sermon[1:4], tolower = TRUE,
 # Run moral foundation dictionary on character vector of sermons
 mfd_scores <- liwcalike(serms$sermon, tolower = TRUE,
                         dictionary = data_dictionary_MFD)
+
+
 
 mfd.df <- as.data.frame(matrix(nrow = length(serms$sermon), ncol = 28))
 for (i in 1:length(serms$sermon[1:2])) {
