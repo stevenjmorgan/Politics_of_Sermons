@@ -23,14 +23,15 @@ api_secret = '171e8465-f548-401d-b63b-caf0dc28df5f'
 logging.basicConfig(level = logging.INFO)
 client = BetaFaceAPI()
 
-client.upload_face(r'C:/Users/steve/Dropbox/Dissertation/Data/pastors/pastor2_Stephen Smith.png', 'sum410@psu.edu')#, 'obama@ami-lab.ro')
+img_uid = client.upload_face(r'C:/Users/steve/Dropbox/Dissertation/Data/pastors/pastor2_Stephen Smith.png', 'sum410@psu.edu')#, 'obama@ami-lab.ro')
 matches = client.recognize_faces(r'C:/Users/steve/Dropbox/Dissertation/Data/pastors/pastor2_Stephen Smith.png', 'ami-lab.ro')
 
 matches = client.get_image_info()
 
 client.recognize_faces()
-client.get_image_info(1)
+client.get_image_info(img_uid)
 
+client.GetRecognizeResult()
 
 
 os.chdir('C:\Users\steve\OneDrive\Documents\GitHub\Politics_of_Sermons\Dissertation\request_templates')
