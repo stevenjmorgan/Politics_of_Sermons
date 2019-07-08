@@ -24,7 +24,7 @@ seed = 24519
 random.seed(seed)
 
 # Set directory to store .csv file
-os.chdir("C:/Users/sum410/Dropbox/PoliticsOfSermons/")
+os.chdir("C:/Users/steve/Dropbox/PoliticsOfSermons/")
 
 # .csv file where extracted metadata will be stored
 fout = open("pastor_meta.csv", "wb")
