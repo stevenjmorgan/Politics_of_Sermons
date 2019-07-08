@@ -45,6 +45,7 @@ localrow.append('job')
 localrow.append('denom')
 localrow.append('address')
 localrow.append('location')
+localrow.append('counter')
 outfilehandle.writerow(localrow)
 
 counter = 0
@@ -155,6 +156,7 @@ for i in range(0,508): #508
         localrow.append(denom)
         localrow.append(address)
         localrow.append(location)
+        localrow.append(counter)
         outfilehandle.writerow(localrow)
         
 # Finish writing to the .csv file and close it so the process is complete
