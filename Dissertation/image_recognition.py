@@ -27,4 +27,5 @@ client.upload_face(r'C:/Users/steve/Dropbox/Dissertation/Data/pastors/pastor2_St
 matches = client.recognize_faces('/Users/aismail/Desktop/obama_suparat.jpg', 'ami-lab.ro')
 
 
-os.chdir(r'C:\Users\steve\OneDrive\Documents\GitHub\Politics_of_Sermons\Dissertation\request_templates')
+
+os.chdir('C:\Users\steve\OneDrive\Documents\GitHub\Politics_of_Sermons\Dissertation\request_templates')

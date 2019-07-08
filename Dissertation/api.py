@@ -49,7 +49,7 @@ class BetaFaceAPI(object):
             'base64_data': b64encode(file_contents),
             'original_filename': file_name
         }
-        result = self._api_call('UploadNewImage_File', params)
+        result = self._api_call(r'UploadNewImage_File', params)
         if result is None:
             self.logger.error("API call to upload image failed!")
             return None
@@ -149,7 +149,7 @@ class BetaFaceAPI(object):
         }
         api_call_params.update(params)
 
-        template_name = "%s/request_templates/%s.xml" % (module_path(), endpoint)
+        template_name = "%s\\request_templates\\%s.xml" % (r'C:\Users\steve\OneDrive\Documents\GitHub\Politics_of_Sermons\Dissertation', endpoint)
         request_data = self._render_template(template_name, api_call_params)
         url = self.api_url + '/' + endpoint
         self.logger.info("Making HTTP request to %s" % url)
