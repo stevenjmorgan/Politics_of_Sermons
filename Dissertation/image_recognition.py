@@ -24,7 +24,12 @@ logging.basicConfig(level = logging.INFO)
 client = BetaFaceAPI()
 
 client.upload_face(r'C:/Users/steve/Dropbox/Dissertation/Data/pastors/pastor2_Stephen Smith.png', 'sum410@psu.edu')#, 'obama@ami-lab.ro')
-matches = client.recognize_faces('/Users/aismail/Desktop/obama_suparat.jpg', 'ami-lab.ro')
+matches = client.recognize_faces(r'C:/Users/steve/Dropbox/Dissertation/Data/pastors/pastor2_Stephen Smith.png', 'ami-lab.ro')
+
+matches = client.get_image_info()
+
+client.recognize_faces()
+client.get_image_info(1)
 
 
 
