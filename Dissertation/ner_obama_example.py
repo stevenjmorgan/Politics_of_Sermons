@@ -10,6 +10,7 @@ from nltk.tag import StanfordNERTagger
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
 import os
+import re
 import pandas as pd
 
 def preprocess(sent):
@@ -66,8 +67,43 @@ input_fd = open(r'C:\Users\sum410\Dropbox\Dissertation\Data\us_sermons.csv', enc
 serms = pd.read_csv(input_fd, encoding="utf-8")
 serms = serms.drop("Unnamed: 0", axis=1)
 
-
     
 serms['people_entities'][0]
 serms['people_entities'][1]
 serms['people_entities'][2]
+serms['people_entities'][100000]
+
+# Create list of names
+dfToList = serms['people_entities'].tolist()
+type(dfToList[0])
+
+my_list = dfToList[0].split(", ")
+my_list
+list(set(my_list))
+
+serms.to_csv('sermons_ner.csv')
+
+
+
+# Find all unique names
+unique_names = list()
+for i in range(0, len(dfToList)):
+    
+    serm_name_list = dfToList[i].split(', ')
+    names = list(set(serm_name_list))
+    
+    for j in range(0, len(names)):
+        unique_names.append(names[j])
+    
+len(unique_names)
+unique_names = list(set(unique_names))
+len(unique_names)
+unique_names
+
+unique_names = [x for x in unique_names if not re.search('[0-9]', x)]
+len(unique_names)
+
+with open('ner_results.txt', 'w', encoding="utf-8") as f:
+    for item in unique_names:
+        f.write("%s\n" % item)
+f.close()
