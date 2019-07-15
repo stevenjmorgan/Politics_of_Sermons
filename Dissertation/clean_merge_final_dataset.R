@@ -158,4 +158,3 @@ ggplot(serms.merge[which(serms.merge$wc <8000),], aes(x=wc)) +
   geom_histogram(binwidth=500, color="darkblue", fill="lightblue") +
   labs(x = '# of Words', y = 'Sermons') #+ 
   #ggtitle("Distribution of Word Counts across Sermons")
-wc.plot
