@@ -89,12 +89,23 @@ serms.merge <- serms.merge[!nchar(as.character(serms.merge$state_parse)) < 3,]
 serms.merge <- within(serms.merge, rm(state))
 
 dim(serms.merge) #117153 x 15
-save(serms.merge, file = 'final_data_serms_7-15-19.RData')
-write.csv(serms.merge, 'us_sermons_7-15-19.csv')
+
 
 
 x <- subset(serms.merge, select = -c(sermon))
 rm(serms)
+
+# Split out first name
+#serms.merge <- read.csv('us_sermons_7-15-19.csv')
+#serms.merge$author <- as.character(serms.merge$author)
+serms.merge$first.name <- ''
+for (i in 1:nrow(serms.merge)) {
+  serms.merge$first.name[i] <- strsplit(serms.merge$author[i], ' ')[[1]][1]
+}
+
+unique(serms.merge$first.name)
+save(serms.merge, file = 'final_data_serms_7-15-19.RData')
+write.csv(serms.merge, 'us_sermons_7-15-19.csv')
 
 
 ### Descriptives
