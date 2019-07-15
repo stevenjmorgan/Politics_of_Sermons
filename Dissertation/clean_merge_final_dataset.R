@@ -57,8 +57,8 @@ dim(serms)
 dim(pastors)
 pastors <- pastors[!duplicated(pastors[,c('name', 'denom', 'church')]),]
 dim(pastors)
-serms.merge <- merge(serms, pastors, by.x = c('author', 'denom'),
-                     by.y = c('name', 'denom'), all.x = TRUE, all.y = FALSE)
+serms.merge <- merge(serms, pastors, by.x = c('author'),#c('author', 'denom')
+                     by.y = c('name'), all.x = TRUE, all.y = FALSE)
 dim(serms.merge)
 serms.merge <- serms.merge[!duplicated(serms.merge[,c('sermon')]),]
 dim(serms.merge)
@@ -88,13 +88,13 @@ serms.merge <- serms.merge[which(!is.na(serms.merge$zip)),]
 serms.merge <- serms.merge[!nchar(as.character(serms.merge$state_parse)) < 3,]
 serms.merge <- within(serms.merge, rm(state))
 
-dim(serms.merge) #115827 x 15
+dim(serms.merge) #117153 x 15
 save(serms.merge, file = 'final_data_serms_7-15-19.RData')
 write.csv(serms.merge, 'us_sermons_7-15-19.csv')
 
 
 x <- subset(serms.merge, select = -c(sermon))
-
+rm(serms)
 
 
 ### Descriptives
@@ -114,11 +114,11 @@ ggplot(data=year.group, aes(x=year, y=freq)) +
 dev.off()
 
 # Convert dates
-serms$date.conv <- as.Date(serms$date, '%b %d, %Y')
+serms.merge$date.conv <- as.Date(serms.merge$date, '%b %d, %Y')
 
 # Parse month and group by month, save to new df
-serms$month <- as.Date(cut(serms$date.conv, breaks = "month"))
-month.group <- plyr::count(serms, 'month')
+serms.merge$month <- as.Date(cut(serms.merge$date.conv, breaks = "month"))
+month.group <- plyr::count(serms.merge, 'month')
 month.group$relat <- round(100 * month.group$freq / sum(month.group$freq),2)
 
 # Plot by month
@@ -128,8 +128,10 @@ ggplot(data=month.group, aes(x=month, y=freq)) +
 dev.off()
 
 # Group number of sermons by denomination
-denom.group <- plyr::count(serms, 'denom')
-denom.group$rel <- round(100 * denom.group$freq / sum(denom.group$freq),2)
+denom.group2 <- plyr::count(serms.merge, 'denom.x')
+denom.group2$rel <- round(100 * denom.group2$freq / sum(denom.group2$freq),2)
+#denom.group3 <- plyr::count(serms.merge, 'denom.y')
+#denom.group3$rel <- round(100 * denom.group3$freq / sum(denom.group3$freq),2)
 
 # Create table
 stargazer(denom.group, type ='latex', summary = FALSE, rownames = FALSE,
@@ -148,6 +150,12 @@ ggplot(pastor.group[which(pastor.group$freq < 35),], aes(x=freq)) +
 dev.off()
 
 # Word count
-serms$wc <- sapply(strsplit(serms$sermon, " "), length)
-serms$unique <- lengths(lapply(strsplit(serms$sermon, 
-                                        split = ' '), unique))
+serms.merge$wc <- sapply(strsplit(serms.merge$sermon, " "), length)
+#serms$unique <- lengths(lapply(strsplit(serms$sermon, 
+#                                        split = ' '), unique))
+pdf('word_count.pdf')
+ggplot(serms.merge[which(serms.merge$wc <8000),], aes(x=wc)) +
+  geom_histogram(binwidth=500, color="darkblue", fill="lightblue") +
+  labs(x = '# of Words', y = 'Sermons') #+ 
+  #ggtitle("Distribution of Word Counts across Sermons")
+wc.plot
