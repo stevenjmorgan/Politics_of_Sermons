@@ -64,7 +64,7 @@ for i in range(0,11503): #range(0,11503)
     serm_page1 = ['https://www.sermoncentral.com' + x for x in serm_links]
     
     # Stop running if blocked
-    if error_counter > 200:
+    if error_counter > 500:
         break
      
     # Iterate through each sermon scraped from each search result page
@@ -135,7 +135,8 @@ for i in range(0,11503): #range(0,11503)
         
         try:
             contributor_list = bsObj.find_all('a')
-            contributor_list = [x['href'] for x in contributor_list if re.search('/contributors/', str(x)) and not re.search('SermonDetails', str(x))]
+            contributor_list = [x['href'] for x in contributor_list if re.search('/contributors/', str(x)) and re.search('SermonDetails', str(x))]
+            contributor_list = list(set(contributor_list))
             contributor_link = contributor_list[0]
         except:
             contributor_link = ''
