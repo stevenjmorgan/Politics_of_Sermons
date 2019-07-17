@@ -20,7 +20,8 @@ from bs4 import BeautifulSoup
 warnings.filterwarnings("ignore")
 
 #os.chdir("C:/Users/steve/OneDrive/Desktop/test")
-os.chdir("C:/Users/sum410/Dropbox/reverse_scraper")
+#os.chdir("C:/Users/sum410/Dropbox/reverse_scraper")
+os.chdir("C:/Users/sum410/Dropbox/serms_reverse")
 
 # Initiate web driver
 #path_to_chromedriver = 'C:/Users/Steve/Desktop/chromedriver'
@@ -35,11 +36,12 @@ author = ""
 date = ""
 denom = ""
 sermon_text = "" 
+contributor_link = ''
 counter = 0
 error_counter = 0
 
 # Iterate through all search result pages
-for i in range(11505,0,-1): #range(0,11503)
+for i in range(11576,0,-1): #range(0,11503)
 
     time.sleep(1)
     
@@ -133,6 +135,15 @@ for i in range(11505,0,-1): #range(0,11503)
             sermon_text = ''
             pass
         
+        try:
+            contributor_list = bsObj.find_all('a')
+            contributor_list = [x['href'] for x in contributor_list if re.search('/contributors/', str(x)) and re.search('SermonDetails', str(x))]
+            contributor_list = list(set(contributor_list))
+            contributor_link = contributor_list[0]
+        except:
+            contributor_link = ''
+            pass
+        
         # Change name of link
         serm_page1 = [x.replace("?ref=SermonSerps","?page=1&wc=800") for x in serm_page1]
             
@@ -193,6 +204,11 @@ for i in range(11505,0,-1): #range(0,11503)
         except:
             pass
         try:
+            textFile.write(contributor_link)
+        except:
+            pass
+        try:
+            textFile.write('\n')
             textFile.write('\n')
         except:
             pass
