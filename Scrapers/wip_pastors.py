@@ -22,7 +22,8 @@ import urllib.request
 
 warnings.filterwarnings("ignore")
 
-os.chdir(r"C:\Users\steve\Dropbox\Dissertation\Data\pastors")
+os.chdir(r"C:\Users\sum410\Dropbox\Dissertation\Data\pastors")
+#os.chdir(r"C:\Users\steve\Dropbox\Dissertation\Data\pastors")
 
 name = ''
 church = ''
@@ -31,6 +32,8 @@ denom = ''
 address = ''
 location = ''
 misc = ''
+contributor_link = ''
+
 
 # .csv file where extracted metadata will be stored
 fout = open("pastor_meta7-8.csv", "w")
@@ -46,6 +49,7 @@ localrow.append('denom')
 localrow.append('address')
 localrow.append('location')
 localrow.append('counter')
+localrow.append('contributor_link')
 outfilehandle.writerow(localrow)
 
 counter = 0
@@ -131,6 +135,14 @@ for i in range(0,508): #508
             address = ''
             pass
         
+        try:
+            contributor_link = pastor_links[j].split('https://www.sermoncentral.com')[1]
+            #print(contributor_link)
+        except:
+            print('Error parsing contributor link!')
+            contributor_link = ''
+            pass
+        
         ### Grab education and experience and other text (misc. assignment)
         #pastor_bsObj.find('div', class_='detail-txt').find_all('p')
 
@@ -157,6 +169,7 @@ for i in range(0,508): #508
         localrow.append(address)
         localrow.append(location)
         localrow.append(counter)
+        localrow.append(contributor_link)
         outfilehandle.writerow(localrow)
         
 # Finish writing to the .csv file and close it so the process is complete
