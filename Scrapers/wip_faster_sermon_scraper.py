@@ -35,11 +35,11 @@ date = ""
 denom = ""
 sermon_text = "" 
 contributor_link = ''
-counter = 0
+counter = 42671
 error_counter = 0
 
 # Iterate through all search result pages
-for i in range(0,11503): #range(0,11503)
+for i in range(2844,11540): #range(0,11503)
 
     time.sleep(1)
     
