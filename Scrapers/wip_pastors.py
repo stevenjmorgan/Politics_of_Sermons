@@ -151,7 +151,7 @@ for i in range(0,508): #508
         try:
             education = pastor_bsObj.find_all("div", {"class":"detail-txt"})
             education = education[0].text
-            education = education.split('Education:')[1].split('\n')[0].strip()
+            education = education.split('Education:')[1].split('Experience:')[0].strip()
         except:
             education = ''
             pass
