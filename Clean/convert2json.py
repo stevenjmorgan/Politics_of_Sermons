@@ -25,7 +25,7 @@ sermDict['sermonData'] = []
 print('Beginning to ingest data...')
 
 # Write dictionary to JSON file (saved as .txt)
-with open('sermon5-27.JSON', 'w', encoding="utf8", errors='ignore') as outfile:
+with open('sermon7-20-19.JSON', 'w', encoding="utf8", errors='ignore') as outfile:
 
 # Iterate through all files
     for txt in all_txt_files:
@@ -34,13 +34,14 @@ with open('sermon5-27.JSON', 'w', encoding="utf8", errors='ignore') as outfile:
 
         j += 1
         if j % 1000 == 0:
-            print("Iterate through " + str(j) + " sermons.")
+            print("Iterated through " + str(j) + " sermons.")
 
         author = ""
         date = ""
         denom = ""
         title = ""
         sermon = ""
+        contributor_link = ''
 
         # Open each .txt files
         with open(txt_dir, 'r', encoding="utf8", errors='ignore') as f:
@@ -68,16 +69,20 @@ with open('sermon5-27.JSON', 'w', encoding="utf8", errors='ignore') as outfile:
                 if i == 3:
                     denom = line.strip()
                     #sermDict['denom'] = line.strip()
-
-                # Store fifth line as value for title key
-                if i == 5:
+                    
+                # Store fourth line as value for contributor link
+                if i == 4:
+                    contributor_link = line.strip()
+                    
+                # Store sixth line as value for title key
+                if i == 6:
                     title = line.strip()
 
-                # After the sixth line, save every line as value to sermon key
-                if i > 6:
+                # After the seventh line, save every line as value to sermon key
+                if i > 7:
                     sermon = sermon + line.strip()
 
-        sermDict['sermonData'].append({'author':author, 'date':date, 'denom':denom, 'title':title, 'sermon':sermon})
+        sermDict['sermonData'].append({'author':author, 'date':date, 'denom':denom, 'title':title, 'contributor_link':contributor_link, 'sermon':sermon})
         #sermDict['sermonData'].append({'author':author, 'date':date, 'denom':denom, 'title':title, 'sermon':sermon})
 
     json.dump(sermDict, outfile, ensure_ascii=False) #encoding="utf8", errors='ignore'
@@ -86,4 +91,4 @@ with open('sermon5-27.JSON', 'w', encoding="utf8", errors='ignore') as outfile:
 # Convert dictionary to csv
 sermon_df = pd.DataFrame.from_dict(sermDict['sermonData'])
 sermon_df = sermon_df.drop_duplicates()
-sermon_df.to_csv('sermon_dataset5-27.csv')
+sermon_df.to_csv('sermon_dataset7-20.csv')
