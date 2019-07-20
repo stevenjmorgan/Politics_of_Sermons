@@ -22,7 +22,8 @@ import urllib.request
 
 warnings.filterwarnings("ignore")
 
-os.chdir(r"C:\Users\steve\Dropbox\Dissertation\Data\pastors")
+os.chdir(r"C:\Users\sum410\Dropbox\Dissertation\Data\pastors")
+#os.chdir(r"C:\Users\steve\Dropbox\Dissertation\Data\pastors")
 
 name = ''
 church = ''
@@ -31,6 +32,10 @@ denom = ''
 address = ''
 location = ''
 misc = ''
+contributor_link = ''
+education = ''
+experience = ''
+
 
 # .csv file where extracted metadata will be stored
 fout = open("pastor_meta7-8.csv", "w")
@@ -46,6 +51,9 @@ localrow.append('denom')
 localrow.append('address')
 localrow.append('location')
 localrow.append('counter')
+localrow.append('contributor_link')
+localrow.append('Education')
+localrow.append('Experience')
 outfilehandle.writerow(localrow)
 
 counter = 0
@@ -131,8 +139,30 @@ for i in range(0,508): #508
             address = ''
             pass
         
-        ### Grab education and experience and other text (misc. assignment)
-        #pastor_bsObj.find('div', class_='detail-txt').find_all('p')
+        try:
+            contributor_link = pastor_links[j].split('https://www.sermoncentral.com')[1]
+            #print(contributor_link)
+        except:
+            print('Error parsing contributor link!')
+            contributor_link = ''
+            pass
+        
+        # Grab education and experience and other text (misc. assignment)
+        try:
+            education = pastor_bsObj.find_all("div", {"class":"detail-txt"})
+            education = education[0].text
+            education = education.split('Education:')[1].split('Experience:')[0].strip()
+        except:
+            education = ''
+            pass
+        
+        try:
+            experience = pastor_bsObj.find_all("div", {"class":"detail-txt"})
+            experience = experience[0].text
+            experience = experience.split('Experience:')[1].split('\n')[0].strip()
+        except:
+            experience = ''
+            pass
 
 
         ## Grab image url
@@ -157,6 +187,9 @@ for i in range(0,508): #508
         localrow.append(address)
         localrow.append(location)
         localrow.append(counter)
+        localrow.append(contributor_link)
+        localrow.append(education)
+        localrow.append(experience)
         outfilehandle.writerow(localrow)
         
 # Finish writing to the .csv file and close it so the process is complete
