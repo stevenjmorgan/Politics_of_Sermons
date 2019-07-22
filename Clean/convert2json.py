@@ -10,11 +10,12 @@ import pandas as pd
 import re
 
 #os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
-os.chdir('C:/Users/steve/Desktop/sermons_sample/')
+#os.chdir('C:/Users/steve/Desktop/sermons_sample/')
+os.chdir('C:/Users/sum410/Dropbox/serms_reverse/')
 
 #dir = 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/MasterList/'
 #dir = 'C:/Users/Steve/Dropbox/PoliticsOfSermons/MasterList/'
-dir = 'C:/Users/steve/Desktop/sermons_sample/'
+dir = 'C:/Users/sum410/Dropbox/serms_reverse/'
 
 all_txt_files = os.listdir(dir)
 all_txt_files = [x for x in all_txt_files if re.search('.txt', x)]
@@ -94,4 +95,4 @@ with open('sermon7-20-19.JSON', 'w', encoding="utf8", errors='ignore') as outfil
 # Convert dictionary to csv
 sermon_df = pd.DataFrame.from_dict(sermDict['sermonData'])
 sermon_df = sermon_df.drop_duplicates()
-sermon_df.to_csv('sermon_dataset7-20.csv', index = False)
+sermon_df.to_csv('sermon_dataset7-22.csv', index = False)

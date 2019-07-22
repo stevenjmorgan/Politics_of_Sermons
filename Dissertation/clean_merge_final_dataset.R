@@ -11,8 +11,10 @@ library(stargazer)
 
 # Read in sermons dataset
 #load('final_sermons_deduped.RData')
-load('sermsDF.RData')
-colnames(serms)
+#load('sermsDF.RData')
+#colnames(serms)
+
+
 
 # Remove duplicate sermons
 serms <- serms[!duplicated(serms[,c('sermon')]),]
