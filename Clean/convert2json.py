@@ -11,7 +11,7 @@ import re
 
 #os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
 #os.chdir('C:/Users/steve/Desktop/sermons_sample/')
-os.chdir('C:/Users/sum410/Dropbox/serms_reverse/')
+os.chdir('C:/Users/sum410/Dropbox')
 
 #dir = 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/MasterList/'
 #dir = 'C:/Users/Steve/Dropbox/PoliticsOfSermons/MasterList/'
