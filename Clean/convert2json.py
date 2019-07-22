@@ -8,6 +8,9 @@ import json
 import os
 import pandas as pd
 import re
+import time
+
+time.sleep(5400)
 
 #os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
 #os.chdir('C:/Users/steve/Desktop/sermons_sample/')
