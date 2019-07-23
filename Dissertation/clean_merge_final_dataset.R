@@ -52,15 +52,24 @@ for (i in 1:nrow(pastors)) {
   if (nchar(pastors$location[i]) < 3) {
     pastors$location[i] <- NA
   }
+  
+  if (nchar(pastors$Education[i]) < 3) {
+    pastors$Education[i] <- NA
+  }
+  
+  if (nchar(pastors$Experience[i]) < 3) {
+    pastors$Experience[i] <- NA
+  }
 }
+
 
 # Merge datasets
 dim(serms)
 dim(pastors)
-pastors <- pastors[!duplicated(pastors[,c('name', 'denom', 'church')]),]
+pastors <- pastors[!duplicated(pastors[,c('contributor_link')]),]
 dim(pastors)
-serms.merge <- merge(serms, pastors, by.x = c('author'),#c('author', 'denom')
-                     by.y = c('name'), all.x = TRUE, all.y = FALSE)
+serms.merge <- merge(serms, pastors, by.x = c('contributor_link'),#c('author', 'denom')
+                     by.y = c('contributor_link'), all.x = TRUE, all.y = FALSE)
 dim(serms.merge)
 serms.merge <- serms.merge[!duplicated(serms.merge[,c('sermon')]),]
 dim(serms.merge)
