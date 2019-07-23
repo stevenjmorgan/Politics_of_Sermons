@@ -18,6 +18,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import urllib
 import urllib.request
+import pandas as pd
 
 
 warnings.filterwarnings("ignore")
@@ -194,3 +195,7 @@ for i in range(0,508): #508
         
 # Finish writing to the .csv file and close it so the process is complete
 fout.close()
+
+
+### Clean pastors file
+#pastors = pd.read_csv('pastor_meta7-8.csv', encoding = 'latin-1')
