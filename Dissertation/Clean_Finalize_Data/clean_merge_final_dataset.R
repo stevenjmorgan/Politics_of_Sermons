@@ -180,6 +180,9 @@ summary(serms.merge$first.name.gender == 'female') #& serms.merge$first.name.gen
 
 
 
+
+
+
 ###########################################################################################
 
 
@@ -188,9 +191,41 @@ serms.merge$word.count <- sapply(strsplit(serms.merge$clean, " "), length)
 
 
 
-t.test(serms.merge$word.count[which(serms.merge$first.name.gender == 'female')],
+x <- t.test(serms.merge$word.count[which(serms.merge$first.name.gender == 'female')],
        serms.merge$word.count[which(serms.merge$first.name.gender == 'male')])
+x$statistic
+x$parameter
+x$p.value
+x$estimate[1]
+x$estimate[2]
+x$
 
+
+women <- numeric(1000)
+men <- numeric(1000)
+difference <- numeric(1000)
+p.val <- numeric(1000)
+
+
+n <- 900
+set.seed(24519)
+for (i in 1:1000) {
+  sampled.data <- serms.merge[sample(nrow(serms.merge), n),]
+  
+  ttest.results <- t.test(sampled.data$word.count[which(sampled.data$first.name.gender == 'female')],
+                          sampled.data$word.count[which(sampled.data$first.name.gender == 'male')])
+  
+  women[i] <- ttest.results$estimate[1]
+  men[i] <- ttest.results$estimate[2]
+  difference[i] <- women[i]/men[i]
+  
+  p.val[i] <- ttest.results$p.value
+}
+
+sim.results <- as.data.frame(cbind(women, men, difference, p.val))
+
+hist((sim.results$difference-1)*100)
+hist(sim.results$p.val)
 
 
 
