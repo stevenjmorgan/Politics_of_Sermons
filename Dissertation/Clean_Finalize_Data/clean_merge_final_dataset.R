@@ -151,7 +151,8 @@ serms.merge$clean <- gsub('\"', " ", serms.merge$clean, fixed = T)
 serms.merge$clean <- gsub(',', ", ", serms.merge$clean)
 serms.merge$clean <- gsub("([0-9])([a-zA-Z])", "\\1 \\2", serms.merge$clean)
 serms.merge$clean <- gsub("\\s+", " ", serms.merge$clean)
-serms.merge$clean <- gsub("([[:punct:]])([[:blank:]])([[:punct:]])", "\\1\\3", serms.merge$clean)
+serms.merge$clean <- gsub("([[:punct:]])([[:blank:]])([[:punct:]])", "\\1\\3", 
+                          serms.merge$clean)
 
 save(serms.merge, file = 'data_serms_7-24-19.RData')
 write.csv(serms.merge, 'sermons_pastor_names_7-24-19.csv')
