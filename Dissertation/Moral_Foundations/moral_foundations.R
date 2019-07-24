@@ -1,13 +1,14 @@
 # This script runs the moral foundations dictionary on the sermons corpus.
 
 rm(list=ls())
-setwd("C:/Users/steve/Dropbox/Dissertation/Data")
+#setwd("C:/Users/steve/Dropbox/Dissertation/Data")
 #setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
+setwd('C:/Users/steve/Desktop/sermon_dataset')
 
 library(quanteda)
 library(quanteda.dictionaries)
 
-load('final_sermons_deduped.RData')
+load('data_serms_7-24-19.RData')
 
 output_mfd <- liwcalike(serms$sermon[1:4], tolower = TRUE,
                         dictionary = data_dictionary_MFD) # 4456
