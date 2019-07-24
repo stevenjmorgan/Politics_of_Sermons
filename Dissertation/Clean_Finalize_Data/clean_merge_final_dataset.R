@@ -2,8 +2,8 @@
 # descriptives.
 
 rm(list=ls())
-#setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
-setwd('C:/Users/steve/Desktop/sermon_dataset')
+setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
+#setwd('C:/Users/steve/Desktop/sermon_dataset')
 
 library(tidyr)
 library(tidyverse)
@@ -11,10 +11,6 @@ library(lubridate)
 library(stargazer)
 
 # Read in sermons dataset
-#load('final_sermons_deduped.RData')
-#load('sermsDF.RData')
-#colnames(serms)
-
 serms <- read.csv('sermon_dataset7-24_final.csv', stringsAsFactors = FALSE)
 colnames(serms)
 
@@ -28,8 +24,8 @@ serms$year <- sapply(strsplit(serms$date, split=', ',
                               fixed=TRUE), `[`, 2)
 
 # Read in pastors dataset
-#pastors <- read.csv('pastors/pastor_meta7-8.csv', stringsAsFactors = F)
-pastors <- read.csv('pastor_meta7-8_final.csv', stringsAsFactors = FALSE)
+pastors <- read.csv('pastors/pastor_meta7-8.csv', stringsAsFactors = FALSE)
+#pastors <- read.csv('pastor_meta7-8_final.csv', stringsAsFactors = FALSE)
 #write.csv(pastors, 'pastor_meta7-8.csv', row.names = F)
 
 # Convert NA to 0
@@ -118,30 +114,34 @@ colnames(serms.merge)
 serms.merge$denon.conflicts <- ifelse(serms.merge$denom.x != serms.merge$denom.y, 1, 0)
 summary(is.na(serms.merge$denom.x))
 summary(is.na(serms.merge$denom.y))
-summary(serms.merge$denon.conflicts==1) # No conflicts, some pastors just left denon. blank
-
-
-
+# No conflicts, some pastors just left denom. blank on sermon uploads
+summary(serms.merge$denon.conflicts==1)
 
 # Split out first name
-#serms.merge <- read.csv('us_sermons_7-15-19.csv')
-#serms.merge$author <- as.character(serms.merge$author)
-### Remove Dr., Mr. from "First Name"
 serms.merge$author <- trimws(serms.merge$author)
-serms.merge$author.edit <- gsub('^Dr. ', '', serms.merge$author)
-serms.merge$author.edit <- gsub('^Dr.', '', serms.merge$author)
-serms.merge$author.edit <- gsub('^Pastor ', '', serms.merge$author)
-serms.merge$author.edit <- gsub('^Pastor/Revivalist', '', serms.merge$author)
+serms.merge$author.edit <- gsub('^Dr\\. ', '', serms.merge$author)
+serms.merge$author.edit <- gsub('^Dr\\.', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub('^Pastor ', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub('^Pastor/Revivalist', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub('^Evangelist', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub('^Reverend', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub('^Rev\\.dr.', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub('^Rev\\.', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub('^Rev', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub('^Sir', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub('Dr\\.', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub(' Dr ', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub('(Dr\\.)', '', serms.merge$author.edit)
+serms.merge$author.edit <- gsub('^Dr ', '', serms.merge$author.edit)
 serms.merge$author.edit <- trimws(serms.merge$author.edit)
 serms.merge$first.name <- ''
 for (i in 1:nrow(serms.merge)) {
   serms.merge$first.name[i] <- strsplit(serms.merge$author.edit[i], ' ')[[1]][1]
 }
-unique(serms.merge$first.name)
+write.csv(unique(serms.merge$first.name), file = 'unique_pastor_1st_names.csv')
 
 
-
-#### Clean text -> save in separate column
+# Clean text -> save in separate column
 serms.merge$clean <- iconv(serms.merge$sermon, "latin1", "ASCII", sub="")
 serms.merge$clean <- gsub("\\.", "\\. ", serms.merge$clean)
 serms.merge$clean <- gsub(";", "; ", serms.merge$clean)
@@ -152,16 +152,6 @@ serms.merge$clean <- gsub(',', ", ", serms.merge$clean)
 serms.merge$clean <- gsub("([0-9])([a-zA-Z])", "\\1 \\2", serms.merge$clean)
 serms.merge$clean <- gsub("\\s+", " ", serms.merge$clean)
 serms.merge$clean <- gsub("([[:punct:]])([[:blank:]])([[:punct:]])", "\\1\\3", serms.merge$clean)
-#z
-
-
-### Multiple numbers followed by character ###
-
-z <- gsub("([[:punct:]])([[:blank:]]+)([[:punct:]])", "\\1\\3", z)
-z
-
-##########################################################################################
-
 
 save(serms.merge, file = 'data_serms_7-24-19.RData')
 write.csv(serms.merge, 'sermons_pastor_names_7-24-19.csv')
