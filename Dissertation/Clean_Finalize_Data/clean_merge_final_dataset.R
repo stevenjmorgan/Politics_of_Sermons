@@ -127,15 +127,31 @@ summary(serms.merge$denon.conflicts==1) # No conflicts, some pastors just left d
 #serms.merge <- read.csv('us_sermons_7-15-19.csv')
 #serms.merge$author <- as.character(serms.merge$author)
 ### Remove Dr., Mr. from "First Name"
+serms.merge$author <- trimws(serms.merge$author)
+serms.merge$author.edit <- gsub('^Dr. ', '', serms.merge$author)
+serms.merge$author.edit <- gsub('^Dr.', '', serms.merge$author)
+serms.merge$author.edit <- gsub('^Pastor ', '', serms.merge$author)
+serms.merge$author.edit <- gsub('^Pastor/Revivalist', '', serms.merge$author)
+serms.merge$author.edit <- trimws(serms.merge$author.edit)
 serms.merge$first.name <- ''
 for (i in 1:nrow(serms.merge)) {
-  serms.merge$first.name[i] <- strsplit(serms.merge$author[i], ' ')[[1]][1]
+  serms.merge$first.name[i] <- strsplit(serms.merge$author.edit[i], ' ')[[1]][1]
 }
-
 unique(serms.merge$first.name)
-save(serms.merge, file = 'final_data_serms_7-15-19.RData')
-write.csv(serms.merge, 'us_sermons_7-15-19.csv')
 
+save(serms.merge, file = 'data_serms_7-24-19.RData')
+write.csv(serms.merge, 'sermons_pastor_names_7-24-19.csv')
+
+
+############ Merge in pastor specific data (ethnicity and race)
+load('data_serms_7-24-19.RData')
+
+## Read in name file w/ gender and ethnicity
+
+
+
+
+###########################################################################################
 
 ### Descriptives
 

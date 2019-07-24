@@ -1,8 +1,8 @@
 # This script runs the moral foundations dictionary on the sermons corpus.
 
 rm(list=ls())
-#setwd("C:/Users/steve/Dropbox/Dissertation/Data")
-setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
+setwd("C:/Users/steve/Dropbox/Dissertation/Data")
+#setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 
 library(quanteda)
 library(quanteda.dictionaries)
