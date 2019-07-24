@@ -2,8 +2,9 @@
 # descriptives.
 
 rm(list=ls())
-setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
+#setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 #setwd('C:/Users/steve/Desktop/sermon_dataset')
+setwd("C:/Users/steve/Dropbox/Dissertation/Data")
 
 library(tidyr)
 library(tidyverse)
@@ -162,11 +163,36 @@ write.csv(serms.merge, 'sermons_pastor_names_7-24-19.csv')
 load('data_serms_7-24-19.RData')
 
 ## Read in name file w/ gender and ethnicity
+name.gender <- read.csv('first_name_gender_7-24.csv', stringsAsFactor = FALSE)
+name.gender <- name.gender[which(!is.na(name.gender$Probability)),]
+name.gender <- name.gender[,c(2,3,4)]
+colnames(name.gender) <- c('first.name', 'first.name.gender', 
+                           'first.name.gender.prob')
+
+# Merge
+dim(serms.merge) # 128893 x 24
+serms.merge <- merge(serms.merge, name.gender, by = 'first.name', all.x = TRUE)
+dim(serms.merge) # 128893 x 26
+
+unique(serms.merge$first.name.gender)
+summary(serms.merge$first.name.gender == 'female') #& serms.merge$first.name.gender.prob > 0.80)
 
 
 
 
 ###########################################################################################
+
+
+# Word count
+serms.merge$word.count <- sapply(strsplit(serms.merge$clean, " "), length)
+
+
+
+t.test(serms.merge$word.count[which(serms.merge$first.name.gender == 'female')],
+       serms.merge$word.count[which(serms.merge$first.name.gender == 'male')])
+
+
+
 
 ### Descriptives
 
@@ -221,7 +247,7 @@ ggplot(pastor.group[which(pastor.group$freq < 35),], aes(x=freq)) +
 dev.off()
 
 # Word count
-serms.merge$wc <- sapply(strsplit(serms.merge$sermon, " "), length)
+#serms.merge$wc <- sapply(strsplit(serms.merge$sermon, " "), length)
 #serms$unique <- lengths(lapply(strsplit(serms$sermon, 
 #                                        split = ' '), unique))
 pdf('word_count.pdf')
