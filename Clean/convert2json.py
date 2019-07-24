@@ -12,7 +12,8 @@ import re
 
 #time.sleep(5400)
 
-os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
+#os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
+os.chdir('C:/Users/steve/Desktop/sermon_dataset/')
 #os.chdir('C:/Users/steve/Desktop/sermons_sample/')
 #os.chdir('C:/Users/sum410/Dropbox')
 
@@ -105,6 +106,11 @@ with open('sermon7-22-19.JSON', 'w', encoding="utf8", errors='ignore') as outfil
     json.dump(sermDict, outfile, ensure_ascii=False) #encoding="utf8", errors='ignore'
     
     
+#json_data = json.loads('sermon7-22-19.JSON')
+with open('sermon7-22-19.JSON', encoding = 'utf-8') as f:
+  data = json.load(f)
+
+
 # Convert dictionary to csv
 sermon_df = pd.DataFrame.from_dict(sermDict['sermonData'])
 sermon_df.shape

@@ -2,7 +2,8 @@
 # descriptives.
 
 rm(list=ls())
-setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
+#setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
+setwd('C:/Users/steve/Desktop/sermon_dataset')
 
 library(tidyr)
 library(tidyverse)
@@ -14,7 +15,8 @@ library(stargazer)
 #load('sermsDF.RData')
 #colnames(serms)
 
-
+serms <- read.csv('sermon_dataset7-22_final.csv', stringsAsFactors = FALSE)
+colnames(serms)
 
 # Remove duplicate sermons
 serms <- serms[!duplicated(serms[,c('sermon')]),]
