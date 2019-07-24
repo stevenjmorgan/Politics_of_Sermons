@@ -6,6 +6,7 @@ rm(list=ls())
 setwd('C:/Users/steve/Desktop/sermon_dataset')
 
 library(quanteda)
+install.packages('quanteda.dictionaries')
 library(quanteda.dictionaries)
 
 load('data_serms_7-24-19.RData')
