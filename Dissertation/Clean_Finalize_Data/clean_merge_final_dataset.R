@@ -139,6 +139,30 @@ for (i in 1:nrow(serms.merge)) {
 }
 unique(serms.merge$first.name)
 
+
+
+#### Clean text -> save in separate column
+serms.merge$clean <- iconv(serms.merge$sermon, "latin1", "ASCII", sub="")
+serms.merge$clean <- gsub("\\.", "\\. ", serms.merge$clean)
+serms.merge$clean <- gsub(";", "; ", serms.merge$clean)
+serms.merge$clean <- gsub("\\?", "\\? ", serms.merge$clean)
+serms.merge$clean <- gsub("\\!", "\\! ", serms.merge$clean)
+serms.merge$clean <- gsub('\"', " ", serms.merge$clean, fixed = T)
+serms.merge$clean <- gsub(',', ", ", serms.merge$clean)
+serms.merge$clean <- gsub("([0-9])([a-zA-Z])", "\\1 \\2", serms.merge$clean)
+serms.merge$clean <- gsub("\\s+", " ", serms.merge$clean)
+serms.merge$clean <- gsub("([[:punct:]])([[:blank:]])([[:punct:]])", "\\1\\3", serms.merge$clean)
+#z
+
+
+### Multiple numbers followed by character ###
+
+z <- gsub("([[:punct:]])([[:blank:]]+)([[:punct:]])", "\\1\\3", z)
+z
+
+##########################################################################################
+
+
 save(serms.merge, file = 'data_serms_7-24-19.RData')
 write.csv(serms.merge, 'sermons_pastor_names_7-24-19.csv')
 

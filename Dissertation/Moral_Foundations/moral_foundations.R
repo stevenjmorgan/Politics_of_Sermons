@@ -6,12 +6,15 @@ rm(list=ls())
 setwd('C:/Users/steve/Desktop/sermon_dataset')
 
 library(quanteda)
-install.packages('quanteda.dictionaries')
+library(devtools)
+devtools::install_github("kbenoit/quanteda.dictionaries") 
 library(quanteda.dictionaries)
+
 
 load('data_serms_7-24-19.RData')
 
-output_mfd <- liwcalike(serms$sermon[1:4], tolower = TRUE,
+# Test set
+output_mfd <- liwcalike(serms.merge$sermon[1:4], tolower = TRUE,
                         dictionary = data_dictionary_MFD) # 4456
 
 # sapply(strsplit(serms$sermon[1], " "), length) # 3732
