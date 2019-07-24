@@ -41,18 +41,10 @@ if __name__ == '__main__':
 os.chdir("C:/Users/steve/Dropbox/Dissertation/Data")
 
 # Read in data
-sermons = pd.read_csv('us_sermons_7-15-19.csv', encoding = "ISO-8859-1")
-sermons['first.name'][1000]
-
-unique_first_names = sermons['first.name'].unique()
-
-#print(getGenders('Alan'))
-#name = 'Alan'
-#names = getGenders(name)
-#names_list = [x for t in names for x in t]
-#names_list.insert(0, name)
+names = pd.read_csv('unique_pastor_1st_names.csv')
 
 
+unique_first_names = names['x'].unique()
 
 #{"name":"kim","gender":"female","probability":"0.90","count":687}
 
@@ -76,7 +68,7 @@ for i in range(0, len(unique_first_names)):
         name_gen_df = name_gen_df.append(pd.Series(names_list, index=name_gen_df.columns), ignore_index=True) 
         pass
 
-for i in range(996, len(unique_first_names)):
+for i in range(1013, len(unique_first_names)):
     
     #print(i)
     #print(unique_first_names[i])
@@ -91,7 +83,7 @@ for i in range(996, len(unique_first_names)):
 
     except:
         names_list = ['','','','']
-        name_gen_df = name_gen_df.append(pd.Series(names_list, index=name_gen_df.columns), ignore_index=True) 
+        #name_gen_df = name_gen_df.append(pd.Series(names_list, index=name_gen_df.columns), ignore_index=True) 
         pass
     
-name_gen_df.to_csv('first_name_gender.csv')
+name_gen_df.to_csv('first_name_gender_7-24.csv')
