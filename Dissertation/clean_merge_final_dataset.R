@@ -15,22 +15,27 @@ library(stargazer)
 #load('sermsDF.RData')
 #colnames(serms)
 
-serms <- read.csv('sermon_dataset7-22_final.csv', stringsAsFactors = FALSE)
+serms <- read.csv('sermon_dataset7-24_final.csv', stringsAsFactors = FALSE)
 colnames(serms)
 
 # Remove duplicate sermons
+dim(serms) #173,367 x 7
 serms <- serms[!duplicated(serms[,c('sermon')]),]
+dim(serms) # 172,603 x 7
 
 # Add year variable
 serms$year <- sapply(strsplit(serms$date, split=', ', 
                               fixed=TRUE), `[`, 2)
 
 # Read in pastors dataset
-pastors <- read.csv('pastors/pastor_meta7-8.csv', stringsAsFactors = F)
+#pastors <- read.csv('pastors/pastor_meta7-8.csv', stringsAsFactors = F)
+pastors <- read.csv('pastor_meta7-8_final.csv', stringsAsFactors = FALSE)
 #write.csv(pastors, 'pastor_meta7-8.csv', row.names = F)
 
 # Convert NA to 0
 pastors[is.na(pastors)] <- 0
+colnames(pastors)
+summary(is.na(pastors$contributor_link))
 
 # Convert incorrect scraping to NA
 for (i in 1:nrow(pastors)) {
@@ -62,19 +67,24 @@ for (i in 1:nrow(pastors)) {
   if (nchar(pastors$Experience[i]) < 3) {
     pastors$Experience[i] <- NA
   }
+  
+  pastors$contributor_link[i] <- strsplit(pastors$contributor_link[i], '\\?ref')[[1]][1]
+}
+
+for (i in 1:nrow(serms)) {
+  serms$contributor_link[i] <- strsplit(serms$contributor_link[i], '\\?ref')[[1]][1]
 }
 
 
 # Merge datasets
-dim(serms)
-dim(pastors)
+dim(serms)   # 172603 x 8
+dim(pastors) # 7616 x 10
 pastors <- pastors[!duplicated(pastors[,c('contributor_link')]),]
-dim(pastors)
+dim(pastors) # 7616 x 10
 serms.merge <- merge(serms, pastors, by.x = c('contributor_link'),#c('author', 'denom')
                      by.y = c('contributor_link'), all.x = TRUE, all.y = FALSE)
-dim(serms.merge)
-serms.merge <- serms.merge[!duplicated(serms.merge[,c('sermon')]),]
-dim(serms.merge)
+dim(serms.merge) # 172603 x 17
+colnames(serms.merge)
 
 summary(is.na(serms.merge$address))
 summary(is.na(serms.merge$location))
@@ -101,16 +111,22 @@ serms.merge <- serms.merge[which(!is.na(serms.merge$zip)),]
 serms.merge <- serms.merge[!nchar(as.character(serms.merge$state_parse)) < 3,]
 serms.merge <- within(serms.merge, rm(state))
 
-dim(serms.merge) #117153 x 15
+dim(serms.merge) # 128893 x 20
+#x <- subset(serms.merge, select = -c(sermon))
+rm(serms, pastors)
+colnames(serms.merge)
+serms.merge$denon.conflicts <- ifelse(serms.merge$denom.x != serms.merge$denom.y, 1, 0)
+summary(is.na(serms.merge$denom.x))
+summary(is.na(serms.merge$denom.y))
+summary(serms.merge$denon.conflicts==1) # No conflicts, some pastors just left denon. blank
 
 
 
-x <- subset(serms.merge, select = -c(sermon))
-rm(serms)
 
 # Split out first name
 #serms.merge <- read.csv('us_sermons_7-15-19.csv')
 #serms.merge$author <- as.character(serms.merge$author)
+### Remove Dr., Mr. from "First Name"
 serms.merge$first.name <- ''
 for (i in 1:nrow(serms.merge)) {
   serms.merge$first.name[i] <- strsplit(serms.merge$author[i], ' ')[[1]][1]
