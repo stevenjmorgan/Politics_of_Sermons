@@ -13,9 +13,9 @@ import re
 #time.sleep(5400)
 
 #os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
-os.chdir('C:/Users/steve/Desktop/sermon_dataset/')
+#os.chdir('C:/Users/steve/Desktop/sermon_dataset/')
 #os.chdir('C:/Users/steve/Desktop/sermons_sample/')
-#os.chdir('C:/Users/sum410/Dropbox')
+os.chdir('C:/Users/sum410/Dropbox')
 
 #dir = 'C:/Users/sum410/Dropbox/PoliticsOfSermons/Data/MasterList/'
 #dir = 'C:/Users/Steve/Dropbox/PoliticsOfSermons/MasterList/'
@@ -112,9 +112,9 @@ with open('sermon7-22-19.JSON', encoding = 'utf-8') as f:
 
 
 # Convert dictionary to csv
-sermon_df = pd.DataFrame.from_dict(sermDict['sermonData'])
+sermon_df = pd.DataFrame.from_dict(data['sermonData'])
 sermon_df.shape
-#sermon_df = sermon_df.drop_duplicates()
-sermon_df = sermon_df['sermon'].drop_duplicates()
+sermon_df = sermon_df.drop_duplicates()
+#sermon_df = sermon_df['sermon'].drop_duplicates()
 sermon_df.shape
-sermon_df.to_csv('sermon_dataset7-22.csv', index = False)
+sermon_df.to_csv('sermon_dataset7-22.csv')
