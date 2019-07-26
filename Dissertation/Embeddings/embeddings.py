@@ -92,16 +92,16 @@ serms['clean'] = serms['clean'].apply(stem_sentences)
 
 # Detect common phrases so that we may treat each one as its own word
 #print('Detecting phrases...')
-#phrases = gensim.models.phrases.Phrases(serms['sermon'].tolist())
-#phraser = gensim.models.phrases.Phraser(phrases)
-#train_phrased = phraser[serms['sermon'].tolist()]
+phrases = gensim.models.phrases.Phrases(serms['clean'].tolist())
+phraser = gensim.models.phrases.Phraser(phrases)
+train_phrased = phraser[serms['clean'].tolist()]
  
 multiprocessing.cpu_count()
  
 # Run w2v w/ default parameters
 print('Running w2v!')
-#w2v = gensim.models.word2vec.Word2Vec(sentences=train_phrased,workers=4)
-#w2v.save('w2v_sermons_v1')
+w2v = gensim.models.word2vec.Word2Vec(sentences=train_phrased,workers=8)
+w2v.save('phrased_embeddings_7-26')
  
 #print(w2v.most_similar('abort'))
 #print(w2v.most_similar('gay'))
@@ -147,9 +147,11 @@ print(model.most_similar('trump'))
 print(model.most_similar('liberti'))
 print(model.most_similar('right'))
 print(model.most_similar('amendment'))
+print(model.most_similar('amend'))
 print(model.most_similar('fetus'))
 print(model.most_similar('unborn'))
 print(model.most_similar('women'))
+print(model.most_similar('suffrag'))
 
 #display_closestwords_tsnescatterplot(model, 'abortion')
 
