@@ -29,14 +29,15 @@ serm_data['author_cleaned'] = serm_data['author_cleaned'].str.replace(r' Jr\.',r
 serm_data['author_cleaned'] = serm_data['author_cleaned'].str.replace(r' Jr',r'')
 serm_data['author_cleaned'] = serm_data['author_cleaned'].str.replace(r' Jr',r'')
 serm_data['last_name'] = serm_data['author_cleaned'].str.extract(r'\b(\w+)$', expand=True)
+serm_data.columns
 
-df = pd.DataFrame(serm_data['last_name'])
-len(df.last_name.unique())
-df = df.drop_duplicates()
-df.shape
+#df = pd.DataFrame(serm_data['last_name'])
+#len(df.last_name.unique())
+#df = df.drop_duplicates()
+#df.shape
 
 #census_ln(df, 'name')
 #census_ln(df, 'name', 2010)
-pred_ethn = pred_census_ln(df, 'last_name')
+pred_ethn = pred_census_ln(serm_data, 'last_name')
 pred_ethn.to_csv('pastor_ethnicity_census_7-26.csv')
-
+pred_ethn.columns

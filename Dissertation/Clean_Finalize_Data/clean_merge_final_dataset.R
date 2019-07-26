@@ -160,7 +160,9 @@ write.csv(serms.merge, 'sermons_pastor_names_7-24-19.csv')
 
 
 ############ Merge in pastor specific data (ethnicity and race)
-load('data_serms_7-24-19.RData')
+#load('data_serms_7-24-19.RData')
+#colnames(serms.merge)
+serms.merge <- read.csv('pastor_ethnicity_census_7-26.csv', stringsAsFactor = F)
 
 ## Read in name file w/ gender and ethnicity
 name.gender <- read.csv('first_name_gender_7-24.csv', stringsAsFactor = FALSE)
