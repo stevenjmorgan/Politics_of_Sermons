@@ -59,17 +59,16 @@ def display_closestwords_tsnescatterplot(model, word):
   
 # Ignore warnings, set directory   
 warnings.filterwarnings(action = 'ignore')
-#os.chdir('C:/Users/sum410/Dropbox/Dissertation/Data/')
-os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
+os.chdir('C:/Users/sum410/Dropbox/Dissertation/Data/')
+#os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/')
 
 # Read in data
 print('Reading in data...')
 file_encoding = 'utf8'        # set file_encoding to the file encoding (utf8, latin1, etc.)
-input_fd = open('us_sermons.csv', encoding=file_encoding, errors = 'backslashreplace')
+input_fd = open('sermons_pastor_names_7-24-19.csv', encoding=file_encoding, errors = 'backslashreplace')
 serms = pd.read_csv(input_fd, encoding="utf-8")
 serms = serms.drop("Unnamed: 0", axis=1)
-#serms = pd.read_csv('deduped_sermons.csv', iterator=True, chunksize=20000000, low_memory = False)
-#serms = pd.concat(serms, ignore_index=True)
+
 
 #mylist = []
 #for chunk in pd.read_csv('sermon_dataset5-27.csv', chunksize=20000, index_col=False):
@@ -81,13 +80,13 @@ serms = serms.drop("Unnamed: 0", axis=1)
 
 # Clean text data
 print('Cleaning data...')
-serms['sermon'] = serms['sermon'].str.replace('[^a-zA-Z]',' ').str.lower()
+serms['clean'] = serms['clean'].str.replace('[^a-zA-Z]',' ').str.lower()
 stop_re = '\\b'+'\\b|\\b'.join(nltk.corpus.stopwords.words('english'))+'\\b'
-serms['sermon'] = serms['sermon'].str.replace(stop_re, '')
+serms['clean'] = serms['clean'].str.replace(stop_re, '')
  
 # Porter stem tokens
 ps = PorterStemmer()
-serms['sermon'] = serms['sermon'].apply(stem_sentences)
+serms['clean'] = serms['clean'].apply(stem_sentences)
 
 
 
@@ -132,18 +131,19 @@ print('Running w2v!')
 
 
 # W/o phrases
-sentences = serms['sermon'].tolist()
+sentences = serms['clean'].tolist()
 sent = [x.split() for x in sentences]
-model = Word2Vec(sent, min_count=5)
-model.save('unphrased_stemmed')
+model = Word2Vec(sent, min_count=2, size=100, window=5, workers = 8)
+#model.save('unphrased_stemmed')
+model.save("unphrased_stemmed_7-24.model")
 
-print(model.most_similar('abortion'))
+#print(model.most_similar('abortion'))
 print(model.most_similar('abort'))
 print(model.most_similar('democrat'))
 print(model.most_similar('obama'))
 print(model.most_similar('gay'))
 print(model.most_similar('trump'))
-print(model.most_similar('liberty'))
+#print(model.most_similar('liberty'))
 print(model.most_similar('liberti'))
 print(model.most_similar('right'))
 print(model.most_similar('amendment'))

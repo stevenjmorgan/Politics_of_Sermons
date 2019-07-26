@@ -46,8 +46,9 @@ save(mfd.df, file = 'mfd_scores_7-24.RData')
 
 
 # Combine w/ sermon dataset
-serms <- cbind(serms, mfd.df)
-save(serms, file = 'sermons_mfd.RData')
+serms.merge <- cbind(serms.merge, mfd.df)
+colnames(serms.merge)
+save(serms.merge, file = 'sermons_mfd_7-26.RData')
 
 
 
