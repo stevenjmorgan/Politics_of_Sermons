@@ -92,7 +92,26 @@ serms['clean'] = serms['clean'].apply(stem_sentences)
 
 # Detect common phrases so that we may treat each one as its own word
 #print('Detecting phrases...')
-phrases = gensim.models.phrases.Phrases(serms['clean'].tolist())
+
+documents = ["the mayor of new york was there", "machine learning can be useful sometimes","new york mayor was present"]
+
+sentence_stream = [doc.split(" ") for doc in documents]
+print(sentence_stream)
+
+docs = serms['clean'].tolist()
+
+sentence_stream = [doc.split(" ") for doc in docs]
+
+from gensim.models import Phrases 
+from gensim.models.phrases import Phraser
+
+bigram = Phrases(sentence_stream, min_count=1, threshold=2, delimiter=b' ')
+bigram_phraser = Phraser(bigram)
+print(bigram_phraser)
+
+
+
+phrases = gensim.models.phrases.Phrases(serms['sermon'].tolist())
 phraser = gensim.models.phrases.Phraser(phrases)
 train_phrased = phraser[serms['clean'].tolist()]
  
@@ -103,9 +122,10 @@ print('Running w2v!')
 w2v = gensim.models.word2vec.Word2Vec(sentences=train_phrased,workers=8)
 w2v.save('phrased_embeddings_7-26')
  
-#print(w2v.most_similar('abort'))
-#print(w2v.most_similar('gay'))
-#print(w2v.most_similar('government'))
+print(w2v.most_similar('abort'))
+print(w2v.most_similar('gay'))
+print(w2v.most_similar('government'))
+
 
 #print(w2v.most_similar('living'))
  
