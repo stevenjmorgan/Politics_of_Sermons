@@ -109,12 +109,15 @@ bigram = Phrases(sentence_stream, min_count=1, threshold=2, delimiter=b' ')
 bigram_phraser = Phraser(bigram)
 print(bigram_phraser)
 
+model = Word2Vec(bigram_phraser[docs], min_count=3)
 
-
-phrases = gensim.models.phrases.Phrases(serms['sermon'].tolist())
-phraser = gensim.models.phrases.Phraser(phrases)
-train_phrased = phraser[serms['clean'].tolist()]
+print(model.most_similar('abortion'))
+#phrases = gensim.models.phrases.Phrases(serms['sermon'].tolist())
+#phraser = gensim.models.phrases.Phraser(phrases)
+#train_phrased = phraser[serms['clean'].tolist()]
  
+
+
 multiprocessing.cpu_count()
  
 # Run w2v w/ default parameters
