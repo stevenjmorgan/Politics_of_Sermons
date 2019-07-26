@@ -164,6 +164,8 @@ write.csv(serms.merge, 'sermons_pastor_names_7-24-19.csv')
 #colnames(serms.merge)
 serms.merge <- read.csv('pastor_ethnicity_census_7-26.csv', stringsAsFactor = F)
 
+# Remove index column(s)
+
 ## Read in name file w/ gender and ethnicity
 name.gender <- read.csv('first_name_gender_7-24.csv', stringsAsFactor = FALSE)
 name.gender <- name.gender[which(!is.na(name.gender$Probability)),]
