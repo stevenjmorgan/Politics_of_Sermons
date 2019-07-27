@@ -163,6 +163,7 @@ write.csv(serms.merge, 'sermons_pastor_names_7-24-19.csv')
 #load('data_serms_7-24-19.RData')
 #colnames(serms.merge)
 serms.merge <- read.csv('pastor_ethnicity_census_7-26.csv', stringsAsFactor = F)
+colnames(serms.merge)
 
 # Remove index column(s)
 
@@ -174,9 +175,9 @@ colnames(name.gender) <- c('first.name', 'first.name.gender',
                            'first.name.gender.prob')
 
 # Merge
-dim(serms.merge) # 128893 x 24
+dim(serms.merge) # 128893 x 33
 serms.merge <- merge(serms.merge, name.gender, by = 'first.name', all.x = TRUE)
-dim(serms.merge) # 128893 x 26
+dim(serms.merge) # 128893 x 35
 
 unique(serms.merge$first.name.gender)
 summary(serms.merge$first.name.gender == 'female') #& serms.merge$first.name.gender.prob > 0.80)
