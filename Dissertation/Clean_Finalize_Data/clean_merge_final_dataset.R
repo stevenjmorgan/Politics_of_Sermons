@@ -179,12 +179,15 @@ dim(serms.merge) # 128893 x 33
 serms.merge <- merge(serms.merge, name.gender, by = 'first.name', all.x = TRUE)
 dim(serms.merge) # 128893 x 35
 colnames(serms.merge)
-serms.merge <- serms.merge[,-c(1,2)]
-dim(serms.merge) # 128893 x 33
+serms.merge <- serms.merge[,-c(2,3,5)]
+dim(serms.merge) # 128893 x 32
 colnames(serms.merge)
 
 unique(serms.merge$first.name.gender)
 summary(serms.merge$first.name.gender == 'female') #& serms.merge$first.name.gender.prob > 0.80)
+
+
+### Clean & merge in image recognition results
 
 
 

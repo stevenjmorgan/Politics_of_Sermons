@@ -64,11 +64,13 @@ for i in range(0, len(unique_first_names)):
         name_gen_df = name_gen_df.append(s, ignore_index=True) 
 
     except:
-        names_list = ['','','','']
+        names_list = [unique_first_names[i],'','','']
         name_gen_df = name_gen_df.append(pd.Series(names_list, index=name_gen_df.columns), ignore_index=True) 
         pass
 
-for i in range(1013, len(unique_first_names)):
+name_gen_df = name_gen_df.drop(name_gen_df.index[999:])
+
+for i in range(999, len(unique_first_names)):
     
     #print(i)
     #print(unique_first_names[i])
@@ -82,8 +84,8 @@ for i in range(1013, len(unique_first_names)):
         name_gen_df = name_gen_df.append(s, ignore_index=True) 
 
     except:
-        names_list = ['','','','']
-        #name_gen_df = name_gen_df.append(pd.Series(names_list, index=name_gen_df.columns), ignore_index=True) 
+        names_list = [unique_first_names[i],'','','']
+        name_gen_df = name_gen_df.append(pd.Series(names_list, index=name_gen_df.columns), ignore_index=True) 
         pass
     
 name_gen_df.to_csv('first_name_gender_7-24.csv')
