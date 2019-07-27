@@ -201,7 +201,7 @@ summary(serms.merge$first.name.gender == 'female') #& serms.merge$first.name.gen
 rm(name.gender)
 
 
-### Clean & merge in image recognition results
+# Clean & merge in image recognition results
 image <- read.csv('pastor_image_age_gender7-26.csv', stringsAsFactors = F,
                   na.strings=c('','NA'))
 image <- image[,-c(1,2,3)]
@@ -220,24 +220,60 @@ data <- image %>%
               group_by(pastor_id) %>%
               mutate(all_genders = paste0(gender, collapse = ', '))
 data <- data[!duplicated(data$pastor_id),]
-write.csv(data, 'hand_label_image.csv')
+#write.csv(data, 'hand_label_image.csv')
+rm(data,image,cleaned.images)
 
 ### Read in edited image results, merge in
+image.results <- read.csv('hand_label_image7-27.csv', stringsAsFactors = FALSE)
+image.results <- image.results[,-c(1)]
+colnames(image.results) <- c('image.gender.conf', 'pastor_id', 'image.gender')
+for (i in 1:nrow(image.results)) {
+  image.results$pastor_id[i] <- strsplit(strsplit(image.results$pastor_id[i], 'pastor')[[1]][2],'_')[[1]][1]
+}
+# Drop "Revivalist" observation
+image.results <- image.results[!is.na(image.results$pastor_id),]
 
+colnames(serms.merge)
 
+dim(serms.merge) # 128893 32
+serms.merge <- merge(serms.merge, image.results, by.x = 'counter', by.y = 'pastor_id',
+           all.x = TRUE)
+dim(serms.merge) # 128893 34
 
+# Check agreement between first name and image approach to gender
+serms.merge$image.gender <- tolower(serms.merge$image.gender)
+unique(serms.merge$first.name.gender)
+unique(serms.merge$image.gender)
 
+summary(serms.merge$first.name.gender == serms.merge$image.gender) # F = 1498   T = 64908   NA = 62487
 
-###########################################################################################
+# Aggregated gender measure
+serms.merge$gender.final <- ifelse(serms.merge$image.gender != serms.merge$first.name.gender, serms.merge$image.gender, serms.merge$image.gender)
+serms.merge$gender.final <- ifelse(is.na(serms.merge$gender.final), serms.merge$first.name.gender, serms.merge$gender.final)
+summary(is.na(serms.merge$gender.final)) # F = 128727    T = 166
+dim(serms.merge) # 128893 35
 
+rm(image.results)
 
 # Word count
 serms.merge$word.count <- sapply(strsplit(serms.merge$clean, " "), length)
+#save(serms.merge, file = 'final_dissertation_dataset7-27.RData')
+library(stringr)
+serms.merge$word.count2 <- str_count(serms.merge$clean)
+serms.merge$word.count3 <- sapply(strsplit(serms.merge$sermon, " "), length)
+
+summary(serms.merge$word.count)
+summary(serms.merge$word.count2)
+
+#################################
+##### Save FINAL dataset ########
+save(serms.merge, file = 'final_dissertation_dataset7-27.RData')
+
+#################################
 
 
-
-x <- t.test(serms.merge$word.count[which(serms.merge$first.name.gender == 'female')],
-       serms.merge$word.count[which(serms.merge$first.name.gender == 'male')])
+x <- t.test(serms.merge$word.count[which(serms.merge$gender.final == 'female')],
+       serms.merge$word.count[which(serms.merge$gender.final == 'male')])
 x$statistic
 x$parameter
 x$p.value
