@@ -161,7 +161,7 @@ write.csv(serms.merge, 'sermons_pastor_names_7-24-19.csv')
 
 ############ Merge in pastor specific data (ethnicity and race)
 #load('data_serms_7-24-19.RData')
-#colnames(serms.merge)
+### Contains Census predicted ethnicity
 serms.merge <- read.csv('pastor_ethnicity_census_7-26.csv', stringsAsFactor = F)
 colnames(serms.merge)
 
@@ -170,7 +170,7 @@ colnames(serms.merge)
 ## Read in name file w/ gender and ethnicity
 name.gender <- read.csv('first_name_gender_7-24.csv', stringsAsFactor = FALSE)
 name.gender <- name.gender[which(!is.na(name.gender$Probability)),]
-name.gender <- name.gender[,c(2,3,4)]
+name.gender <- name.gender[,c(1,2,3)]
 colnames(name.gender) <- c('first.name', 'first.name.gender', 
                            'first.name.gender.prob')
 
@@ -186,10 +186,43 @@ colnames(serms.merge)
 unique(serms.merge$first.name.gender)
 summary(serms.merge$first.name.gender == 'female') #& serms.merge$first.name.gender.prob > 0.80)
 
+# Convert "None" to NA
+for (i in 1:nrow(serms.merge)) {
+  
+  if (!is.na(serms.merge$first.name.gender[i])) {
+    if (serms.merge$first.name.gender[i] == 'None') {
+      serms.merge$first.name.gender[i] <- NA
+    }
+  }
+  
+}
+
+summary(serms.merge$first.name.gender == 'female') #& serms.merge$first.name.gender.prob > 0.80)
+rm(name.gender)
+
 
 ### Clean & merge in image recognition results
+image <- read.csv('pastor_image_age_gender7-26.csv', stringsAsFactors = F,
+                  na.strings=c('','NA'))
+image <- image[,-c(1,2,3)]
+image <- image[!is.na(image$gender),]
+image$pastor_id <- gsub(' \\(1\\)','', image$pastor_id)
 
 
+
+cleaned.images <- as.data.frame(matrix(nrow = length(unique(image$pastor_id)),
+                                       ncol = 3))
+colnames(cleaned.images) <- c('image.gender', 'image.gender.conf', 'pastor_id')
+cleaned.images$pastor_id <- unique(image$pastor_id)
+
+
+data <- image %>%
+              group_by(pastor_id) %>%
+              mutate(all_genders = paste0(gender, collapse = ', '))
+data <- data[!duplicated(data$pastor_id),]
+write.csv(data, 'hand_label_image.csv')
+
+### Read in edited image results, merge in
 
 
 
