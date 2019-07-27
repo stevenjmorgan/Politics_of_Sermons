@@ -259,11 +259,12 @@ rm(image.results)
 serms.merge$word.count <- sapply(strsplit(serms.merge$clean, " "), length)
 #save(serms.merge, file = 'final_dissertation_dataset7-27.RData')
 library(stringr)
-serms.merge$word.count2 <- str_count(serms.merge$clean)
+#serms.merge$word.count2 <- str_count(serms.merge$clean)
 serms.merge$word.count3 <- sapply(strsplit(serms.merge$sermon, " "), length)
 
 summary(serms.merge$word.count)
 summary(serms.merge$word.count2)
+summary(serms.merge$word.count3)
 
 #################################
 ##### Save FINAL dataset ########
