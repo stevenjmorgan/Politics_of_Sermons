@@ -39,13 +39,13 @@ month.group$relat <- round(100 * month.group$freq / sum(month.group$freq),2)
 
 # Plot by month
 pdf('sermons_by_month.pdf')
-ggplot(data=month.group, aes(x=month, y=freq)) +
+ggplot(data=month.group[which(month.group$month > "2000-10-01"),], aes(x=month, y=freq)) +
   geom_bar(stat="identity") + theme_bw() + xlab('Month') + ylab('# of Sermons')
 dev.off()
 
 # Group number of sermons by denomination
-denom.group2 <- plyr::count(serms.merge, 'denom.x')
-denom.group2$rel <- round(100 * denom.group2$freq / sum(denom.group2$freq),2)
+denom.group <- plyr::count(serms.merge, 'denom.x')
+denom.group$rel <- round(100 * denom.group$freq / sum(denom.group$freq),2)
 #denom.group3 <- plyr::count(serms.merge, 'denom.y')
 #denom.group3$rel <- round(100 * denom.group3$freq / sum(denom.group3$freq),2)
 
@@ -66,52 +66,39 @@ ggplot(pastor.group[which(pastor.group$freq < 35),], aes(x=freq)) +
 dev.off()
 
 # Word count
-#serms.merge$wc <- sapply(strsplit(serms.merge$sermon, " "), length)
-#serms$unique <- lengths(lapply(strsplit(serms$sermon, 
-#                                        split = ' '), unique))
+summary(serms.merge$word.count)
 pdf('word_count.pdf')
-ggplot(serms.merge[which(serms.merge$wc <8000),], aes(x=wc)) +
-  geom_histogram(binwidth=500, color="darkblue", fill="lightblue") +
+ggplot(serms.merge[which(serms.merge$word.count <8000),], aes(x=word.count)) +
+  geom_histogram() + theme_bw() +
   labs(x = '# of Words', y = 'Sermons') #+ 
-#ggtitle("Distribution of Word Counts across Sermons")
+dev.off()
 
 
+### Barplot by race
+summary(serms.merge$race=='white')
+race.group <- plyr::count(serms.merge, 'race')
+
+pdf('sermons_by_race.pdf')
+ggplot(race.group, aes(x=race, y=freq)) +
+  geom_bar(stat="identity") + theme_bw() + ylab('Sermons Preached') +
+  scale_x_discrete(labels=c("Asian", "Black", 'Hispanic', 'White')) +
+  xlab('Race/Ethnicity')
+dev.off()
 
 
+### Barplot by gender
+summary(serms.merge$gender.final == 'female')
+gen.group <- plyr::count(serms.merge, 'gender.final')
+gen.group <- gen.group[1:2,]
 
+pdf('sermons_by_gender.pdf')
+ggplot(gen.group, aes(x=gender.final, y=freq)) +
+  geom_bar(stat="identity") + theme_bw() + ylab('Sermons Preached') +
+  scale_x_discrete(labels=c('Female', 'Male')) + xlab('Gender')
+dev.off()
 
-
-
-
-# Remove duplicates and save
-serms <- serms.merge[!duplicated(serms.merge[,c('author','date','denom', 'title','sermon')]),]
-save(serms, file = 'final_sermons_deduped.RData')
-rm(serms.merge)
-
-# Group by year and plot
-year.group <- count(serms, "year")
-ggplot(data=year.group, aes(x=year, y=freq)) +
-  geom_bar(stat="identity") + theme_bw() +xlab('Year')  + ylab('# of Sermons') 
-ggsave('sermons_by_year.png')
-
-# Group by month and plot
-month.group <- count(serms, 'month')
-ggplot(data=month.group, aes(x=month, y=freq)) +
-  geom_bar(stat="identity") + theme_bw() +xlab('Month')  + ylab('# of Sermons') 
-ggsave('sermons_by_month.png')
-
-
-
-
-
-
-
-
-
-
-
-
-
+### Education
+#serms.merge$phd <- 
 
 
 
@@ -127,4 +114,4 @@ x$parameter
 x$p.value
 x$estimate[1]
 x$estimate[2]
-x$
+#x$

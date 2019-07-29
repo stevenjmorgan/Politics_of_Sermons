@@ -266,22 +266,18 @@ summary(serms.merge$word.count)
 summary(serms.merge$word.count2)
 summary(serms.merge$word.count3)
 
-#################################
-##### Save FINAL dataset ########
-save(serms.merge, file = 'final_dissertation_dataset7-27.RData')
-
-#################################
-
-
-### Load in data
-load('final_dissertation_dataset7-27.RData')
+#load('final_dissertation_dataset7-27.RData')
 
 ### Remove spanish words
 pat <- paste(c('dios', 'Dios', 'bien', 'bueno'), collapse='|')
 serms.merge$spanish.count <- str_count(serms.merge$clean, pat)
 summary(serms.merge$spanish.count > 5)
 
-serms.merge <- serms.merge[which(serms.merge$spanish.count < 5),] # 127451 x 38
+#serms.merge <- serms.merge[which(serms.merge$spanish.count < 5),] # 127451 x 38
 rm(pat)
 
+#################################
+##### Save FINAL dataset ########
 save(serms.merge, file = 'final_dissertation_dataset7-27.RData')
+
+#################################
