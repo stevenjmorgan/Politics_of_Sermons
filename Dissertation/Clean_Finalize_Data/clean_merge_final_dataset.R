@@ -273,102 +273,15 @@ save(serms.merge, file = 'final_dissertation_dataset7-27.RData')
 #################################
 
 
-x <- t.test(serms.merge$word.count[which(serms.merge$gender.final == 'female')],
-       serms.merge$word.count[which(serms.merge$gender.final == 'male')])
-x$statistic
-x$parameter
-x$p.value
-x$estimate[1]
-x$estimate[2]
-x$
+### Load in data
+load('final_dissertation_dataset7-27.RData')
 
+### Remove spanish words
+pat <- paste(c('dios', 'Dios', 'bien', 'bueno'), collapse='|')
+serms.merge$spanish.count <- str_count(serms.merge$clean, pat)
+summary(serms.merge$spanish.count > 5)
 
-women <- numeric(1000)
-men <- numeric(1000)
-difference <- numeric(1000)
-p.val <- numeric(1000)
+serms.merge <- serms.merge[which(serms.merge$spanish.count < 5),] # 127451 x 38
+rm(pat)
 
-
-n <- 900
-set.seed(24519)
-for (i in 1:1000) {
-  sampled.data <- serms.merge[sample(nrow(serms.merge), n),]
-  
-  ttest.results <- t.test(sampled.data$word.count[which(sampled.data$first.name.gender == 'female')],
-                          sampled.data$word.count[which(sampled.data$first.name.gender == 'male')])
-  
-  women[i] <- ttest.results$estimate[1]
-  men[i] <- ttest.results$estimate[2]
-  difference[i] <- women[i]/men[i]
-  
-  p.val[i] <- ttest.results$p.value
-}
-
-sim.results <- as.data.frame(cbind(women, men, difference, p.val))
-
-hist((sim.results$difference-1)*100)
-hist(sim.results$p.val)
-
-
-
-### Descriptives
-
-# Group number of sermons in each year
-year.group <- plyr::count(serms.merge, "year")
-year.group$rel <- round(100 * year.group$freq / sum(year.group$freq),2)
-
-# Table of sermons by year
-stargazer(year.group, type = 'latex', summary = FALSE, rownames = FALSE,
-          covariate.labels = c('Year', '# of Sermons', '% of Corpus'), 
-          column.sep.width = '10pt', digits = 2, header = FALSE)
-
-pdf('sermons_by_year.pdf')
-ggplot(data=year.group, aes(x=year, y=freq)) +
-  geom_bar(stat="identity") + theme_bw() + xlab('Year') + ylab('# of Sermons')
-dev.off()
-
-# Convert dates
-serms.merge$date.conv <- as.Date(serms.merge$date, '%b %d, %Y')
-
-# Parse month and group by month, save to new df
-serms.merge$month <- as.Date(cut(serms.merge$date.conv, breaks = "month"))
-month.group <- plyr::count(serms.merge, 'month')
-month.group$relat <- round(100 * month.group$freq / sum(month.group$freq),2)
-
-# Plot by month
-pdf('sermons_by_month.pdf')
-ggplot(data=month.group, aes(x=month, y=freq)) +
-  geom_bar(stat="identity") + theme_bw() + xlab('Month') + ylab('# of Sermons')
-dev.off()
-
-# Group number of sermons by denomination
-denom.group2 <- plyr::count(serms.merge, 'denom.x')
-denom.group2$rel <- round(100 * denom.group2$freq / sum(denom.group2$freq),2)
-#denom.group3 <- plyr::count(serms.merge, 'denom.y')
-#denom.group3$rel <- round(100 * denom.group3$freq / sum(denom.group3$freq),2)
-
-# Create table
-stargazer(denom.group, type ='latex', summary = FALSE, rownames = FALSE,
-          covariate.labels = c('Denomination', '# of Sermons', '% of Corpus'), 
-          column.sep.width = '10pt', digits=2, header = FALSE)
-
-# Group number of sermons per pastor
-pastor.group <- plyr::count(serms.merge, 'author')
-
-# Plot distribution of sermons per pastor
-pdf('sermons_by_pastor.pdf')
-ggplot(pastor.group[which(pastor.group$freq < 35),], aes(x=freq)) + 
-  geom_histogram(binwidth=1) +
-  labs(x = '# of Sermons', y = "Pastors") + theme_bw()# + 
-  #ggtitle("Distribution of Sermons Uploaded by Pastor")
-dev.off()
-
-# Word count
-#serms.merge$wc <- sapply(strsplit(serms.merge$sermon, " "), length)
-#serms$unique <- lengths(lapply(strsplit(serms$sermon, 
-#                                        split = ' '), unique))
-pdf('word_count.pdf')
-ggplot(serms.merge[which(serms.merge$wc <8000),], aes(x=wc)) +
-  geom_histogram(binwidth=500, color="darkblue", fill="lightblue") +
-  labs(x = '# of Words', y = 'Sermons') #+ 
-  #ggtitle("Distribution of Word Counts across Sermons")
+save(serms.merge, file = 'final_dissertation_dataset7-27.RData')
