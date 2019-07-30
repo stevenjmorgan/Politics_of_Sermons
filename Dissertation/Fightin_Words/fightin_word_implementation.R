@@ -50,7 +50,7 @@ quanteda_dtm <- quanteda::dfm(serms.corpus,
                               #select = "[a-zA-Z]{3,}",
                               #valuetype = "regex")
                               tolower=TRUE,
-                              remove=c(",",".","-","\"","'","(",")",";",":"), #stopwords(),
+                              remove=c(",",".","-","\"","'","(",")",";",":",'[',']'), #stopwords(),
                               stem = TRUE)
 
 
