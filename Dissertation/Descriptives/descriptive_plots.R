@@ -102,8 +102,44 @@ dev.off()
 
 
 
-
-
+## Recode denom. to reltrad.
+serms.merge$rel.trad <- recode(serms.merge$denom, 
+                               "'Evangelical/Non-Denominational' = 'evang'; 
+                               'Baptist' = 'evang'; 'Apostolic' = 'evang';
+                               'Lutheran' = 'mainline'; 
+                               'Christian/Church Of Christ' = 'evang';
+                               'Methodist' = 'mainline';
+                               'Independent/Bible' = 'other'; 
+                               'Pentecostal' = 'evang'; 'Nazarene' = 'evang';
+                               '*other' = 'other'; 
+                               'Presbyterian/Reformed' = 'mainline';
+                               'Bible Church' = 'evang'; 'Catholic' = 'cath';
+                               'Evangelical Free' = 'evang'; 
+                               'Holiness' = 'evang'; 'Adventist' = 'evang';
+                               'Assembly Of God' = 'evang';
+                               'Church Of God' = 'evang';
+                               'Christian Church' = 'other';
+                               'United Methodist' = 'mainline';
+                               'Christian Missionary Alliance' = 'evang';
+                               'Foursquare' = 'evang';
+                               'Seventh-Day Adventist' = 'evang';
+                               'Wesleyan' = 'evang';
+                               'Episcopal/Anglican' = 'mainline';
+                               'Orthodox' = 'other';
+                               'Charismatic' = 'evang';
+                               'Free Methodist' = 'evang';
+                               'Calvary Chapel' = 'evang';
+                               'Brethren' = 'evang';
+                               'Vineyard' = 'evang';
+                               'Mennonite' = 'evang';
+                               'Friends' = 'other';
+                               'Anglican' = 'mainline';
+                               'Congregational' = 'mainline';
+                               'Disciples Of Christ' = 'mainline';
+                               'Salvation Army' = 'evang';
+                               'Grace Brethren' = 'other';
+                               'Episcopal' = 'mainline';
+                               'Other' = 'other'; else = 'other'")
 
 ### Gendered differences
 
