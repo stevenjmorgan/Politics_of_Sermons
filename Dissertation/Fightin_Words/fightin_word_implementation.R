@@ -23,19 +23,27 @@ colnames(serms.merge)
 summary(serms.merge$word.count)
 serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
 
+serms.merge <- serms.merge[!is.na(serms.merge$gender.final),]
+
 ## Create dtm
 # Only keep tokens that are all letters and of len 3 or greater
 gc()
 memory.limit()
-memory.limit(size=56000)
+memory.limit(size=64000)
 quanteda_dtm <- quanteda::dfm(serms.merge$clean,
-                              #select = "[a-zA-Z]{3,}",
-                              #valuetype = "regex")
-                              tolower=TRUE,
-                              remove=c(",",".","-","\"","'","(",")",";",":"), #stopwords(),
+                              select = "[a-zA-Z]{3,}",
+                              valuetype = "regex",#)
+                              #tolower=TRUE,
+                              #remove=c(",",".","-","\"","'","(",")",";",":",'[',']'), #stopwords(),
                               stem = TRUE)
 save(quanteda_dtm, file = 'huge_dtm7-30.RData')
 load('huge_dtm7-30.RData')
+
+# Convert to a slam::simple_triplet_matrix object
+dtm <- convert_quanteda_to_slam(quanteda_dtm)
+
+### Compare indices between slam matrix and dtm
+length(dtm$dimnames$Docs) == length(quanteda_dtm@Dimnames$docs)
 
 
 # Corpus
@@ -56,13 +64,6 @@ load('huge_dtm7-30.RData')
 #                               stem = TRUE)
 
 
-# Convert to a slam::simple_triplet_matrix object
-dtm <- convert_quanteda_to_slam(quanteda_dtm)
-
-
-### Compare indices between slam matrix and dtm
-dtm$ == quanteda_dtm$
-
 
 ## Create df for variable of interest
 # Covariate data
@@ -73,7 +74,7 @@ doc_covariates <- serms.merge[,c('denom.fixed','date','state_parse','race',
 
 
 # Create dataframe for male vs. female
-summary(serms.merge$word.count)
+#summary(serms.merge$word.count)
 gender <- as.data.frame(serms.merge[, c('gender.final')])
 colnames(gender) <- 'gender.final'
 gender$gender.final <- as.character(gender$gender.final)
@@ -85,19 +86,17 @@ cont.table <- contingency_table(metadata = gender,
                                 document_term_matrix = dtm,
                                 force_dense = F)
 
-
-
 ## Run FW algorithm
 full.corp <- feature_selection(cont.table, 
                                method = c("informed Dirichlet"),
                                alpha = 0.01,
                                rank_by_log_odds = F)
-fightin_words_plot(full.corp, positive_category = "Non-Political", 
-                   negative_category = "Political", 
+fightin_words_plot(full.corp, positive_category = "Male", 
+                   negative_category = "Female", 
                    clean_publication_plots = FALSE,
                    title = "Differences in Language: Political vs. Non-Political Tweets",
-                   display_top_words = 10,
-                   max_terms_to_display = 1e+10000)
+                   display_top_words = 10)#,
+                   #max_terms_to_display = 1e+10000)
 
 ## Plot results
 
