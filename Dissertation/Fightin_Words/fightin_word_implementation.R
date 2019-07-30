@@ -20,6 +20,8 @@ colnames(serms.merge)
 #### Create function???
 
 
+summary(serms.merge$word.count)
+serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
 
 ## Create dtm
 # Only keep tokens that are all letters and of len 3 or greater
@@ -37,25 +39,30 @@ load('huge_dtm7-30.RData')
 
 
 # Corpus
-corp <- readtext(serms.merge, text_field = "clean")
-colnames(serms.merge)
-serms.merge$doc_id <- seq(1, nrow(serms.merge))
-serms.merge$text <- serms.merge$clean
-serms.merge <- serms.merge[,c(42,44,43,26,35,39,16)]
-serms.corpus <- corpus(serms.merge)
-summary(serms.corpus, 5)
+# corp <- readtext(serms.merge, text_field = "clean")
+# colnames(serms.merge)
+# serms.merge$doc_id <- seq(1, nrow(serms.merge))
+# serms.merge$text <- serms.merge$clean
+# serms.merge <- serms.merge[,c(42,44,43,26,35,39,16)]
+# serms.corpus <- corpus(serms.merge)
+# summary(serms.corpus, 5)
 
 # Create DTM
-quanteda_dtm <- quanteda::dfm(serms.corpus,
-                              #select = "[a-zA-Z]{3,}",
-                              #valuetype = "regex")
-                              tolower=TRUE,
-                              remove=c(",",".","-","\"","'","(",")",";",":",'[',']'), #stopwords(),
-                              stem = TRUE)
+# quanteda_dtm <- quanteda::dfm(serms.corpus,
+#                               #select = "[a-zA-Z]{3,}",
+#                               #valuetype = "regex")
+#                               tolower=TRUE,
+#                               remove=c(",",".","-","\"","'","(",")",";",":",'[',']'), #stopwords(),
+#                               stem = TRUE)
 
 
 # Convert to a slam::simple_triplet_matrix object
 dtm <- convert_quanteda_to_slam(quanteda_dtm)
+
+
+### Compare indices between slam matrix and dtm
+dtm$ == 
+
 
 ## Create df for variable of interest
 # Covariate data
