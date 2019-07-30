@@ -10,11 +10,10 @@ library(devtools)
 devtools::install_github("kbenoit/quanteda.dictionaries") 
 library(quanteda.dictionaries)
 
-
-load('data_serms_7-24-19.RData')
+load('final_dissertation_dataset7-27.RData')
 
 # Test set
-output_mfd <- liwcalike(serms.merge$sermon[1:4], tolower = TRUE,
+output_mfd <- liwcalike(serms.merge$clean[1:4], tolower = TRUE,
                         dictionary = data_dictionary_MFD) # 3741
 
 mfd.df <- as.data.frame(matrix(nrow = nrow(serms.merge), ncol = 28))
@@ -42,13 +41,13 @@ for (i in 1:length(serms.merge$clean)) {
 }
 
 summary(is.na(mfd.df$fairness.vice))
-save(mfd.df, file = 'mfd_scores_7-24.RData')
+save(mfd.df, file = 'mfd_scores_7-30.RData')
 
 
 # Combine w/ sermon dataset
 serms.merge <- cbind(serms.merge, mfd.df)
 colnames(serms.merge)
-save(serms.merge, file = 'sermons_mfd_7-26.RData')
+save(serms.merge, file = 'sermons_mfd_7-30.RData')
 
 
 

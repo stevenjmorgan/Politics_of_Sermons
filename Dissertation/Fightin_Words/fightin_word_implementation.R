@@ -2,10 +2,12 @@
 ### differences in language (at the lexical level) in the sermon dataset.
 
 rm(list=ls())
-setwd("C:/Users/steve/Dropbox/Dissertation/Data")
+#setwd("C:/Users/steve/Dropbox/Dissertation/Data")
+setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
+#setwd('C:/Users/steve/Desktop/sermon_dataset')
 
-library("tm")
-library("devtools")
+library(tm)
+library(devtools)
 devtools::install_github("matthewjdenny/SpeedReader")
 library(SpeedReader)
 library(stargazer)
