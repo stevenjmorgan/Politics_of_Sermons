@@ -61,7 +61,7 @@ dtm <- convert_quanteda_to_slam(quanteda_dtm)
 
 
 ### Compare indices between slam matrix and dtm
-dtm$ == 
+dtm$ == quanteda_dtm$
 
 
 ## Create df for variable of interest
