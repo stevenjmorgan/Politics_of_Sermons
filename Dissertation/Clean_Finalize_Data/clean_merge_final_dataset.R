@@ -293,6 +293,12 @@ serms.merge$state_parse <- ifelse(serms.merge$state_parse == 'Florida CA', 'Flor
 
 unique(serms.merge$state_parse) # Length = 51
 
+### Fix "Other" for denominations
+unique(serms.merge$denom.x)
+serms.merge$denom.fixed <- ifelse(serms.merge$denom.x == '*other', 'Other', serms.merge$denom.x)
+serms.merge$denom.fixed <- ifelse(serms.merge$denom.x == '', 'None', serms.merge$denom.fixed)
+unique(serms.merge$denom.fixed)
+
 
 #################################
 ##### Save FINAL dataset ########

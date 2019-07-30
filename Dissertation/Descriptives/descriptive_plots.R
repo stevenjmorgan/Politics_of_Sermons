@@ -2,8 +2,8 @@
 
 rm(list=ls())
 #setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
-#setwd('C:/Users/steve/Desktop/sermon_dataset')
-setwd("C:/Users/steve/Dropbox/Dissertation/Data")
+#setwd("C:/Users/steve/Dropbox/Dissertation/Data")
+setwd('C:/Users/steve/Desktop/sermon_dataset')
 
 library(ggplot2)
 library(dplyr)
