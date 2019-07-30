@@ -78,6 +78,7 @@ doc_covariates <- serms.merge[,c('denom.fixed','date','state_parse','race',
 gender <- as.data.frame(serms.merge[, c('gender.final')])
 colnames(gender) <- 'gender.final'
 gender$gender.final <- as.character(gender$gender.final)
+unique(gender$gender.final)
 #gender$Gender[gender$Gender == 'male'] <- 'Political'
 #gender$Gender[gender$Gender == 'female'] <- 'Non-Political'
 
@@ -95,8 +96,8 @@ fightin_words_plot(full.corp, positive_category = "Male",
                    negative_category = "Female", 
                    clean_publication_plots = FALSE,
                    title = "Differences in Language: Political vs. Non-Political Tweets",
-                   display_top_words = 10)#,
-                   #max_terms_to_display = 1e+10000)
+                   display_top_words = 10,
+                   max_terms_to_display = 1e+10000)
 
 ## Plot results
 
