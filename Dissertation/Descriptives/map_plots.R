@@ -1,18 +1,17 @@
 # This script creates maps of church locations in the sermon dataset.
 
 rm(list=ls())
-setwd("C:/Users/steve/Dropbox/Dissertation/Data")
-
+#setwd("C:/Users/steve/Dropbox/Dissertation/Data")
+setwd('C:/Users/steve/Desktop/sermon_dataset')
 
 library(zipcode)
 library(tidyverse)
 library(maps)
 library(viridis)
 library(ggthemes)
-library(albersusa)#installed via github
+#library(albersusa)#installed via github
 
 load('final_dissertation_dataset7-27.RData')
-
 
 # Extract zip codes
 #serms.merge$zip[1]
@@ -36,7 +35,6 @@ ggplot(fm,aes(longitude,latitude)) +
 ggsave('sermons_state.png', width = 6, height = 3.2)
 
 
-
 install.packages(c("maps", "mapdata"))
 
 library(ggplot2)
@@ -56,7 +54,6 @@ serms.merge.no.dc <- serms.merge[serms.merge$state_parse!="District of Columbia"
 serms.merge.no.dc$state.lower <- tolower(serms.merge.no.dc$state_parse)
 group.state <- plyr::count(serms.merge.no.dc, 'state.lower')
 
-
 # Plot sermons by state
 ggplot() + geom_map(data=us, map=us, aes(long, lat, map_id=region), color="#2b2b2b", fill=NA, size=0.15) +
   geom_map(data=group.state, map=us, aes(fill=freq, map_id=state.lower), color="#ffffff", size=0.15) + labs(x=NULL, y=NULL) +
@@ -70,6 +67,8 @@ ggsave('sermons_state.png')
 
 
 #####################################################
+# Plot sermons normalized by population
+#####################################################
 state.pop <- read.csv('C:/Users/steve/Desktop/sermon_dataset/state_pop.csv')
 state.pop$state.lower <- tolower(state.pop$State..federal.district..or.territory)
 test <- merge(group.state, state.pop, by = 'state.lower', all.x = TRUE)
@@ -82,7 +81,7 @@ ggplot() + geom_map(data=us, map=us, aes(long, lat, map_id=region), color="#2b2b
   scale_fill_continuous(low='gray80', high='gray20',  guide='colorbar') +
   theme(panel.border = element_blank(), panel.background = element_blank(), 
         plot.title = element_text(hjust = 0.5,size = 25, face = "bold"), axis.ticks = element_blank(),
-        axis.text = element_blank()) + guides(fill = guide_colorbar(title=NULL)) + coord_map() + 
-  ggtitle("Number of Sermons per Person by State")
+        axis.text = element_blank()) + guides(fill = guide_colorbar(title=NULL)) + coord_map()# + 
+  #ggtitle("Number of Sermons per Person by State")
 ggsave('sermons_person_state.png')
 
