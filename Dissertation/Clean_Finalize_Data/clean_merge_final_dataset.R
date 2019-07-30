@@ -276,6 +276,24 @@ summary(serms.merge$spanish.count > 5)
 #serms.merge <- serms.merge[which(serms.merge$spanish.count < 5),] # 127451 x 38
 rm(pat)
 
+### Remove final non-US churches
+unique(serms.merge$state_parse)
+
+serms.merge <- serms.merge[which(!(serms.merge$state_parse %in% c('Lagos', 'Karnataka', 'yucatan', 
+                                                           'CROYDON CR', 'Kerala', 'Hessen',
+                                                           'Andhra pradesh'))),]
+serms.merge$state_parse <- ifelse(serms.merge$state_parse == 'Florida CA', 'Florida', serms.merge$state_parse)
+serms.merge$state_parse <- ifelse(serms.merge$state_parse == 'Alabama nb', 'Alabama', serms.merge$state_parse)
+serms.merge$state_parse <- ifelse(serms.merge$state_parse == 'Alabama TN', 'Alabama', serms.merge$state_parse)
+serms.merge$state_parse <- ifelse(serms.merge$state_parse == 'Grand Cayman KY', 'Kentucky', serms.merge$state_parse)
+serms.merge$state_parse <- ifelse(serms.merge$state_parse == 'Norfolk NR', 'Virginia', serms.merge$state_parse)
+serms.merge$state_parse <- ifelse(serms.merge$state_parse == 'Florida CA', 'Florida', serms.merge$state_parse)
+serms.merge$state_parse <- ifelse(serms.merge$state_parse == 'Florida CA', 'Florida', serms.merge$state_parse)
+serms.merge$state_parse <- ifelse(serms.merge$state_parse == 'Florida CA', 'Florida', serms.merge$state_parse)
+
+unique(serms.merge$state_parse) # Length = 51
+
+
 #################################
 ##### Save FINAL dataset ########
 save(serms.merge, file = 'final_dissertation_dataset7-27.RData')
