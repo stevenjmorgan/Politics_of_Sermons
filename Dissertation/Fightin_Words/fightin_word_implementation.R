@@ -12,5 +12,21 @@ library(stargazer)
 library(quanteda)
 
 load('final_dissertation_dataset7-27.RData')
+colnames(serms.merge)
+
+#### Create function???
+
+## Create dtm
+
+## Create df for variable of interest
+
+## Create contingency table
+
+## Run FW algorithm
+
+## Plot results
 
 
+
+### Male vs. female, black versus non-black, hispanic vs. non-hispanic, asian vs. non-asian
+### Baptist vs. non-Baptist, Non-denom vs. rest, Independent vs. non-Independent
