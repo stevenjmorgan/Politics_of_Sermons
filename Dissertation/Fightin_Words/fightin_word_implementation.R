@@ -26,10 +26,12 @@ gc()
 memory.limit()
 memory.limit(size=56000)
 quanteda_dtm <- quanteda::dfm(serms.merge$clean,
-                              select = "[a-zA-Z]{3,}",
-                              valuetype = "regex")#,tolower=TRUE,
+                              #select = "[a-zA-Z]{3,}",
+                              #valuetype = "regex")
+                              tolower=TRUE)#,
                               #remove=c(stopwords(),",",".","-","\"","'","(",")",";",":"))
 save(quanteda_dtm, file = 'huge_dtm7-30.RData')
+load('huge_dtm7-30.RData')
 
 # Convert to a slam::simple_triplet_matrix object
 dtm <- convert_quanteda_to_slam(quanteda_dtm)
