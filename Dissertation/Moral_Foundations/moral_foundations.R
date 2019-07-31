@@ -11,6 +11,7 @@ devtools::install_github("kbenoit/quanteda.dictionaries")
 library(quanteda.dictionaries)
 
 load('final_dissertation_dataset7-27.RData')
+serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
 
 # Test set
 output_mfd <- liwcalike(serms.merge$clean[1:4], tolower = TRUE,
