@@ -8,6 +8,7 @@ setwd('C:/Users/steve/Desktop/sermon_dataset')
 library(ggplot2)
 library(dplyr)
 library(plyr)
+library(stargazer)
 
 load('final_dissertation_dataset7-27.RData')
 
