@@ -37,6 +37,15 @@ def search_func(row):
         return "Yes"
     else:
         return "No"
+    
+def count_func(row):
+    matches = [test_value in political_dict 
+               for test_value in row["clean"]]
+
+    if any(matches):
+        return len(matches)
+    else:
+        return 0
 
 
 os.chdir(r'C:\Users\steve\Desktop\sermon_dataset')
@@ -106,4 +115,7 @@ df['clean'] = df['clean'].apply(lambda x: stemming(x))
 ### Match list of semantically related terms against tweets to determine if political
 df['is_political'] = df.apply(search_func, axis=1)
 
+#df.to_csv('sermons_pol_variable7-31.csv')
+
+df['pol_count'] = df.apply(count_func, axis=1)
 df.to_csv('sermons_pol_variable7-31.csv')
