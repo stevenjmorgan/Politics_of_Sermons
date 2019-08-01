@@ -118,4 +118,4 @@ df['is_political'] = df.apply(search_func, axis=1)
 #df.to_csv('sermons_pol_variable7-31.csv')
 
 df['pol_count'] = df.apply(count_func, axis=1)
-df.to_csv('sermons_pol_variable7-31.csv')
+df.to_csv('sermons_pol_variable7-31.csv',index_label = False)
