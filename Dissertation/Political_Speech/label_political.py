@@ -42,10 +42,18 @@ def count_func(row):
     matches = [test_value in political_dict 
                for test_value in row["clean"]]
 
-    if any(matches):
-        return len(matches)
-    else:
-        return 0
+    #print(len(matches))
+    #print(type(matches))
+    
+    matches = [x for x in matches if x == True]
+    #print(len(matches))
+    return len(matches)
+
+#    if any(matches):
+#        
+#        return len(matches)
+#    else:
+#        return 0
 
 
 os.chdir(r'C:\Users\steve\Desktop\sermon_dataset')
@@ -113,9 +121,19 @@ ps = nltk.PorterStemmer()
 df['clean'] = df['clean'].apply(lambda x: stemming(x))
 
 ### Match list of semantically related terms against tweets to determine if political
-df['is_political'] = df.apply(search_func, axis=1)
+#df['is_political'] = df.apply(search_func, axis=1)
 
 #df.to_csv('sermons_pol_variable7-31.csv')
 
 df['pol_count'] = df.apply(count_func, axis=1)
 df.to_csv('sermons_pol_variable7-31.csv',index_label = False)
+
+#y = df.loc[0:30]
+#y['clean'] = y['clean'].apply(lambda x: remove_punct(x))
+#y['clean'] = y['clean'].apply(lambda x: tokenization(x.lower()))
+#stopword = nltk.corpus.stopwords.words('english')
+#y['clean'] = y['clean'].apply(lambda x: remove_stopwords(x))
+#ps = nltk.PorterStemmer()
+#y['clean'] = y['clean'].apply(lambda x: stemming(x))
+#
+#y['try_this'] = y.apply(count_func, axis=1)
