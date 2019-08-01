@@ -56,9 +56,11 @@ def count_func(row):
 #        return 0
 
 
-os.chdir(r'C:\Users\steve\Desktop\sermon_dataset')
+#os.chdir(r'C:\Users\steve\Desktop\sermon_dataset')
+os.chdir(r'C:\Users\sum410\Dropbox\Dissertation\Data')
 
-serms = pd.read_csv('sermons_dataset_7-31.csv')
+serms = pd.read_csv('sermons_dataset.csv')
+#serms = pd.read_csv('sermons_dataset_7-31.csv')
 
 ### Create list of political terms, find nearest neighbors from embeddings
 political_dict = ['republican', 'democrat', 'congress',
@@ -116,6 +118,17 @@ df['original_text'] = df['clean']
 df['clean'] = df['clean'].apply(lambda x: remove_punct(x))
 df['clean'] = df['clean'].apply(lambda x: tokenization(x.lower()))
 stopword = nltk.corpus.stopwords.words('english')
+stopword = [x for x in stopword if x != 'she']
+stopword = [x for x in stopword if x != 'he']
+stopword = [x for x in stopword if x != 'her']
+stopword = [x for x in stopword if x != 'him']
+stopword = [x for x in stopword if x != 'hers']
+stopword = [x for x in stopword if x != 'his']
+stopword = [x for x in stopword if x != 'herself']
+stopword = [x for x in stopword if x != 'himself']
+stopword = [x for x in stopword if x != 'hers']
+stopword = [x for x in stopword if x != "she's"]
+stopword = [remove_punct(x) for x in stopword]
 df['clean'] = df['clean'].apply(lambda x: remove_stopwords(x))
 ps = nltk.PorterStemmer()
 df['clean'] = df['clean'].apply(lambda x: stemming(x))
@@ -126,7 +139,8 @@ df['clean'] = df['clean'].apply(lambda x: stemming(x))
 #df.to_csv('sermons_pol_variable7-31.csv')
 
 df['pol_count'] = df.apply(count_func, axis=1)
-df.to_csv('sermons_pol_variable7-31.csv',index_label = False)
+#df.to_csv('sermons_pol_variable7-31.csv',index_label = False)
+df.to_csv('sermons_processed.csv', index_label = False)
 
 #y = df.loc[0:30]
 #y['clean'] = y['clean'].apply(lambda x: remove_punct(x))

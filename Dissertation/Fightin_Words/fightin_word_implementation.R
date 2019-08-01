@@ -14,7 +14,8 @@ library(stargazer)
 library(quanteda)
 library(readtext)
 
-load('final_dissertation_dataset7-27.RData')
+#load('final_dissertation_dataset7-27.RData')
+serms.merge <- read.csv('sermons_processed.csv')
 colnames(serms.merge)
 
 #### Create function???
