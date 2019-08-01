@@ -8,28 +8,25 @@ setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 
 library(tm)
 library(devtools)
-devtools::install_github("matthewjdenny/SpeedReader")
+#devtools::install_github("matthewjdenny/SpeedReader")
 library(SpeedReader)
 library(stargazer)
 library(quanteda)
 library(readtext)
 
 #load('final_dissertation_dataset7-27.RData')
-serms.merge <- read.csv('sermons_processed.csv')
+serms.merge <- read.csv('sermons_processed.csv', stringsAsFactors = FALSE)
 colnames(serms.merge)
-
-#### Create function???
 
 
 summary(serms.merge$word.count)
 serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
 
-x <- gsub(',',' ', serms.merge$clean[1])
-gsub('[[:punct:]]', '', x)
-
+# Final cleaning
 for(i in 1:nrow(serms.merge)){
   serms.merge$clean[i] <- gsub(',',' ', serms.merge$clean[i])
   serms.merge$clean[i] <- gsub('[[:punct:]]', '', serms.merge$clean[i])
+  serms.merge$clean[i] <- gsub("\\s+", " ", serms.merge$clean[i])
 }
 final <- serms.merge
 
@@ -42,13 +39,14 @@ memory.limit()
 memory.limit(size=64000)
 
 
-
-quanteda_dtm <- quanteda::dfm(serms.merge$clean,
-                              select = "[a-zA-Z]{3,}",
-                              valuetype = "regex",#)
+quanteda_dtm <- quanteda::dfm(serms.merge$clean, stem = FALSE, tolower = FALSE)
+                              
+#quanteda_dtm <- quanteda::dfm(serms.merge$clean,
+#                              select = "[a-zA-Z]{3,}",
+#                              valuetype = "regex",#)
                               #tolower=TRUE,
                               #remove=c(",",".","-","\"","'","(",")",";",":",'[',']'), #stopwords(),
-                              stem = TRUE)
+#                              stem = TRUE)
 #save(quanteda_dtm, file = 'huge_dtm7-30.RData')
 #load('huge_dtm7-30.RData')
 
@@ -128,12 +126,13 @@ dev.off()
 serms.merge <- final
 #serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
 
-quanteda_dtm_black <- quanteda::dfm(serms.merge$clean,
-                              select = "[a-zA-Z]{3,}",
-                              valuetype = "regex",#)
+quanteda_dtm_black <- quanteda::dfm(serms.merge$clean, stem = FALSE, tolower = FALSE)
+#quanteda_dtm_black <- quanteda::dfm(serms.merge$clean,
+#                              select = "[a-zA-Z]{3,}",
+#                              valuetype = "regex",#)
                               #tolower=TRUE,
                               #remove=c(",",".","-","\"","'","(",")",";",":",'[',']'), #stopwords(),
-                              stem = TRUE)
+#                              stem = TRUE)
 
 # Convert to a slam::simple_triplet_matrix object
 dtm_black <- convert_quanteda_to_slam(quanteda_dtm_black)
@@ -232,12 +231,13 @@ serms.merge <- final
 #serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
 unique(serms.merge$denom.fixed)
 
-quanteda_dtm_bap <- quanteda::dfm(serms.merge$clean,
-                                    select = "[a-zA-Z]{3,}",
-                                    valuetype = "regex",#)
+quanteda_dtm_bap <- quanteda::dfm(serms.merge$clean, stem = FALSE, tolower = FALSE)
+#quanteda_dtm_bap <- quanteda::dfm(serms.merge$clean,
+#                                    select = "[a-zA-Z]{3,}",
+#                                    valuetype = "regex",#)
                                     #tolower=TRUE,
                                     #remove=c(",",".","-","\"","'","(",")",";",":",'[',']'), #stopwords(),
-                                    stem = TRUE)
+#                                    stem = TRUE)
 
 # Convert to a slam::simple_triplet_matrix object
 #dtm_bap <- convert_quanteda_to_slam(quanteda_dtm_bap)
