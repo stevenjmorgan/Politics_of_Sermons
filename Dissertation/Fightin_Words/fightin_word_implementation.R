@@ -23,6 +23,16 @@ colnames(serms.merge)
 
 summary(serms.merge$word.count)
 serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
+
+x <- gsub(',',' ', serms.merge$clean[1])
+gsub('[[:punct:]]', '', x)
+
+for(i in 1:nrow(serms.merge)){
+  serms.merge$clean[i] <- gsub(',',' ', serms.merge$clean[i])
+  serms.merge$clean[i] <- gsub('[[:punct:]]', '', serms.merge$clean[i])
+}
+final <- serms.merge
+
 serms.merge <- serms.merge[!is.na(serms.merge$gender.final),]
 
 ## Create dtm
@@ -30,14 +40,17 @@ serms.merge <- serms.merge[!is.na(serms.merge$gender.final),]
 gc()
 memory.limit()
 memory.limit(size=64000)
+
+
+
 quanteda_dtm <- quanteda::dfm(serms.merge$clean,
                               select = "[a-zA-Z]{3,}",
                               valuetype = "regex",#)
                               #tolower=TRUE,
                               #remove=c(",",".","-","\"","'","(",")",";",":",'[',']'), #stopwords(),
                               stem = TRUE)
-save(quanteda_dtm, file = 'huge_dtm7-30.RData')
-load('huge_dtm7-30.RData')
+#save(quanteda_dtm, file = 'huge_dtm7-30.RData')
+#load('huge_dtm7-30.RData')
 
 # Convert to a slam::simple_triplet_matrix object
 dtm <- convert_quanteda_to_slam(quanteda_dtm)
@@ -111,8 +124,9 @@ dev.off()
 ### Black vs. non-black ###
 ################################################################################
 
-load('final_dissertation_dataset7-27.RData')
-serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
+#load('final_dissertation_dataset7-27.RData')
+serms.merge <- final
+#serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
 
 quanteda_dtm_black <- quanteda::dfm(serms.merge$clean,
                               select = "[a-zA-Z]{3,}",
@@ -211,9 +225,11 @@ dev.off()
 ################################################################################
 ##### Baptist vs. non-Baptist #####
 ################################################################################
+#serms.merge <- read.csv('sermons_processed.csv')
+serms.merge <- final
 
-load('final_dissertation_dataset7-27.RData')
-serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
+#load('final_dissertation_dataset7-27.RData')
+#serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
 unique(serms.merge$denom.fixed)
 
 quanteda_dtm_bap <- quanteda::dfm(serms.merge$clean,

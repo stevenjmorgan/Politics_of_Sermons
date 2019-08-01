@@ -133,6 +133,9 @@ df['clean'] = df['clean'].apply(lambda x: remove_stopwords(x))
 ps = nltk.PorterStemmer()
 df['clean'] = df['clean'].apply(lambda x: stemming(x))
 
+type(df['clean'][0])
+
+
 ### Match list of semantically related terms against tweets to determine if political
 #df['is_political'] = df.apply(search_func, axis=1)
 
