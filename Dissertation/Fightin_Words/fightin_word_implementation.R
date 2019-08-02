@@ -280,6 +280,9 @@ dev.off()
 ################################################################################
 ######## Independent vs. Non-Indepenent #####
 ################################################################################
+# Create dtm and slam matrix
+quanteda_dtm_bap <- quanteda::dfm(serms.merge$clean, stem = FALSE, tolower = FALSE)
+dtm_bap <- convert_quanteda_to_slam(quanteda_dtm_bap)
 
 # Covariate df
 independ <- as.data.frame(serms.merge[, c('denom.fixed')])
@@ -339,10 +342,11 @@ full.corp.evang <- feature_selection(cont.table.evang,
                                    rank_by_log_odds = F)
 
 png('evangelical_unigram.png', width=12,height=8,units="in",res=100)
-fightin_words_plot(full.corp.ind, positive_category = "Non-Evangelical/Non-Denominational", 
+fightin_words_plot(full.corp.evang, positive_category = "Non-Evangelical/Non-Denominational", 
                    negative_category = "Evangelical/Non-Denominational", 
                    clean_publication_plots = FALSE,
-                   title = "Differences in Language: Evangelical/Non-Denom. vs. Non-Evangelical/Non-Denom.-Preached Sermons",
+                   title = "Differences in Language: Evangelical/Non-Denom. vs. 
+  Non-Evangelical/Non-Denom.-Preached Sermons",
                    display_top_words = 18,
                    max_terms_to_display = 1e+10000)
 dev.off()

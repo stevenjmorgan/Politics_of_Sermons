@@ -15,6 +15,14 @@ nrow(serms.merge)
 serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
 nrow(serms.merge)
 
+### Political
+serms.merge <- read.csv('sermons_pol_variable7-31.csv', stringsAsFactors = F)
+colnames(serms.merge)
+
+
+
+####################
+
 unique(serms.merge$author[which(serms.merge$gender.final == 'female')])
 
 nrow(serms.merge[which(serms.merge$gender.final == 'female'),])
