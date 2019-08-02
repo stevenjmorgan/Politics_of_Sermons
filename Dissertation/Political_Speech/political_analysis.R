@@ -1,14 +1,15 @@
 rm(list=ls())
-setwd("C:/Users/steve/Desktop/sermon_dataset")
+#setwd("C:/Users/steve/Desktop/sermon_dataset")
+setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 
-serms <- read.csv('sermons_pol_variable7-31.csv')
-summary(serms$pol_count)
-summary(serms$pol_count>3)
-nrow(serms[which(serms$pol_count>3),])/nrow(serms)
+#serms <- read.csv('sermons_pol_variable7-31.csv')
+#summary(serms$pol_count)
+#summary(serms$pol_count>3)
+#nrow(serms[which(serms$pol_count>3),])/nrow(serms)
 
 
 load('final_dissertation_dataset7-27.RData')
-write.csv(serms.merge, 'sermons_dataset.csv', row.names = F)
+#write.csv(serms.merge, 'sermons_dataset.csv', row.names = F)
 
 nrow(serms.merge)
 serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
@@ -151,3 +152,24 @@ ggplot(y, aes(x = race, y = mean, fill = race)) +
   geom_bar(stat = "identity", position = "dodge") + theme_bw() + xlab('') + ylab('Mean Word Count') +
   guides(fill=FALSE) + ylim(c(0,2300))
 ggsave('hispanic_white_wc.png')
+
+
+### Number of uploads per pastor by year
+unique.pastors <- numeric(20)
+uploads.per.pastor <- numeric(20)
+years <- unique(serms.merge$year)
+
+for (i in 1:length(unique(serms.merge$year))) {
+  
+  year <- serms.merge[which(serms.merge$year == unique(serms.merge$year)[i]),]
+  unique.pastors[i] <- length(unique(year$author))
+  uploads.per.pastor[i] <- nrow(year)/unique.pastors[i]
+  print(unique(serms.merge$year)[i])
+    
+}
+
+x <- as.data.frame(cbind(years,unique.pastors,uploads.per.pastor))
+x <- x[order(x$years),]
+colnames(x) <- c('Year', 'Unique Pastors', 'Average # of Uploads Per Pastor')
+x$Year <- as.character(x$Year)
+stargazer(x, summary = F, rownames = F)
