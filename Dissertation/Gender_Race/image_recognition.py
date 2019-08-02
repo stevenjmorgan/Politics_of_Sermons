@@ -15,7 +15,8 @@ print(request.text)
 
 print(request.status_code)
 
-os.chdir(r'C:\Users\steve\OneDrive\Documents\GitHub\Politics_of_Sermons\Dissertation')
+#os.chdir(r'C:\Users\steve\OneDrive\Documents\GitHub\Politics_of_Sermons\Dissertation')
+os.chdir(r'C:\Users\sum410\Documents\GitHub\Politics_of_Sermons\Dissertation\Gender_Race')
 
 api_key = 'd45fd466-51e2-4701-8da8-04351c872236'
 api_secret = '171e8465-f548-401d-b63b-caf0dc28df5f'
