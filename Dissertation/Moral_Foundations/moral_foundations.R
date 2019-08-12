@@ -11,7 +11,6 @@ devtools::install_github("kbenoit/quanteda.dictionaries")
 library(quanteda.dictionaries)
 
 load('final_dissertation_dataset7-27.RData')
-serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
 
 # Test set
 output_mfd <- liwcalike(serms.merge$clean[1:4], tolower = TRUE,
@@ -50,7 +49,7 @@ serms.merge <- cbind(serms.merge, mfd.df)
 colnames(serms.merge)
 save(serms.merge, file = 'sermons_mfd_7-30.RData')
 
-
+load('sermons_mfd_7-30.RData')
 
 # Plot distributions
 hist(mfd.df$fairness.vice)
@@ -79,3 +78,22 @@ t.test(serms$fairness.virtue[which(serms$denom == 'Evangelical/Non-Denominationa
        serms$fairness.virtue[which(serms$denom == 'Baptist')])
 t.test(serms$fairness.vice[which(serms$denom == 'Evangelical/Non-Denominational')],
        serms$fairness.vice[which(serms$denom == 'Baptist')])
+
+
+### Combine positive and negative appeals to MF's
+colnames(serms.merge)
+serms.merge <- serms.merge[which(serms.merge$WC > 75),]
+
+serms.merge$care <- serms.merge$care.vice + serms.merge$care.virtue
+summary(serms.merge$care)
+serms.merge$fairness <- serms.merge$fairness.vice + serms.merge$fairness.virtue
+summary(serms.merge$fairness)
+serms.merge$loyalty <- serms.merge$loyalty.vice + serms.merge$loyalty.virtue
+summary(serms.merge$loyalty)
+serms.merge$authority <- serms.merge$authority.vice + serms.merge$authority.virtue
+summary(serms.merge$authority)
+serms.merge$sanctity <- serms.merge$sanctity.vice + serms.merge$sanctity.virtue
+summary(serms.merge$sanctity)
+
+t.test(serms.merge$care[which(serms.merge$denom.fixed == 'Evangelical/Non-Denominational')],
+       serms.merge$care[which(serms.merge$denom.fixed == 'Baptist')])
