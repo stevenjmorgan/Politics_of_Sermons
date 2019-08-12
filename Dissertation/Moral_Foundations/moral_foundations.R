@@ -95,5 +95,40 @@ summary(serms.merge$authority)
 serms.merge$sanctity <- serms.merge$sanctity.vice + serms.merge$sanctity.virtue
 summary(serms.merge$sanctity)
 
+
+aves <- rbind(mean(serms.merge$care), mean(serms.merge$fairness), mean(serms.merge$loyalty), 
+              mean(serms.merge$authority), mean(serms.merge$sanctity))
+sd.2above <- rbind(mean(serms.merge$care) + 2*sd(serms.merge$care), 
+                   mean(serms.merge$fairness) + 2*sd(serms.merge$fairness),
+                   mean(serms.merge$loyalty) + 2*sd(serms.merge$loyalty),
+                   mean(serms.merge$authority) + 2*sd(serms.merge$authority),
+                   mean(serms.merge$sanctity) + 2*sd(serms.merge$sanctity))
+sd.2below <- rbind(mean(serms.merge$care) - 2*sd(serms.merge$care), 
+                   mean(serms.merge$fairness) - 2*sd(serms.merge$fairness),
+                   mean(serms.merge$loyalty) - 2*sd(serms.merge$loyalty),
+                   mean(serms.merge$authority) - 2*sd(serms.merge$authority),
+                   mean(serms.merge$sanctity) - 2*sd(serms.merge$sanctity))
+plot.mf <- as.data.frame(cbind(aves, sd.2above, sd.2below))
+#colnames(plot.mf) <- c('Care', 'Fair', 'Loyalty', 'Authority', 'Sanctity')
+colnames(plot.mf) <- c('Mean','SD Above','SD Below')
+plot.mf$foundation <- c('Care', 'Fair', 'Loyalty', 'Authority', 'Sanctity')
+
+
+barCenters <- barplot(plot.mf$Mean)#, names.arg = plot.mf$foundation)
+text(x = barCenters, y = par("usr")[3] - 1, srt = 45,
+     adj = 1, labels = plot.mf$foundation, xpd = TRUE)
+
+segments(barCenters, plot.mf$`SD Above`, barCenters,
+         plot.mf$`SD Below`, lwd = 1.5)
+
+arrows(barCenters, plot.mf$`SD Below`, barCenters,
+       plot.mf$`SD Above`, lwd = 1.5, angle = 90,
+       code = 3, length = 0.05)
+
+
 t.test(serms.merge$care[which(serms.merge$denom.fixed == 'Evangelical/Non-Denominational')],
        serms.merge$care[which(serms.merge$denom.fixed == 'Baptist')])
+
+
+
+
