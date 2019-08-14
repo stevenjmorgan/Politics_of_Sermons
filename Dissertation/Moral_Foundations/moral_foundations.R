@@ -96,6 +96,7 @@ serms.merge$sanctity <- serms.merge$sanctity.vice + serms.merge$sanctity.virtue
 summary(serms.merge$sanctity)
 
 
+
 aves <- rbind(mean(serms.merge$care), mean(serms.merge$fairness), mean(serms.merge$loyalty), 
               mean(serms.merge$authority), mean(serms.merge$sanctity))
 sd.2above <- rbind(mean(serms.merge$care) + 2*sd(serms.merge$care), 
