@@ -2,7 +2,7 @@
 
 
 rm(list=ls())
-setwd("C:/Users/steve/Dropbox/Dissertation/Data")
+#setwd("C:/Users/steve/Dropbox/Dissertation/Data")
 #setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 #setwd('C:/Users/steve/Desktop/sermon_dataset')
 
@@ -28,7 +28,7 @@ for(i in 1:nrow(serms.merge)){
 ## Create dtm
 gc()
 memory.limit()
-memory.limit(size=64000)
+#memory.limit(size=64000)
 
 
 #quanteda_dtm <- quanteda::dfm(serms.merge$clean, stem = FALSE, tolower = FALSE)
@@ -78,9 +78,12 @@ poliblogPrevFit <- stm(documents = out$documents, vocab = out$vocab,
                        K = 20, prevalence =~ female.final + black.final + hispanic.final + api.final + denom.fixed,
                        max.em.its = 75, data = out$meta,
                        init.type = "Spectral")
+save(poliblogPrevFit, file = 'stm_model.RData')
 
 # Plot topics
+pdf('plot_topics.pdf')
 plot(poliblogPrevFit, type = "summary", xlim = c(0, .5))
+dev.off()
 
 # Analyze model
 labelTopics(poliblogPrevFit, c(3, 4, 5))
