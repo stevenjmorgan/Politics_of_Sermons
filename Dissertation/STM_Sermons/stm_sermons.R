@@ -1,9 +1,8 @@
 ### This script implements an STM on the sermons dataset.
 
-
 rm(list=ls())
 #setwd("C:/Users/steve/Dropbox/Dissertation/Data")
-#setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
+setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 #setwd('C:/Users/steve/Desktop/sermon_dataset')
 
 library(stm)
@@ -28,7 +27,7 @@ for(i in 1:nrow(serms.merge)){
 ## Create dtm
 gc()
 memory.limit()
-#memory.limit(size=64000)
+memory.limit(size=10000000000000)
 
 
 #quanteda_dtm <- quanteda::dfm(serms.merge$clean, stem = FALSE, tolower = FALSE)
