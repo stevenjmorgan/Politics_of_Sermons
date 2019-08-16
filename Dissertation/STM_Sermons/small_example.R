@@ -15,7 +15,7 @@ colnames(data)
 summary(data$word.count)
 data <- data[which(data$word.count > 75),]
 #set.seed(24519)
-#serms.merge <- data[sample(nrow(data), 200),]
+serms.merge <- data[sample(nrow(data), 200),]
 serms.merge <- data
 
 # Final cleaning
@@ -92,4 +92,3 @@ prep <- estimateEffect(1:20 ~ female.final + black.final + hispanic.final + api.
                        meta = out$meta, uncertainty = "Global")
 summary(prep)
 save(prep, 'model_results.RData')
-
