@@ -132,4 +132,44 @@ t.test(serms.merge$care[which(serms.merge$denom.fixed == 'Evangelical/Non-Denomi
 
 
 
+plot.mf$sd <- c(sd(serms.merge$care), sd(serms.merge$fairness), sd(serms.merge$loyalty),
+                sd(serms.merge$authority), sd(serms.merge$sanctity))
+plot.mf$se <- plot.mf$sd / sqrt(nrow(serms.merge))
 
+plotTop <- max(plot.mf$Mean) +
+  plot.mf[plot.mf$Mean == max(plot.mf$Mean), 6] * 3
+
+barCenters <- barplot(height = plot.mf$Mean,
+                      names.arg = plot.mf$foundation,
+                      beside = true, las = 2,
+                      ylim = c(0, plotTop),
+                      cex.names = 0.75, xaxt = "n",
+                      main = "Mileage by No. Cylinders and No. Gears",
+                      ylab = "Miles per Gallon",
+                      border = "black", axes = TRUE)
+
+# Specify the groupings. We use srt = 45 for a
+# 45 degree string rotation
+text(x = barCenters, y = par("usr")[3] - 1, srt = 45,
+     adj = 1, labels = plot.mf$foundation, xpd = TRUE)
+
+segments(barCenters, plot.mf$Mean - plot.mf$se * 2, barCenters,
+         plot.mf$Mean + plot.mf$se * 2, lwd = 1.5)
+
+arrows(barCenters, plot.mf$Mean - plot.mf$se * 2, barCenters,
+       plot.mf$Mean + plot.mf$se * 2, lwd = 1.5, angle = 90,
+       code = 3, length = 0.05)
+
+library(ggplot2)
+dodge <- position_dodge(width = 0.9)
+limits <- aes(ymax = plot.mf$Mean + plot.mf$se,
+              ymin = plot.mf$Mean - plot.mf$se)
+
+colnames(plot.mf)[4] <- 'Foundation'
+p <- ggplot(data = plot.mf, aes(x = Foundation, y = Mean, fill = Foundation))
+
+p + geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits, position = dodge, width = 0.25) +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        axis.title.x=element_blank())
+ggsave('mf_dimensions.png')
