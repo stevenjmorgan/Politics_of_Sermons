@@ -1,5 +1,6 @@
 rm(list=ls())
-setwd("C:/Users/steve/Desktop/sermon_dataset")
+#setwd("C:/Users/steve/Desktop/sermon_dataset")
+setwd('C:/Users/steve/Dropbox/Dissertation/Data')
 #setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 
 #serms <- read.csv('sermons_pol_variable7-31.csv')
@@ -8,7 +9,7 @@ setwd("C:/Users/steve/Desktop/sermon_dataset")
 #nrow(serms[which(serms$pol_count>3),])/nrow(serms)
 
 
-load('final_dissertation_dataset7-27.RData')
+#load('final_dissertation_dataset7-27.RData')
 #write.csv(serms.merge, 'sermons_dataset.csv', row.names = F)
 
 serms.merge <- read.csv('sermons_processed.csv', stringsAsFactors = F)
@@ -35,22 +36,22 @@ pol.dict <- paste(c('republican', 'democrat', 'congress', 'senate', 'gop', 'dem'
               'kennedi', 'feder','protest', 'pelosi','policymak', 'bipartisan',
               'bipartisanship','congress', 'legisl', 'medicaid', 'medicar', 
               'aca', 'democraci', 'lgbt', 'lgbtq', 'filibust', 'capitol',
-              'antiimigr','obamacar','migrant', 'sanctuaryc', 'refuge','asylum',
+              'antiimigr','obamacar','migrant', 'refuge','asylum',
               'salvadoran', 'elsalvador', 'detent', 'deport', 'incarcer',
               'detain','border', 'discriminatori', 'antiabort', 'welfar', 
               'grassley','politician', 'aclu', 'partisan', 'delegitim',
               'transgend', 'unborn', 'abort', 'kamala', 'vote', 'ballot', 
-              'voter', 'elect','abort', 'prolif', 'environ','ideolog', 
+              'voter','abort', 'prolif', 'environ','ideolog', 
               'kavanaugh','unconstitut', 'ideologu', 'proabort','antiabort',
               'legislatur'), collapse='|')
-serms.merge$pol_count <- str_count(serms.merge$clean[1], pol.dict)
+serms.merge$pol_count <- str_count(serms.merge$clean, pol.dict)
 
-summary(serms.merge$pol_count >= 5)
-pastors <- serms.merge[which(serms.merge$pol_count >= 5),]
+summary(serms.merge$pol_count >= 8)
+pastors <- serms.merge[which(serms.merge$pol_count >= 8),]
 length(unique(pastors$author))
 length(unique(serms.merge$author))
 
-serms.merge$is.pol <- ifelse(serms.merge$pol_count >= 5, 1, 0)
+serms.merge$is.pol <- ifelse(serms.merge$pol_count >= 8, 1, 0)
 
 library(car)
 serms.merge$rel.trad <- recode(serms.merge$denom.fixed, 
@@ -211,10 +212,22 @@ serms.merge$pre2004 <- ifelse(is.between(serms.merge$date.con, election[4], pre2
 serms.merge$pre2000 <- ifelse(is.between(serms.merge$date.con, election[5], pre2000), 1, 0)
 serms.merge$elect.szn <- rowSums(serms.merge[,c("pre2016", "pre2012", "pre2008", "pre2004", "pre2000")])
 
-pres <- serms.merge[which(serms.merge$elect.szn == 1),]
-non <- serms.merge[which(serms.merge$elect.szn == 0),]
+#pres <- serms.merge[which(serms.merge$elect.szn == 1),]
+#non <- serms.merge[which(serms.merge$elect.szn == 0),]
 
 
+fit1 <- glm(is.pol~elect.szn+gender.final+black.final+hispanic.final+api.final+cath+
+             evang+other+region+as.factor(year), data = serms.merge,
+           family = "binomial")
+summary(fit1)
+
+library(stargazer)
+stargazer(fit1, dep.var.labels = 'Political Sermon', 
+          covariate.labels= c('Election', 'Female','Black', 'Hispanic', 'Asian', 'Catholic','Evangelical',
+                              'Other','Northeast','South','West'),
+          star.char = c("*", "**", "***"),
+          star.cutoffs = c(.05, .01, .001),
+          single.row = T)
 
 
 
