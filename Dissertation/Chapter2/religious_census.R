@@ -126,28 +126,11 @@ ggsave('norm_adherents_count_2010.png')
 
 
 
-
-###############################################################################################################
-### Bad maps
-###############################################################################################################
-
-
-ggplot(data = county.data.merge,
-       mapping = aes(x = long, y = lat,
-                     fill = TOTCNG, 
-                     group = group)) + geom_polygon(color = "gray90", size = 0.05) + coord_equal()
+######################################################################################################
+### 2000 US Religion Census Data
+######################################################################################################
+census2000 <- read.xlsx('Religious Congregations and Membership Study, 2000 (Counties File).xlsx',
+                        sheetIndex = 1, stringsAsFactors = FALSE)
 
 
 
-
-plot_usmap(regions = "counties", data = county.data.merge, values = "POP2010", lines = "blue") + 
-  scale_fill_continuous(name = "Congregations (2010)", label = scales::comma) + 
-  theme(legend.position = "right")
-
-plot_usmap(regions = "counties") + 
-  labs(title = "US Counties", subtitle = "This is a blank map of the counties of the United States.") + 
-  theme(panel.background = element_rect(colour = "black", fill = "lightblue"))
-
-plot_usmap(data = statepop, values = "pop_2015", lines = "red") + 
-  scale_fill_continuous(name = "Population (2015)", label = scales::comma) + 
-  theme(legend.position = "right")
