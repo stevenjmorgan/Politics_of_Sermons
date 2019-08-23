@@ -95,9 +95,33 @@ p2 + labs(fill = "Congregations Density (Normalized by County Population) - 2010
 ggsave('norm_congregations_count_2010.png')
 
 
+options(scipen = 999)
+### Raw # of adherents by county, 2010
+p <- ggplot(data = county.data.merge,
+            mapping = aes(x = long, y = lat,
+                          fill = TOTADH, 
+                          group = group))
+p1 <- p + geom_polygon(color = "gray90", size = 0.05) + coord_equal()
+p2 <- p1 + scale_fill_gradient(low = "#009999", high = "#0000FF")
+p2 + labs(fill = "Total Adherents Per County - 2010") +
+  theme_map() +
+  guides(fill = guide_legend(nrow = 1)) + 
+  theme(legend.position = "bottom")
+ggsave('raw_adherents_count_2010.png')
 
 
-
+### Proportion of adherents by county (per 1,000 people), 2010
+p <- ggplot(data = county.data.merge,
+            mapping = aes(x = long, y = lat,
+                          fill = TOTRATE, 
+                          group = group))
+p1 <- p + geom_polygon(color = "gray90", size = 0.05) + coord_equal()
+p2 <- p1 + scale_fill_gradient(low = "#F4A582", high = "#B2182B")
+p2 + labs(fill = "Rates of adherence per 1,000 population  by County - 2010") +
+  theme_map() +
+  guides(fill = guide_legend(nrow = 1)) + 
+  theme(legend.position = "bottom")
+ggsave('norm_adherents_count_2010.png')
 
 
 
