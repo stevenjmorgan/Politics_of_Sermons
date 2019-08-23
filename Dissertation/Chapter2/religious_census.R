@@ -129,8 +129,53 @@ ggsave('norm_adherents_count_2010.png')
 ######################################################################################################
 ### 2000 US Religion Census Data
 ######################################################################################################
-census2000 <- read.xlsx('Religious Congregations and Membership Study, 2000 (Counties File).xlsx',
-                        sheetIndex = 1, stringsAsFactors = FALSE)
+census2000 <- read.csv('Religious Congregations and Membership Study, 2000 (Counties File).csv',
+                        stringsAsFactors = FALSE)
 
 
 
+
+
+
+
+
+
+#########################################################################################################
+### Presidential Vote Share ###
+#########################################################################################################
+setwd('C:/Users/sum410/Dropbox/Dissertation/Data/Vote_Share')
+
+load('countypres_2000-2016.RData')
+vote.share <- x
+rm(x)
+
+# Unique id for county and state
+vote.share$county.state <- paste(vote.share$county, vote.share$state_po, sep = ', ')
+
+
+### Convert from long to wide
+library(tidyr)
+no.candidate <- subset(vote.share, select=-c(candidate))
+data_wide <- spread(no.candidate, party, candidatevotes)
+rm(no.candidate, vote.share)
+data_wide$dem_2pvote <- data_wide$democrat / (data_wide$democrat + data_wide$republican)
+dem_vote_wide <- subset(data_wide, select=-c(republican, democrat, green))
+dem_vote_wide <- dem_vote_wide[,-10]
+rm(data_wide)
+
+#x <- spread(dem_vote_wide, year, dem_2pvote)
+
+
+library(reshape2)
+
+y <- dem_vote_wide[,c(1,5,9,10)]
+y <- y[!duplicated(y[c(1,3)]),]
+vote.share.wide <- dcast(y, county.state + FIPS ~ year, value.var="dem_2pvote")
+dem_vote_long <- dem_vote_wide
+rm(dem_vote_wide)
+
+
+
+
+# Merge voting data to merged county file
+county.data.merge <- merge(county_full, census2010, by = 'county.state', all.x = T)
