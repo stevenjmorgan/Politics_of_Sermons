@@ -1,5 +1,6 @@
 rm(list=ls())
-setwd("C:/Users/steve/Desktop/sermon_dataset")
+#setwd("C:/Users/steve/Desktop/sermon_dataset")
+setwd('C:/Users/steve/Dropbox/Dissertation/Data')
 #setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 
 #serms <- read.csv('sermons_pol_variable7-31.csv')
@@ -8,8 +9,10 @@ setwd("C:/Users/steve/Desktop/sermon_dataset")
 #nrow(serms[which(serms$pol_count>3),])/nrow(serms)
 
 
-load('final_dissertation_dataset7-27.RData')
+#load('final_dissertation_dataset7-27.RData')
 #write.csv(serms.merge, 'sermons_dataset.csv', row.names = F)
+
+serms.merge <- read.csv('sermons_processed.csv', stringsAsFactors = F)
 
 nrow(serms.merge)
 serms.merge <- serms.merge[which(serms.merge$word.count > 75),]
@@ -17,15 +20,38 @@ nrow(serms.merge)
 
 ###############################################################################
 ### Political
-serms.merge <- read.csv('sermons_pol_variable7-31.csv', stringsAsFactors = F)
+#serms.merge <- read.csv('sermons_pol_variable7-31.csv', stringsAsFactors = F)
 colnames(serms.merge)
 
-summary(serms.merge$pol_count >= 5)
-pastors <- serms.merge[which(serms.merge$pol_count >= 5),]
+serms.merge$clean <- gsub('[[:punct:]]+', '', serms.merge$clean)
+#serms.merge$clean[1]
+
+library(stringr)
+pol.dict <- paste(c('republican', 'democrat', 'congress', 'senate', 'gop', 'dem', 
+              'mcconel', 'schumer', 'trumpcar', 'lawmak', 'senat', 'legisl', 
+              'obama', 'racist', 'constitut', 'immigr', 'dreamer', 'daca', 
+              'deport', 'muslim', 'racism', 'lgbtq', 'transgend', 'activist',
+              'freedom', 'constitut', 'antilgbtq', 'liberti', 'civil', 
+              'anticivil','bigotri', 'judici', 'nomine', 'gorusch', 'clinton', 
+              'kennedi', 'feder','protest', 'pelosi','policymak', 'bipartisan',
+              'bipartisanship','congress', 'legisl', 'medicaid', 'medicar', 
+              'aca', 'democraci', 'lgbt', 'lgbtq', 'filibust', 'capitol',
+              'antiimigr','obamacar','migrant', 'refuge','asylum',
+              'salvadoran', 'elsalvador', 'detent', 'deport', 'incarcer',
+              'detain','border', 'discriminatori', 'antiabort', 'welfar', 
+              'grassley','politician', 'aclu', 'partisan', 'delegitim',
+              'transgend', 'unborn', 'abort', 'kamala', 'vote', 'ballot', 
+              'voter','abort', 'prolif', 'environ','ideolog', 
+              'kavanaugh','unconstitut', 'ideologu', 'proabort','antiabort',
+              'legislatur'), collapse='|')
+serms.merge$pol_count <- str_count(serms.merge$clean, pol.dict)
+
+summary(serms.merge$pol_count >= 8)
+pastors <- serms.merge[which(serms.merge$pol_count >= 8),]
 length(unique(pastors$author))
 length(unique(serms.merge$author))
 
-serms.merge$is.pol <- ifelse(serms.merge$pol_count >= 5, 1, 0)
+serms.merge$is.pol <- ifelse(serms.merge$pol_count >= 8, 1, 0)
 
 library(car)
 serms.merge$rel.trad <- recode(serms.merge$denom.fixed, 
@@ -111,6 +137,102 @@ library(stargazer)
 stargazer(fit, dep.var.labels = 'Political Sermon', 
           covariate.labels= c('Female','Black', 'Hispanic', 'Asian', 'Catholic','Evangelical',
                               'Other','Northeast','South','West'))
+
+######### Election coding ############
+
+summary(is.na(serms.merge$date))
+class(serms.merge$date)
+serms.merge$date.con <- as.Date(serms.merge$date,format='%B %d, %Y')
+serms.merge$year <- year(serms.merge$date.con)
+serms.merge$y2018 <- ifelse(serms.merge$year == 2018, 1, 0)
+serms.merge$y2017 <- ifelse(serms.merge$year == 2017, 1, 0)
+serms.merge$y2016 <- ifelse(serms.merge$year == 2016, 1, 0)
+serms.merge$y2015 <- ifelse(serms.merge$year == 2015, 1, 0)
+serms.merge$y2014 <- ifelse(serms.merge$year == 2014, 1, 0)
+serms.merge$y2013 <- ifelse(serms.merge$year == 2013, 1, 0)
+serms.merge$y2012 <- ifelse(serms.merge$year == 2012, 1, 0)
+serms.merge$y2011 <- ifelse(serms.merge$year == 2011, 1, 0)
+serms.merge$y2010 <- ifelse(serms.merge$year == 2010, 1, 0)
+serms.merge$y2009 <- ifelse(serms.merge$year == 2009, 1, 0)
+serms.merge$y2008 <- ifelse(serms.merge$year == 2008, 1, 0)
+serms.merge$y2007 <- ifelse(serms.merge$year == 2007, 1, 0)
+serms.merge$y2006 <- ifelse(serms.merge$year == 2006, 1, 0)
+serms.merge$y2005 <- ifelse(serms.merge$year == 2005, 1, 0)
+serms.merge$y2004 <- ifelse(serms.merge$year == 2004, 1, 0)
+serms.merge$y2003 <- ifelse(serms.merge$year == 2003, 1, 0)
+serms.merge$y2002 <- ifelse(serms.merge$year == 2002, 1, 0)
+serms.merge$y2001 <- ifelse(serms.merge$year == 2001, 1, 0)
+serms.merge$y2000 <- ifelse(serms.merge$year == 2000, 1, 0)
+
+election <- as.Date(c('2016-11-08', '2012-11-06', '2008-11-04', '2004-11-02', 
+                      '2000-11-07', '2014-11-04', '2010-11-02', '2006-11-07',
+                      '2002-11-05'))
+pre2016 <- seq(election[1], length = 2, by = "-6 months")[2]
+pre2012 <- seq(election[2], length = 2, by = "-6 months")[2]
+pre2008 <- seq(election[3], length = 2, by = "-6 months")[2]
+pre2004 <- seq(election[4], length = 2, by = "-6 months")[2]
+pre2000 <- seq(election[5], length = 2, by = "-6 months")[2]
+pre2016.3 <- seq(election[1], length = 2, by = "-3 months")[2]
+pre2012.3 <- seq(election[2], length = 2, by = "-3 months")[2]
+pre2008.3 <- seq(election[3], length = 2, by = "-3 months")[2]
+pre2004.3 <- seq(election[4], length = 2, by = "-3 months")[2]
+pre2000.3 <- seq(election[5], length = 2, by = "-3 months")[2]
+pre2016.1 <- seq(election[1], length = 2, by = "-1 months")[2]
+pre2012.1 <- seq(election[2], length = 2, by = "-1 months")[2]
+pre2008.1 <- seq(election[3], length = 2, by = "-1 months")[2]
+pre2004.1 <- seq(election[4], length = 2, by = "-1 months")[2]
+pre2000.1 <- seq(election[5], length = 2, by = "-1 months")[2]
+pre2016.2wk <- seq(election[1], length = 2, by = "-2 weeks")[2]
+pre2012.2wk <- seq(election[2], length = 2, by = "-2 weeks")[2]
+pre2008.2wk <- seq(election[3], length = 2, by = "-2 weeks")[2]
+pre2004.2wk <- seq(election[4], length = 2, by = "-2 weeks")[2]
+pre2000.2wk <- seq(election[5], length = 2, by = "-2 weeks")[2]
+pre2016.after <- seq(election[1], length = 2, by = "+2 weeks")[2]
+pre2012.after <- seq(election[2], length = 2, by = "+2 weeks")[2]
+pre2008.after <- seq(election[3], length = 2, by = "+2 weeks")[2]
+pre2004.after <- seq(election[4], length = 2, by = "+2 weeks")[2]
+pre2000.after <- seq(election[5], length = 2, by = "+2 weeks")[2]
+
+# Calculate for midterms (1 month prior)
+mid2014 <- seq(election[6], length = 2, by = "-1 months")[2]
+mid2010 <- seq(election[7], length = 2, by = "-1 months")[2]
+mid2006 <- seq(election[8], length = 2, by = "-1 months")[2]
+mid2002 <- seq(election[9], length = 2, by = "-1 months")[2]
+
+# Function to determine if sermon date is between election and pre-election period
+is.between <- function(x,a,b){ 
+  x < a & x >= b 
+} 
+
+# 6 month
+serms.merge$pre2016 <- ifelse(is.between(serms.merge$date.con, election[1], pre2016), 1, 0)
+serms.merge$pre2012 <- ifelse(is.between(serms.merge$date.con, election[2], pre2012), 1, 0)
+serms.merge$pre2008 <- ifelse(is.between(serms.merge$date.con, election[3], pre2008), 1, 0)
+serms.merge$pre2004 <- ifelse(is.between(serms.merge$date.con, election[4], pre2004), 1, 0)
+serms.merge$pre2000 <- ifelse(is.between(serms.merge$date.con, election[5], pre2000), 1, 0)
+serms.merge$elect.szn <- rowSums(serms.merge[,c("pre2016", "pre2012", "pre2008", "pre2004", "pre2000")])
+
+#pres <- serms.merge[which(serms.merge$elect.szn == 1),]
+#non <- serms.merge[which(serms.merge$elect.szn == 0),]
+
+
+fit1 <- glm(is.pol~elect.szn+gender.final+black.final+hispanic.final+api.final+cath+
+             evang+other+region+as.factor(year), data = serms.merge,
+           family = "binomial")
+summary(fit1)
+
+library(stargazer)
+stargazer(fit1, dep.var.labels = 'Political Sermon', 
+          covariate.labels= c('Election', 'Female','Black', 'Hispanic', 'Asian', 'Catholic','Evangelical',
+                              'Other','Northeast','South','West'),
+          star.char = c("*", "**", "***"),
+          star.cutoffs = c(.05, .01, .001),
+          single.row = T)
+
+
+
+
+
 
 
 ###############################################################################

@@ -96,7 +96,6 @@ serms.merge$sanctity <- serms.merge$sanctity.vice + serms.merge$sanctity.virtue
 summary(serms.merge$sanctity)
 
 
-
 aves <- rbind(mean(serms.merge$care), mean(serms.merge$fairness), mean(serms.merge$loyalty), 
               mean(serms.merge$authority), mean(serms.merge$sanctity))
 sd.2above <- rbind(mean(serms.merge$care) + 2*sd(serms.merge$care), 
@@ -132,4 +131,164 @@ t.test(serms.merge$care[which(serms.merge$denom.fixed == 'Evangelical/Non-Denomi
 
 
 
+plot.mf$sd <- c(sd(serms.merge$care), sd(serms.merge$fairness), sd(serms.merge$loyalty),
+                sd(serms.merge$authority), sd(serms.merge$sanctity))
+plot.mf$se <- plot.mf$sd / sqrt(nrow(serms.merge))
 
+plotTop <- max(plot.mf$Mean) +
+  plot.mf[plot.mf$Mean == max(plot.mf$Mean), 6] * 3
+
+barCenters <- barplot(height = plot.mf$Mean,
+                      names.arg = plot.mf$foundation,
+                      beside = true, las = 2,
+                      ylim = c(0, plotTop),
+                      cex.names = 0.75, xaxt = "n",
+                      main = "Mileage by No. Cylinders and No. Gears",
+                      ylab = "Miles per Gallon",
+                      border = "black", axes = TRUE)
+
+# Specify the groupings. We use srt = 45 for a
+# 45 degree string rotation
+text(x = barCenters, y = par("usr")[3] - 1, srt = 45,
+     adj = 1, labels = plot.mf$foundation, xpd = TRUE)
+
+segments(barCenters, plot.mf$Mean - plot.mf$se * 2, barCenters,
+         plot.mf$Mean + plot.mf$se * 2, lwd = 1.5)
+
+arrows(barCenters, plot.mf$Mean - plot.mf$se * 2, barCenters,
+       plot.mf$Mean + plot.mf$se * 2, lwd = 1.5, angle = 90,
+       code = 3, length = 0.05)
+
+library(ggplot2)
+dodge <- position_dodge(width = 0.9)
+limits <- aes(ymax = plot.mf$Mean + plot.mf$se,
+              ymin = plot.mf$Mean - plot.mf$se)
+
+colnames(plot.mf)[4] <- 'Foundation'
+plot.mf$Foundation <- factor(plot.mf$Foundation, levels = plot.mf$Foundation)
+
+p <- ggplot(data = plot.mf, aes(x = Foundation, y = Mean, fill = Foundation))
+
+p + geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits, position = dodge, width = 0.25) +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        axis.title.x=element_blank())
+ggsave('mf_dimensions.png')
+
+
+
+### Compare denominations
+library(plyr)
+denom <- count(serms.merge$denom.fixed)
+denom <- denom[order(denom$freq, decreasing = T),]
+
+top12 <- serms.merge[which(serms.merge$denom.fixed %in% as.character(denom$x[1:12])),]
+
+### Harm/Care
+harm <- aggregate(top12$care,
+                    by = list(top12$denom.fixed),
+                    FUN = function(x) c(mean = mean(x), sd = sd(x),
+                                        n = length(x)))
+harm <- do.call(data.frame, harm)
+harm$se <- harm$x.sd / sqrt(harm$x.n)
+colnames(harm) <- c("Denomination", "mean", "sd", "n", "se")
+
+dodge <- position_dodge(width = 0.9)
+limits <- aes(ymax = harm$mean + harm$se,
+              ymin = harm$mean - harm$se)
+
+p <- ggplot(data = harm, aes(x = Denomination, y = mean, fill = Denomination))
+
+p + geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits, position = dodge, width = 0.25) +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        axis.title.x=element_blank()) + ggtitle('Endorsement of Harm/Care Foundation')
+ggsave('harm_care.png')
+
+
+### Fairness
+fair <- aggregate(top12$fairness,
+                  by = list(top12$denom.fixed),
+                  FUN = function(x) c(mean = mean(x), sd = sd(x),
+                                      n = length(x)))
+fair <- do.call(data.frame, fair)
+fair$se <- fair$x.sd / sqrt(fair$x.n)
+colnames(fair) <- c("Denomination", "mean", "sd", "n", "se")
+
+dodge <- position_dodge(width = 0.9)
+limits <- aes(ymax = fair$mean + fair$se,
+              ymin = fair$mean - fair$se)
+
+p <- ggplot(data = fair, aes(x = Denomination, y = mean, fill = Denomination))
+
+p + geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits, position = dodge, width = 0.25) +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        axis.title.x=element_blank()) + ggtitle('Endorsement of Fairness Foundation')
+ggsave('fair.png')
+
+
+### Loyalty
+loyal <- aggregate(top12$loyalty,
+                  by = list(top12$denom.fixed),
+                  FUN = function(x) c(mean = mean(x), sd = sd(x),
+                                      n = length(x)))
+loyal <- do.call(data.frame, loyal)
+loyal$se <- loyal$x.sd / sqrt(loyal$x.n)
+colnames(loyal) <- c("Denomination", "mean", "sd", "n", "se")
+
+dodge <- position_dodge(width = 0.9)
+limits <- aes(ymax = loyal$mean + loyal$se,
+              ymin = loyal$mean - loyal$se)
+
+p <- ggplot(data = loyal, aes(x = Denomination, y = mean, fill = Denomination))
+
+p + geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits, position = dodge, width = 0.25) +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        axis.title.x=element_blank()) + ggtitle('Endorsement of Loyalty/In-Group Foundation')
+ggsave('loyal.png')
+
+
+### Authority
+authority <- aggregate(top12$authority,
+                   by = list(top12$denom.fixed),
+                   FUN = function(x) c(mean = mean(x), sd = sd(x),
+                                       n = length(x)))
+authority <- do.call(data.frame, authority)
+authority$se <- authority$x.sd / sqrt(authority$x.n)
+colnames(authority) <- c("Denomination", "mean", "sd", "n", "se")
+
+dodge <- position_dodge(width = 0.9)
+limits <- aes(ymax = authority$mean + authority$se,
+              ymin = authority$mean - authority$se)
+
+p <- ggplot(data = authority, aes(x = Denomination, y = mean, fill = Denomination))
+
+p + geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits, position = dodge, width = 0.25) +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        axis.title.x=element_blank()) + ggtitle('Endorsement of Authority Foundation')
+ggsave('authority.png')
+
+
+### Sanctity
+sanctity <- aggregate(top12$sanctity,
+                       by = list(top12$denom.fixed),
+                       FUN = function(x) c(mean = mean(x), sd = sd(x),
+                                           n = length(x)))
+sanctity <- do.call(data.frame, sanctity)
+sanctity$se <- sanctity$x.sd / sqrt(sanctity$x.n)
+colnames(sanctity) <- c("Denomination", "mean", "sd", "n", "se")
+
+dodge <- position_dodge(width = 0.9)
+limits <- aes(ymax = sanctity$mean + sanctity$se,
+              ymin = sanctity$mean - sanctity$se)
+
+p <- ggplot(data = sanctity, aes(x = Denomination, y = mean, fill = Denomination))
+
+p + geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits, position = dodge, width = 0.25) +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        axis.title.x=element_blank()) + ggtitle('Endorsement of Sanctity/Purity Foundation')
+ggsave('sanctity.png')
