@@ -74,21 +74,21 @@ meta <- out$meta
 # Estimate stm
 set.seed(24519)
 poliblogPrevFit <- stm(documents = out$documents, vocab = out$vocab,
-                       K = 20, prevalence =~ female.final + black.final + hispanic.final + api.final + denom.fixed,
+                       K = 40, prevalence =~ female.final + black.final + hispanic.final + api.final + denom.fixed,
                        max.em.its = 75, data = out$meta,
                        init.type = "Spectral")
 save(poliblogPrevFit, file = 'stm_model.RData')
 
 # Plot topics
-pdf('plot_topics.pdf')
+pdf('plot_topics40.pdf')
 plot(poliblogPrevFit, type = "summary", xlim = c(0, .5))
 dev.off()
 
 # Analyze model
 labelTopics(poliblogPrevFit, c(3, 4, 5))
 
-prep <- estimateEffect(1:20 ~ female.final + black.final + hispanic.final + api.final + denom.fixed, poliblogPrevFit,
+prep <- estimateEffect(1:40 ~ female.final + black.final + hispanic.final + api.final + denom.fixed, poliblogPrevFit,
                        meta = out$meta, uncertainty = "Global")
 summary(prep)
-save(prep, 'model_results.RData')
+save(prep, file = 'model_results40.RData')
 
