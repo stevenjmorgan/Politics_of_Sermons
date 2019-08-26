@@ -184,13 +184,8 @@ colnames(county.data.merge)[colnames(county.data.merge)=='2004'] <- 'dem.vote.20
 colnames(county.data.merge)[colnames(county.data.merge)=='2008'] <- 'dem.vote.2008'
 colnames(county.data.merge)[colnames(county.data.merge)=='2012'] <- 'dem.vote.2012'
 colnames(county.data.merge)[colnames(county.data.merge)=='2016'] <- 'dem.vote.2016'
-
 summary(county.data.merge$TOTCNG)
-
-
-
-
-
+rm(vote.share.wide, county_full, census2010)
 
 
 #########################################################################################################
@@ -224,3 +219,94 @@ serms.merge$zip.clean[1:10]
 # Drop non-matched counties
 serms.merge <- serms.merge[!is.na(serms.merge$cntyname),]
 dim(serms.merge)
+rm(geocorr.data)
+
+
+### Merge to sermon data
+colnames(serms.merge)
+colnames(county.data.merge)
+serms.merge$fair <- serms.merge$fairness.vice + serms.merge$fairness.virtue
+unique(serms.merge$cntyname)[1:10]
+unique(county.data.merge$county.state.x)[1:10]
+
+# Remove county in county merge data, add comma in sermon dataset
+county.data.merge$county.name.fixed <- gsub(' County', '', county.data.merge$county.state.x)
+serms.merge$county.name.fixed <- gsub("(.*) ","\\1, \\2",serms.merge$cntyname)
+
+#serms.merge$parish <- 0
+#for (i in 1:nrow(serms.merge)) {
+#  if (grepl('Parish', serms.merge$cntyname[i])) {
+#    serms.merge$parish[i] <- 1
+#  }
+#}
+#yo <- serms.merge[which(serms.merge$parish == 1),]
+
+dim(serms.merge)
+colnames(county.data.merge)
+
+# Select variables to retain
+myvars <- c('fips', 'county.state.x', 'name', 'state', 'census_region', 'pop_dens', 'pct_black',
+            'pop', 'female', 'white', 'hh_income', 'su_gun4', 'TOTCNG', 'TOTADH', 'TOTRATE',
+            'EVANCNG', 'EVANADH', 'EVANRATE', 'FIPS', 'STCODE', 'STABBR', 'STNAME', 'CNTYCODE', 
+            'CNTYNAME', 'POP2010', 'county.state.y', 'dem.vote.2000', 'dem.vote.2004', 'dem.vote.2008',
+            'dem.vote.2012', 'dem.vote.2016')
+county.data.merge <- county.data.merge[myvars]
+summary(county.data.merge$TOTCNG)
+summary(county.data.merge$dem.vote.2000)
+summary(county.data.merge$county.state.x == county.data.merge$county.state.y)
+
+
+dim(county.data.merge)
+deduped.county <- county.data.merge[!duplicated(county.data.merge[c(1,2)]),]
+dim(deduped.county)
+
+gc()
+#memory.limit(64000)
+serms.merge <- merge(serms.merge, deduped.county, by.x = 'county.name.fixed', 
+           by.y = 'county.state.y', all.x = T, all.y = F)
+dim(serms.merge)
+
+summary(serms.merge$dem.vote.2016)
+
+
+#summary(lm(fair~dem.vote.2000+dem.vote.2004+dem.vote.2008+dem.vote.2012+dem.vote.2016, data = serms.merge))
+
+
+#### Democratic vote share variable
+serms.merge$dem.share <- NA       ###
+for (i in 1:nrow(serms.merge)) {
+  
+  if (serms.merge$year[i] < 2004) {
+    serms.merge$dem.share[i] <- serms.merge$dem.vote.2000[i]
+  }
+  
+  if (serms.merge$year[i] >= 2004 & serms.merge$year[i] < 2008) {
+    serms.merge$dem.share[i] <- serms.merge$dem.vote.2004[i]
+  }
+  
+  if (serms.merge$year[i] >= 2008 & serms.merge$year[i] < 2012) {
+    serms.merge$dem.share[i] <- serms.merge$dem.vote.2008[i]
+  }
+  
+  if (serms.merge$year[i] >= 2012 & serms.merge$year[i] < 2016) {
+    serms.merge$dem.share[i] <- serms.merge$dem.vote.2012[i]
+  }
+  
+  if (serms.merge$year[i] >= 2016) {
+    serms.merge$dem.share[i] <- serms.merge$dem.vote.2016[i]
+  }
+}
+summary(serms.merge$dem.share)
+
+
+### Variables for models
+colnames(serms.merge)
+myvars <- c('api', 'black', 'hispanic', 'white.x', 'gender.final', 'pop10', 'Parenth', 'census_region',
+            'pop_dens', 'pct_black', 'white.y', 'female', 'hh_income', 'su_gun4', 'TOTCNG',
+            'TOTADH', 'TOTRATE', 'EVANCNG', 'EVANADH', 'EVANRATE', 'STNAME', 'dem.share', 'year', 'fair')
+model.data <- serms.merge[myvars]
+
+non.miss <- model.data[complete.cases(model.data),]
+dim(non.miss)
+
+fit1 <- lm(fair~)
