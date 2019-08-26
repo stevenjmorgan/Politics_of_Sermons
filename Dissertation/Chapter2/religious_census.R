@@ -125,16 +125,11 @@ ggsave('norm_adherents_count_2010.png')
 
 
 
-
 ######################################################################################################
 ### 2000 US Religion Census Data
 ######################################################################################################
-census2000 <- read.csv('Religious Congregations and Membership Study, 2000 (Counties File).csv',
-                        stringsAsFactors = FALSE)
-
-
-
-
+#census2000 <- read.csv('Religious Congregations and Membership Study, 2000 (Counties File).csv',
+#                        stringsAsFactors = FALSE)
 
 
 
@@ -172,8 +167,12 @@ y <- dem_vote_wide[,c(1,5,9,10)]
 y <- y[!duplicated(y[c(1,3)]),]
 vote.share.wide <- dcast(y, county.state + FIPS ~ year, value.var="dem_2pvote")
 dem_vote_long <- dem_vote_wide
-rm(dem_vote_wide)
+rm(dem_vote_wide, dem_vote_long, y, p, p1, p2)
 
+
+#########################################################################################################
+# Merge voting data to merged county file
+county.data.merge <- merge(county_full, census2010, by = 'county.state', all.x = T)
 
 
 #########################################################################################################
@@ -181,11 +180,29 @@ rm(dem_vote_wide)
 #########################################################################################################
 load('C:/Users/sum410/Dropbox/Dissertation/Data/sermons_mfd_7-30.RData')
 
+serms.merge <- serms.merge[which(serms.merge$word.count > 100),]
+serms.merge$zip.clean[1:10]
+length(unique(serms.merge$zip.clean))
+
+# Read in zip-to-county data
+geocorr.data <- read.csv('C:/Users/sum410/Dropbox/Dissertation/Data/Census/geocorr2014.csv', stringsAsFactors = F)
+geocorr.data <- geocorr.data[-1,]
+
+# Subset geocorr data to include zip code, county name, and coutny population
+geocorr.data <- geocorr.data[,c('county','zcta5','cntyname','pop10', 'cntysc')]
 
 
+serms.merge <- merge(serms.merge, geocorr.data, by.x = 'zip.clean', by.y = 'zcta5', all.x = T, all.y = F)
+dim(serms.merge)
+dim(serms.county)
 
+serms.merge <- serms.merge[!duplicated(serms.merge$sermon),]
+dim(serms.county)
+unique(serms.merge$cntyname)
+summary(is.na(serms.merge$cntyname))
+serms.merge$cntyname[1:10]
+serms.merge$zip.clean[1:10]
 
-
-#########################################################################################################
-# Merge voting data to merged county file
-county.data.merge <- merge(county_full, census2010, by = 'county.state', all.x = T)
+# Drop non-matched counties
+serms.merge <- serms.merge[!is.na(serms.merge$cntyname),]
+dim(serms.merge)
