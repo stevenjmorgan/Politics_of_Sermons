@@ -179,9 +179,13 @@ rm(dem_vote_wide)
 #########################################################################################################
 ### Aggregate sermon data to county level w/ Mizzou toolkit ###
 #########################################################################################################
+load('C:/Users/sum410/Dropbox/Dissertation/Data/sermons_mfd_7-30.RData')
 
 
 
 
+
+
+#########################################################################################################
 # Merge voting data to merged county file
 county.data.merge <- merge(county_full, census2010, by = 'county.state', all.x = T)
