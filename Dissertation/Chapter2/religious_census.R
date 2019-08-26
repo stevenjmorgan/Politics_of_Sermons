@@ -298,15 +298,68 @@ for (i in 1:nrow(serms.merge)) {
 }
 summary(serms.merge$dem.share)
 
+# Code rel. trad
+library(car)
+serms.merge$rel.trad <- recode(serms.merge$denom.fixed, 
+                               "'Evangelical/Non-Denominational' = 'evang'; 
+                               'Baptist' = 'evang'; 'Apostolic' = 'evang';
+                               'Lutheran' = 'mainline'; 
+                               'Christian/Church Of Christ' = 'evang';
+                               'Methodist' = 'mainline';
+                               'Independent/Bible' = 'other'; 
+                               'Pentecostal' = 'evang'; 'Nazarene' = 'evang';
+                               '*other' = 'other'; 
+                               'Presbyterian/Reformed' = 'mainline';
+                               'Bible Church' = 'evang'; 'Catholic' = 'cath';
+                               'Evangelical Free' = 'evang'; 
+                               'Holiness' = 'evang'; 'Adventist' = 'evang';
+                               'Assembly Of God' = 'evang';
+                               'Church Of God' = 'evang';
+                               'Christian Church' = 'other';
+                               'United Methodist' = 'mainline';
+                               'Christian Missionary Alliance' = 'evang';
+                               'Foursquare' = 'evang';
+                               'Seventh-Day Adventist' = 'evang';
+                               'Wesleyan' = 'evang';
+                               'Episcopal/Anglican' = 'mainline';
+                               'Orthodox' = 'other';
+                               'Charismatic' = 'evang';
+                               'Free Methodist' = 'evang';
+                               'Calvary Chapel' = 'evang';
+                               'Brethren' = 'evang';
+                               'Vineyard' = 'evang';
+                               'Mennonite' = 'evang';
+                               'Friends' = 'other';
+                               'Anglican' = 'mainline';
+                               'Congregational' = 'mainline';
+                               'Disciples Of Christ' = 'mainline';
+                               'Salvation Army' = 'evang';
+                               'Grace Brethren' = 'other';
+                               'Episcopal' = 'mainline';
+                               'Other' = 'other'; else = 'other'")
+
+serms.merge$cath <- ifelse(serms.merge$rel.trad == 'cath', 1, 0)
+serms.merge$main <- ifelse(serms.merge$rel.trad == 'mainline', 1, 0)
+serms.merge$evang <- ifelse(serms.merge$rel.trad == 'evang', 1, 0)
+serms.merge$other <- ifelse(serms.merge$rel.trad == 'other', 1, 0)
+unique(serms.merge$race)
+serms.merge$black.final <- ifelse(serms.merge$race == 'black', 1, 0)
+serms.merge$hispanic.final <- ifelse(serms.merge$race == 'hispanic', 1, 0)
+serms.merge$white.final <- ifelse(serms.merge$race == 'white', 1, 0)
+serms.merge$api.final <- ifelse(serms.merge$race == 'api', 1, 0)
 
 ### Variables for models
 colnames(serms.merge)
-myvars <- c('api', 'black', 'hispanic', 'white.x', 'gender.final', 'pop10', 'Parenth', 'census_region',
-            'pop_dens', 'pct_black', 'white.y', 'female', 'hh_income', 'su_gun4', 'TOTCNG',
-            'TOTADH', 'TOTRATE', 'EVANCNG', 'EVANADH', 'EVANRATE', 'STNAME', 'dem.share', 'year', 'fair')
+myvars <- c('gender.final', 'pop10', 'Parenth', 'census_region',
+            'pop_dens', 'pct_black', 'white.y', 'female', 'hh_income', 'su_gun4', 'TOTCNG', 
+            'TOTADH', 'TOTRATE', 'EVANCNG', 'EVANADH', 'EVANRATE', 'STNAME', 'dem.share', 'year', 'fair',
+            'cath', 'main', 'evang', 'other', 'black.final', 'hispanic.final', 'white.final', 'api.final')
 model.data <- serms.merge[myvars]
 
 non.miss <- model.data[complete.cases(model.data),]
 dim(non.miss)
+non.miss$female.pastor <- ifelse(non.miss$gender.final == 'female', 1, 0)
 
-fit1 <- lm(fair~)
+fit1 <- lm(fair~TOTCNG+cath+main+other+black.final+hispanic.final+api.final+female.pastor+census_region,
+           data = non.miss)
+summary(fit1)
