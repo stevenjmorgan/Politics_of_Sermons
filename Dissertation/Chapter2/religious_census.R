@@ -160,7 +160,6 @@ rm(data_wide)
 
 #x <- spread(dem_vote_wide, year, dem_2pvote)
 
-
 library(reshape2)
 
 y <- dem_vote_wide[,c(1,5,9,10)]
@@ -173,6 +172,25 @@ rm(dem_vote_wide, dem_vote_long, y, p, p1, p2)
 #########################################################################################################
 # Merge voting data to merged county file
 county.data.merge <- merge(county_full, census2010, by = 'county.state', all.x = T)
+rm(county_full)
+
+dim(county.data.merge)
+county.data.merge <- merge(county.data.merge, vote.share.wide, by.x = 'fips', by.y = 'FIPS', all.x = T)
+dim(county.data.merge)
+summary(county.data.merge$`2000`)
+
+colnames(county.data.merge)[colnames(county.data.merge)=='2000'] <- 'dem.vote.2000'
+colnames(county.data.merge)[colnames(county.data.merge)=='2004'] <- 'dem.vote.2004'
+colnames(county.data.merge)[colnames(county.data.merge)=='2008'] <- 'dem.vote.2008'
+colnames(county.data.merge)[colnames(county.data.merge)=='2012'] <- 'dem.vote.2012'
+colnames(county.data.merge)[colnames(county.data.merge)=='2016'] <- 'dem.vote.2016'
+
+summary(county.data.merge$TOTCNG)
+
+
+
+
+
 
 
 #########################################################################################################
