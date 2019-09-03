@@ -9,3 +9,7 @@ load('C:/Users/steve/Dropbox/Dissertation/Data/model_sermons_subset.RData')
 serms.merge <- serms.merge[which(serms.merge$word.count > 100),]
 serms.merge$zip.clean[1:10]
 length(unique(serms.merge$zip.clean))
+
+# Sample
+set.seed(24519)
+smp <- serms.merge[sample(nrow(serms.merge),500),]
