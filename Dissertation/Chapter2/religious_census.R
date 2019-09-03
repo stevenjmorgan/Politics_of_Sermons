@@ -2,7 +2,8 @@
 ### descriptives, and merges with the sermon dataset.
 
 rm(list=ls())
-setwd("C:/Users/sum410/Dropbox/Dissertation/Data/Census")
+#setwd("C:/Users/sum410/Dropbox/Dissertation/Data/Census")
+setwd("C:/Users/steve/Dropbox/Dissertation/Data/Census")
 
 #library(foreign)
 library(xlsx)
