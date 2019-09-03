@@ -4,7 +4,7 @@ rm(list=ls())
 #setwd("C:/Users/sum410/Dropbox/Dissertation/Data/Census")
 setwd("C:/Users/steve/Dropbox/Dissertation/Data/Census")
 
-load('C:/Users/sum410/Dropbox/Dissertation/Data/sermons_mfd_7-30.RData')
+load('C:/Users/steve/Dropbox/Dissertation/Data/model_sermons_subset.RData')
 
 serms.merge <- serms.merge[which(serms.merge$word.count > 100),]
 serms.merge$zip.clean[1:10]

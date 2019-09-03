@@ -139,7 +139,9 @@ ggsave('norm_adherents_count_2010.png')
 #########################################################################################################
 ### Presidential Vote Share ###
 #########################################################################################################
-setwd('C:/Users/sum410/Dropbox/Dissertation/Data/Vote_Share')
+#setwd('C:/Users/sum410/Dropbox/Dissertation/Data/Vote_Share')
+setwd('C:/Users/steve/Dropbox/Dissertation/Data/Vote_Share')
+
 
 load('countypres_2000-2016.RData')
 vote.share <- x
@@ -192,14 +194,16 @@ rm(vote.share.wide, county_full, census2010)
 #########################################################################################################
 ### Aggregate sermon data to county level w/ Mizzou toolkit ###
 #########################################################################################################
-load('C:/Users/sum410/Dropbox/Dissertation/Data/sermons_mfd_7-30.RData')
+#load('C:/Users/sum410/Dropbox/Dissertation/Data/sermons_mfd_7-30.RData')
+load('C:/Users/steve/Dropbox/Dissertation/Data/sermons_mfd_7-30.RData')
 
 serms.merge <- serms.merge[which(serms.merge$word.count > 100),]
 serms.merge$zip.clean[1:10]
 length(unique(serms.merge$zip.clean))
 
 # Read in zip-to-county data
-geocorr.data <- read.csv('C:/Users/sum410/Dropbox/Dissertation/Data/Census/geocorr2014.csv', stringsAsFactors = F)
+#geocorr.data <- read.csv('C:/Users/sum410/Dropbox/Dissertation/Data/Census/geocorr2014.csv', stringsAsFactors = F)
+geocorr.data <- read.csv('C:/Users/steve/Dropbox/Dissertation/Data/Census/geocorr2014.csv', stringsAsFactors = F)
 geocorr.data <- geocorr.data[-1,]
 
 # Subset geocorr data to include zip code, county name, and coutny population
@@ -268,6 +272,11 @@ serms.merge <- merge(serms.merge, deduped.county, by.x = 'county.name.fixed',
 dim(serms.merge)
 
 summary(serms.merge$dem.vote.2016)
+
+#### Save df
+save(serms.merge, file = 'model_sermons_subset.RData')
+
+
 
 
 #summary(lm(fair~dem.vote.2000+dem.vote.2004+dem.vote.2008+dem.vote.2012+dem.vote.2016, data = serms.merge))
