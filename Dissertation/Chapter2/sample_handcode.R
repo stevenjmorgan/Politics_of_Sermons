@@ -22,4 +22,5 @@ smp <- serms.merge[sample(nrow(serms.merge),500),]
 
 smp$sermon[1]
 smp$clean[1]
+smp$handcode_id <- seq(1,nrow(smp))
 write.csv(smp, 'hand_code_sample.csv', row.names = F)
