@@ -20,6 +20,22 @@ length(unique(serms.merge$zip.clean))
 set.seed(24519)
 smp <- serms.merge[sample(nrow(serms.merge),500),]
 
+
+serms.merge$hand_labeled <- 0
+for (i in 1:nrow(serms.merge)) {
+  
+  for (j in 1:nrow(smp)) {
+    
+    if (serms.merge$clean[i] == smp$clean[j]) {
+      serms.merge$hand_labeled[i] <- 1
+    }
+  }
+}
+
+summary(serms.merge$hand_labeled == 1)
+
+save(serms.merge, file = 'model_sermons_hand_label_indicator.RData')
+
 smp$sermon[1]
 smp$clean[1]
 smp$handcode_id <- seq(1,nrow(smp))
