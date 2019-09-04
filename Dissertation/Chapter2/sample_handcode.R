@@ -39,4 +39,7 @@ save(serms.merge, file = 'model_sermons_hand_label_indicator.RData')
 smp$sermon[1]
 smp$clean[1]
 smp$handcode_id <- seq(1,nrow(smp))
+summary(smp$fair>0.51)
+smp$fair_thresh <- ifelse(smp$fair>0.51, 1, 0)
+
 write.csv(smp, 'hand_code_sample.csv', row.names = F)

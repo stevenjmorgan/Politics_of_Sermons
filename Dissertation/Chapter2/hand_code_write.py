@@ -22,5 +22,5 @@ for i in range(0,500):
 	textFile.write(handcode['clean'][i])
 	textFile.close()
     
-hc = handcode[['handcode_id', 'clean']]
+hc = handcode[['handcode_id', 'clean','fair_thresh', 'fair']]
 hc.to_csv('sermons_to_be_coded.csv')
