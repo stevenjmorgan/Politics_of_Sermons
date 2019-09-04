@@ -31,7 +31,7 @@ def display_closestwords_tsnescatterplot(model, word):
     word_labels = [word]
  
     # get close words
-    close_words = model.similar_by_word(word)
+    close_words = model.similar_by_word(word, 25)
      
     # add the vector for each of the closest words to the array
     arr = np.append(arr, np.array([model[word]]), axis=0)
@@ -159,6 +159,8 @@ sent = [x.split() for x in sentences]
 model = Word2Vec(sent, min_count=2, size=100, window=5, workers = 8)
 #model.save('unphrased_stemmed')
 model.save("unphrased_stemmed_7-24.model")
+model = Word2Vec.load("unphrased_stemmed_7-24.model")
+
 
 #print(model.most_similar('abortion'))
 print(model.most_similar('abort'))
@@ -175,6 +177,13 @@ print(model.most_similar('fetus'))
 print(model.most_similar('unborn'))
 print(model.most_similar('women'))
 print(model.most_similar('suffrag'))
+
+model.similar_by_word('fetus', 25)
+model.similar_by_word('infant', 25)
+model.similar_by_word('liberal', 25)
+model.similar_by_word('attack', 25)
+
+
 
 #display_closestwords_tsnescatterplot(model, 'abortion')
 
@@ -194,9 +203,15 @@ words = list(model.wv.vocab)
 for i, word in enumerate(words):
 	plt.annotate(word, xy=(result[i, 0], result[i, 1]))
     
-display_closestwords_tsnescatterplot(model, 'abortion')
-display_closestwords_tsnescatterplot(model, 'rights')
-display_closestwords_tsnescatterplot(model, 'liberties')
+display_closestwords_tsnescatterplot(model, 'abort')
+display_closestwords_tsnescatterplot(model, 'right')
+display_closestwords_tsnescatterplot(model, 'liberti')
+display_closestwords_tsnescatterplot(model, 'freedom')
+display_closestwords_tsnescatterplot(model, 'persecut')
+display_closestwords_tsnescatterplot(model, 'equal')
+display_closestwords_tsnescatterplot(model, 'liberal')
+
+
 display_closestwords_tsnescatterplot(model, 'immigration')
 display_closestwords_tsnescatterplot(model, 'gay')
 display_closestwords_tsnescatterplot(model, 'homosexuality')
