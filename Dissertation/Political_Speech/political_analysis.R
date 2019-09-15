@@ -138,6 +138,52 @@ stargazer(fit, dep.var.labels = 'Political Sermon',
           covariate.labels= c('Female','Black', 'Hispanic', 'Asian', 'Catholic','Evangelical',
                               'Other','Northeast','South','West'))
 
+################################################
+### Fightin' words, political vs. non-political
+library(devtools)
+library(SpeedReader)
+library(quanteda)
+
+gc()
+# Sampl.e
+quanteda_dtm <- quanteda::dfm(serms.merge$clean, stem = FALSE, tolower = FALSE)
+
+# Convert to a slam::simple_triplet_matrix object
+dtm <- convert_quanteda_to_slam(quanteda_dtm)
+
+### Compare indices between slam matrix and dtm
+length(dtm$dimnames$Docs) == length(quanteda_dtm@Dimnames$docs)
+
+# Create dataframe for pol. vs. non-pol.
+#summary(serms.merge$word.count)
+political <- as.data.frame(serms.merge[, c('is.pol')])
+colnames(political) <- 'is.pol'
+political$is.pol <- as.character(political$is.pol)
+unique(political$is.pol)
+
+# Create contigency table
+cont.table <- contingency_table(metadata = political,
+                                document_term_matrix = dtm,
+                                force_dense = F)
+
+# Run FW algorithm
+full.corp <- feature_selection(cont.table,
+                               method = c("informed Dirichlet"),
+                               alpha = 0.01,
+                               rank_by_log_odds = F)
+
+fightin_words_plot(full.corp, positive_category = "Male", 
+                   negative_category = "Female", 
+                   clean_publication_plots = FALSE,
+                   title = "Differences in Language: Male vs. Female-Preached Sermons",
+                   display_top_words = 10,
+                   max_terms_to_display = 1e+10000)
+
+
+################################################
+
+
+
 ######### Election coding ############
 
 summary(is.na(serms.merge$date))
