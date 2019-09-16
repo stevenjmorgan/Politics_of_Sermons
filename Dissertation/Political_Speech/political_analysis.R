@@ -287,7 +287,7 @@ m1_df <- tidy(fit1)  %>%
 #filter(term != "freq") %>% 
 #filter(term != "leg_cont") %>% 
 #filter(term != "general_expenditure")
-dwplot(m1_df,#dot_args = list(size = 3.5, pch = 21, fill = "white", col = 'black'),
+dwplot(m1_df, dot_args = list(size = 3.5, pch = 21, fill = "white", col = 'black'),
        vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2)) %>%#,
   #whisker_args = list(size = 3.5, col = 'red')) %>%
   relabel_predictors(c(elect.szn = "Election",
@@ -301,10 +301,10 @@ dwplot(m1_df,#dot_args = list(size = 3.5, pch = 21, fill = "white", col = 'black
                        regionSouth = 'South',
                        regionWest = 'West')) + #,
   #freq = "Caseload")) 
-  xlab("Coefficient Estimate") + ggtitle('Logistic Regression Results')#+
-#theme_bw() +
-#theme(text = element_text(size=25))
-ggsave('election_results')
+  xlab("Coefficient Estimate") + #ggtitle('Logistic Regression Results')+
+  theme_bw() +
+  theme(text = element_text(size=25))
+ggsave('election_results.png')
 
 
 
