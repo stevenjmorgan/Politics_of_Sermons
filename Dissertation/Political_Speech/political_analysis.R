@@ -145,7 +145,11 @@ library(SpeedReader)
 library(quanteda)
 
 gc()
-# Sampl.e
+
+serms.merge$spanis2 <- str_count(serms.merge$clean, ' el ')
+summary(serms.merge$spanis2 > 1)
+serms.merge <- serms.merge[which(serms.merge$spanis2 < 2),]
+
 quanteda_dtm <- quanteda::dfm(serms.merge$clean, stem = FALSE, tolower = FALSE)
 
 # Convert to a slam::simple_triplet_matrix object
@@ -172,12 +176,113 @@ full.corp <- feature_selection(cont.table,
                                alpha = 0.01,
                                rank_by_log_odds = F)
 
+png('political-non-political.png', width=12,height=8,units="in",res=100)
+fightin_words_plot(full.corp, positive_category = "Non-Political", 
+                   negative_category = "Political", 
+                   clean_publication_plots = FALSE,
+                   title = "Differences in Language: Political vs. Non-Political Sermons",
+                   display_top_words = 10,
+                   max_terms_to_display = 1e+10000)
+dev.off()
+
+
+### Subset political sermons
+pol.only <- serms.merge[which(serms.merge$is.pol == 1),]
+
+summary(pol.only$gender.final==1)
+
+quanteda_dtm.gen <- quanteda::dfm(pol.only$clean, stem = FALSE, tolower = FALSE)
+
+# Convert to a slam::simple_triplet_matrix object
+dtm <- convert_quanteda_to_slam(quanteda_dtm.gen)
+
+### Compare indices between slam matrix and dtm
+length(dtm$dimnames$Docs) == length(quanteda_dtm@Dimnames$docs)
+
+# Create dataframe for pol. vs. non-pol.
+#summary(serms.merge$word.count)
+gen <- as.data.frame(pol.only[, c('gender.final')])
+colnames(gen) <- 'is.female'
+gen$is.female <- as.character(gen$is.female)
+unique(gen$is.female)
+
+# Create contigency table
+cont.table <- contingency_table(metadata = gen,
+                                document_term_matrix = dtm,
+                                force_dense = F)
+
+# Run FW algorithm
+full.corp <- feature_selection(cont.table,
+                               method = c("informed Dirichlet"),
+                               alpha = 0.01,
+                               rank_by_log_odds = F)
+
+png('political-gender.png', width=12,height=8,units="in",res=100)
 fightin_words_plot(full.corp, positive_category = "Male", 
                    negative_category = "Female", 
                    clean_publication_plots = FALSE,
-                   title = "Differences in Language: Male vs. Female-Preached Sermons",
-                   display_top_words = 10,
+                   title = "Differences in Language: Male vs. Female-Preached Political Sermons",
+                   display_top_words = 20,
                    max_terms_to_display = 1e+10000)
+dev.off()
+
+### Race
+black <- as.data.frame(pol.only[, c('black.final')])
+colnames(black) <- 'is.black'
+black$is.black <- as.character(black$is.black)
+unique(black$is.black)
+
+# Create contigency table
+cont.table <- contingency_table(metadata = black,
+                                document_term_matrix = dtm,
+                                force_dense = F)
+
+# Run FW algorithm
+full.corp <- feature_selection(cont.table,
+                               method = c("informed Dirichlet"),
+                               alpha = 0.01,
+                               rank_by_log_odds = F)
+
+png('political-race.png', width=12,height=8,units="in",res=100)
+fightin_words_plot(full.corp, positive_category = "Non-Black", 
+                   negative_category = "Black", 
+                   clean_publication_plots = FALSE,
+                   title = "Differences in Language: Black vs. Non-Black-Preached Political Sermons",
+                   display_top_words = 19,
+                   max_terms_to_display = 1e+10000)
+dev.off()
+
+
+### Denom.
+independ <- as.data.frame(pol.only[,c('denom.fixed')])
+colnames(independ) <- 'independent'
+independ$independent <- as.character(independ$independent)
+unique(independ$independent)
+independ$independent[independ$independent == 'Independent/Bible'] <- 'Independent'
+independ$independent[independ$independent == 'Independent Bible'] <- 'Independent'
+unique(independ$independent)
+independ$independent[independ$independent != 'Independent'] <- 'Non-Independent'
+unique(independ$independent)
+
+# Create contigency table
+cont.table <- contingency_table(metadata = independ,
+                                document_term_matrix = dtm,
+                                force_dense = F)
+
+# Run FW algorithm
+full.corp <- feature_selection(cont.table,
+                               method = c("informed Dirichlet"),
+                               alpha = 0.01,
+                               rank_by_log_odds = F)
+
+png('political-denom.png', width=12,height=8,units="in",res=100)
+fightin_words_plot(full.corp, positive_category = "Non-Independent", 
+                   negative_category = "Independent", 
+                   clean_publication_plots = FALSE,
+                   title = "Differences in Language: Non-Independent vs. Independent Political Sermons",
+                   display_top_words = 20,
+                   max_terms_to_display = 1e+10000)
+dev.off()
 
 
 ################################################
