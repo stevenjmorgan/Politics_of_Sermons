@@ -1,7 +1,7 @@
 rm(list=ls())
 #setwd("C:/Users/steve/Desktop/sermon_dataset")
-setwd('C:/Users/steve/Dropbox/Dissertation/Data')
-#setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
+#setwd('C:/Users/steve/Dropbox/Dissertation/Data')
+setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 
 #serms <- read.csv('sermons_pol_variable7-31.csv')
 #summary(serms$pol_count)
@@ -276,7 +276,35 @@ stargazer(fit1, dep.var.labels = 'Political Sermon',
           single.row = T)
 
 
+library(dotwhisker)
+library(broom)
+library(dplyr)
 
+m1_df <- tidy(fit1)  %>% 
+  filter(!grepl('as.fact*', term)) %>% 
+  filter(term != "(Intercept)") %>% 
+  filter(term != "api.final")# %>% 
+#filter(term != "freq") %>% 
+#filter(term != "leg_cont") %>% 
+#filter(term != "general_expenditure")
+dwplot(m1_df,#dot_args = list(size = 3.5, pch = 21, fill = "white", col = 'black'),
+       vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2)) %>%#,
+  #whisker_args = list(size = 3.5, col = 'red')) %>%
+  relabel_predictors(c(elect.szn = "Election",
+                       gender.final = "Female",          
+                       black.final = "Black",
+                       hispanic.final = 'Hispanic',
+                       cath = 'Catholic',
+                       evang = 'Evangelical',
+                       other = 'Other Denom.',
+                       regionNortheast = 'Northeast',
+                       regionSouth = 'South',
+                       regionWest = 'West')) + #,
+  #freq = "Caseload")) 
+  xlab("Coefficient Estimate") + ggtitle('Logistic Regression Results')#+
+#theme_bw() +
+#theme(text = element_text(size=25))
+ggsave('election_results')
 
 
 
