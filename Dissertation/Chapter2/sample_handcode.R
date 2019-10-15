@@ -4,6 +4,8 @@ rm(list=ls())
 #setwd("C:/Users/sum410/Dropbox/Dissertation/Data/Census")
 setwd("C:/Users/steve/Dropbox/Dissertation/Data/handcode")
 
+library(stringr)
+
 gc()
 load('C:/Users/steve/Dropbox/Dissertation/Data/handcode/model_sermons_subset.RData')
 gc()
@@ -13,8 +15,17 @@ dim(serms.merge)
 serms.merge <- serms.merge[which(serms.merge$word.count > 100),]
 dim(serms.merge)
 
+# Remove spanish
+summary(serms.merge$spanish.count)
+serms.merge <- serms.merge[which(serms.merge$spanish.count < 5),]
+
 serms.merge$zip.clean[1:10]
 length(unique(serms.merge$zip.clean))
+
+# Select on liberty
+serms.merge$clean[1]
+serms.merge$liberty <- str_count('liberty', serms.merge$clean)
+
 
 # Sample
 set.seed(24519)
