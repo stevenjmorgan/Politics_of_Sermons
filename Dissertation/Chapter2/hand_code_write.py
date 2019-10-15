@@ -8,12 +8,14 @@ Created on Tue Sep  3 18:48:11 2019
 import pandas as pd
 import os
 
-os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/handcode')
+#os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/handcode')
+os.chdir('C:/Users/SF515-51T/Desktop/Dissertation')
 
-handcode = pd.read_csv('hand_code_sample.csv')
+handcode = pd.read_csv('hand_code_sample_10-15.csv')
 handcode['clean'][0]
 
-os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/handcode/sermons_handcode')
+#os.chdir('C:/Users/steve/Dropbox/Dissertation/Data/handcode/sermons_handcode')
+os.chdir('C:/Users/SF515-51T/Desktop/Dissertation/handcode')
 
 for i in range(0,500):
 	file = 'hc_sermon' + str(i+1) + ".txt"
