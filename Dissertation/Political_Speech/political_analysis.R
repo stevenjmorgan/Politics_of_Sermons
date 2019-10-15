@@ -1,7 +1,7 @@
 rm(list=ls())
 #setwd("C:/Users/steve/Desktop/sermon_dataset")
-#setwd('C:/Users/steve/Dropbox/Dissertation/Data')
-setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
+setwd('C:/Users/steve/Dropbox/Dissertation/Data')
+#setwd("C:/Users/sum410/Dropbox/Dissertation/Data")
 
 #serms <- read.csv('sermons_pol_variable7-31.csv')
 #summary(serms$pol_count)
@@ -137,6 +137,16 @@ library(stargazer)
 stargazer(fit, dep.var.labels = 'Political Sermon', 
           covariate.labels= c('Female','Black', 'Hispanic', 'Asian', 'Catholic','Evangelical',
                               'Other','Northeast','South','West'))
+
+
+### Predicted probabilities from model
+
+
+
+
+
+
+
 
 ################################################
 ### Fightin' words, political vs. non-political
