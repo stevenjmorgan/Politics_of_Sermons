@@ -55,18 +55,6 @@ comb.df <- comb.df[,c('fair', 'care','liberty','abort')]
 write.csv(comb.df, 'hand_code_sample_10-15.csv', row.names = F)
 
 
-# Write to .txt files
-for (i in 1:nrow(comb.df)) {
-  
-  fileConn<-file("output.txt")
-  
-}
-fileConn<-file("output.txt")
-writeLines(c("Hello","World"), fileConn)
-close(fileConn)
-
-
-
 
 ##########################################################################
 ### END
