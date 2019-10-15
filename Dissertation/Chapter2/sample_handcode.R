@@ -48,14 +48,17 @@ comb.df$care <- comb.df$care.vice + comb.df$care.virtue
 comb.df <- comb.df[,c('clean', 'fair', 'care','liberty','abort')]
 colnames(comb.df)
 comb.df$id <- seq(1,nrow(comb.df))
+comb.df$fair[1:6]
 
+save(comb.df, file = 'text_hand_sample.RData')
+comb.df <- comb.df[,c('fair', 'care','liberty','abort')]
 write.csv(comb.df, 'hand_code_sample_10-15.csv', row.names = F)
 
 
 # Write to .txt files
 for (i in 1:nrow(comb.df)) {
   
-  
+  fileConn<-file("output.txt")
   
 }
 fileConn<-file("output.txt")
