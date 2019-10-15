@@ -5,7 +5,7 @@ Created on Tue Oct 15 19:13:35 2019
 @author: SF515-51T
 """
 
-import os, re, nltk, string
+import os, re, nltk, string, xgboost
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer
@@ -77,4 +77,60 @@ df['cleaned'] = df['clean'].apply(lambda x: ', '.join(map(str, x)))
 df['cleaned'] = df['cleaned'].str.replace(',', '')
 df['cleaned'][0]
 
+# Vectorize, train-test split
+vectorizer = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3)
+train_x, valid_x, train_y, valid_y = model_selection.train_test_split(df['cleaned'], df['ground_truth_rights'], test_size=0.3, random_state=24519)
 
+# label encode the target variable 
+encoder = preprocessing.LabelEncoder()
+train_y = encoder.fit_transform(train_y)
+valid_y = encoder.fit_transform(valid_y)
+
+# Transform tf-idf
+vectorizer.fit(df['cleaned'])
+vectorizer.get_feature_names()[0:10]
+vectorizer.vocabulary_ #6740
+
+xtrain_tfidf =  vectorizer.transform(train_x)
+xvalid_tfidf =  vectorizer.transform(valid_x)
+
+xtrain_tfidf.shape
+xvalid_tfidf.shape
+
+
+### Models
+# SVM - Linear
+clf = svm.SVC(kernel='linear')
+linear_svm_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
+print(linear_svm_results)
+
+# SVM - RBF
+clf = svm.SVC(kernel='rbf')
+rbf_svm_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
+print(rbf_svm_results)
+
+# Naive Bayes
+clf = naive_bayes.MultinomialNB()
+bayes_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
+print(bayes_results)
+
+# Logistic regression
+clf = linear_model.LogisticRegression()
+log_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
+print(log_results)
+
+# RF on Word Level TF IDF Vectors
+clf = ensemble.RandomForestClassifier()
+rf_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
+print(rf_results)
+
+# Weighted RF on Word Level TF IDF Vectors
+w = 1000 # The weight for the positive class
+RF = RandomForestClassifier(class_weight={0: 1, 1: w})
+weighted_rf_results = train_model(RF, xtrain_tfidf, train_y, xvalid_tfidf)
+print(weighted_rf_results)
+
+# XGBoost
+clf = xgboost.XGBClassifier()
+xgb_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
+print(xgb_results)
