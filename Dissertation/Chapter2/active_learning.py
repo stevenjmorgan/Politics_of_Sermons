@@ -45,7 +45,7 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid):
     # predict the labels on validation dataset
     predictions = classifier.predict(feature_vector_valid)
     
-    return metrics.accuracy_score(predictions, valid_y), metrics.recall_score(predictions, valid_y), metrics.precision_score(predictions, valid_y), metrics.f1_score(predictions, valid_y),
+    return "Accuracy: ", metrics.accuracy_score(predictions, valid_y), 'Recall: ', metrics.recall_score(predictions, valid_y), 'Precision: ', metrics.precision_score(predictions, valid_y), 'F1: ', metrics.f1_score(predictions, valid_y)
 
 
 os.chdir('C:/Users/SF515-51T/Desktop/Dissertation')
