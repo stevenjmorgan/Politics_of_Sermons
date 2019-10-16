@@ -52,6 +52,16 @@ os.chdir('C:/Users/SF515-51T/Desktop/Dissertation')
 
 warnings.filterwarnings("ignore")
 
+# Read in full dataset
+full = pd.read_csv('sermons_processed.csv')#, index_col = False)
+full.shape
+full = full[full['spanish.count'] < 3]
+full.shape
+full = full[full['word.count'] > 75]
+full.shape
+#full['spanish.count'].describe()
+full = full[['doc_id','clean']]
+
 # Read in hand labels
 df = pd.read_csv('hand_code_sample_10-15_coded_no_text.csv', index_col = False)
 text = pd.read_csv('text.csv', index_col = False)
@@ -136,6 +146,25 @@ print(weighted_rf_results)
 clf = xgboost.XGBClassifier()
 xgb_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
 print(xgb_results)
+
+
+
+#### Run on non-labeled data
+full['clean'] = full['clean'].apply(lambda x: remove_punct(x))
+full['clean'] = full['clean'].apply(lambda x: tokenization(x.lower()))
+#stopword = nltk.corpus.stopwords.words('english')
+full['clean'] = full['clean'].apply(lambda x: remove_stopwords(x))
+#ps = nltk.PorterStemmer()
+full['clean'] = full['clean'].apply(lambda x: stemming(x))
+full['clean'] = full['clean'].apply(lambda x: remove_small_tokens(x))
+#full['clean'][0]
+#type(df['clean'][0])
+full['cleaned'] = full['clean'].apply(lambda x: ', '.join(map(str, x)))
+full['cleaned'] = full['cleaned'].str.replace(',', '')
+#full['cleaned'][0]
+new_tfidf = vectorizer.transform(full['clean'])
+
+
 
 
 ###############################################################################
