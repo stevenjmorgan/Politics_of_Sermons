@@ -5,7 +5,7 @@ Created on Tue Oct 15 19:13:35 2019
 @author: SF515-51T
 """
 
-import os, re, nltk, string, xgboost
+import os, re, nltk, string, xgboost, warnings
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer
@@ -49,6 +49,8 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid):
 
 
 os.chdir('C:/Users/SF515-51T/Desktop/Dissertation')
+
+warnings.filterwarnings("ignore")
 
 # Read in hand labels
 df = pd.read_csv('hand_code_sample_10-15_coded_no_text.csv', index_col = False)
@@ -134,3 +136,29 @@ print(weighted_rf_results)
 clf = xgboost.XGBClassifier()
 xgb_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
 print(xgb_results)
+
+
+###############################################################################
+### Bigram approach -> does not work well
+#tfidf = TfidfVectorizer(max_features=7000, max_df = 0.5, min_df = 3, stop_words = 'english', ngram_range=(1,2))
+#xtrain_tfidf =  tfidf.fit_transform(train_x)
+#xvalid_tfidf =  tfidf.fit_transform(valid_x)
+#xtrain_tfidf.shape
+#xvalid_tfidf.shape
+#
+## SVM -> linear
+#clf = svm.SVC(kernel='linear')
+#linear_svm_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
+#print(linear_svm_results)
+#
+## XGBoost
+#clf = xgboost.XGBClassifier()
+#xgb_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
+#print(xgb_results)
+#
+##vectorizer.fit_transform(arr)
+#feature_names = tfidf.get_feature_names()
+#corpus_index = [n for n in corpus]
+#rows, cols = tfs.nonzero()
+#for row, col in zip(rows, cols):
+#    print((feature_names[col], corpus_index[row]), tfs[row, col])
