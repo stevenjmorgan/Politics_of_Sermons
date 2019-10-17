@@ -188,7 +188,7 @@ non.rights <- serms.rights[which(serms.rights$rights_talk_xgboost==0),]
 
 # Sample from non-rights
 set.seed(24519)
-non.rights <- non.rights[sample(nrow(non.rights), 15000), ]
+non.rights <- non.rights[sample(nrow(non.rights), 40000), ]
 
 # Combine for FW
 serms.comb <- rbind(rights,non.rights)
