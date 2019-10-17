@@ -6,3 +6,6 @@ rm(list=ls())
 setwd("C:/Users/SF515-51T/Desktop/Dissertation")
 
 serms.rights <- read.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
+
+# Plot rights talk over time by month
+
