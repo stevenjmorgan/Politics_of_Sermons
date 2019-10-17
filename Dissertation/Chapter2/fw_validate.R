@@ -183,8 +183,19 @@ for (i in 1:nrow(serms.rights)) {
 }
 serms.rights$cleaned[1]
 
+rights <- serms.rights[which(serms.rights$rights_talk_xgboost==1),]
+non.rights <- serms.rights[which(serms.rights$rights_talk_xgboost==0),]
+
+# Sample from non-rights
+set.seed(24519)
+non.rights <- non.rights[sample(nrow(non.rights), 15000), ]
+
+# Combine for FW
+serms.comb <- rbind(rights,non.rights)
+rm(rights,non.rights)
+
 # Prepare data for FW algorithm -> unigrams
-quanteda_dtm <- quanteda::dfm(serms.rights$cleaned, stem = T, tolower = T, remove = stopwords("english"),
+quanteda_dtm <- quanteda::dfm(serms.comb$cleaned, stem = T, tolower = T, remove = stopwords("english"),
                               verbose = T, remove_punct = TRUE) # , ngrams = 2
 
 # Convert to a slam::simple_triplet_matrix object
