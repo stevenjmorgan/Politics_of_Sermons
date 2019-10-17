@@ -172,6 +172,37 @@ dev.off()
 
 
 ##############################################################################################
+### Full dataset -> predictions
+serms.rights <- read.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
+colnames(serms.rights)
+summary(serms.rights$rights_talk_xgboost==1) # 3557
+
+# Remove words less than three characters
+for (i in 1:nrow(serms.rights)) {
+  serms.rights$cleaned[i] <- gsub('\\b\\w{1,2}\\b','',serms.rights$cleaned[i])
+}
+serms.rights$cleaned[1]
+
+# Prepare data for FW algorithm -> unigrams
+quanteda_dtm <- quanteda::dfm(serms.rights$cleaned, stem = T, tolower = T, remove = stopwords("english"),
+                              verbose = T, remove_punct = TRUE) # , ngrams = 2
+
+# Convert to a slam::simple_triplet_matrix object
+dtm <- convert_quanteda_to_slam(quanteda_dtm)
+
+### Compare indices between slam matrix and dtm
+length(dtm$dimnames$Docs) == length(quanteda_dtm@Dimnames$docs)
+
+# Create dataframe for rights talk versus non-rights talk
+rights <- as.data.frame(df[, c('ground_truth_rights')])
+colnames(rights) <- 'Rights'
+summary(is.na(rights$Rights))
+
+
+
+
+
+##############################################################################################
 ### END
 ##############################################################################################
 # Clean stop words
