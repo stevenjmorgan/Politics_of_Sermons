@@ -53,14 +53,11 @@ os.chdir('C:/Users/SF515-51T/Desktop/Dissertation')
 warnings.filterwarnings("ignore")
 
 # Read in full dataset
-full = pd.read_csv('sermons_processed.csv')#, index_col = False)
+full = pd.read_csv('sermon_final.csv')#, index_col = False)
 full.shape
-full = full[full['spanish.count'] < 3]
-full.shape
-full = full[full['word.count'] > 75]
-full.shape
+
 #full['spanish.count'].describe()
-full = full[['doc_id','clean']]
+#full = full[['doc_id','clean']]
 
 # Read in hand labels
 df = pd.read_csv('hand_code_sample_10-15_coded_no_text.csv', index_col = False)
@@ -91,6 +88,8 @@ df['cleaned'][0]
 
 # Vectorize, train-test split
 vectorizer = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3)
+vectorizer.fit(df['cleaned'])
+print(vectorizer.vocabulary_)
 train_x, valid_x, train_y, valid_y = model_selection.train_test_split(df['cleaned'], df['ground_truth_rights'], test_size=0.3, random_state=24519)
 
 # label encode the target variable 
@@ -99,7 +98,7 @@ train_y = encoder.fit_transform(train_y)
 valid_y = encoder.fit_transform(valid_y)
 
 # Transform tf-idf
-vectorizer.fit(df['cleaned'])
+#vectorizer.fit(df['cleaned'])
 vectorizer.get_feature_names()[0:10]
 vectorizer.vocabulary_ #6740
 
@@ -162,10 +161,19 @@ full['clean'] = full['clean'].apply(lambda x: remove_small_tokens(x))
 full['cleaned'] = full['clean'].apply(lambda x: ', '.join(map(str, x)))
 full['cleaned'] = full['cleaned'].str.replace(',', '')
 #full['cleaned'][0]
-new_tfidf = vectorizer.transform(full['clean'])
+new_tfidf = vectorizer.transform(full['cleaned'])
+print(new_tfidf.shape) # 121037, 6740
 
+clf
+predictions = clf.predict(new_tfidf)
+unique, counts = np.unique(predictions, return_counts=True)
+unique
+counts
+full['rights_talk_xgboost'] = predictions
+full['rights_talk_xgboost'].describe()
+full['rights_talk_xgboost'].value_counts()
 
-
+full.to_csv('sermon_final_rights_ml.csv')
 
 ###############################################################################
 ### Bigram approach -> does not work well
