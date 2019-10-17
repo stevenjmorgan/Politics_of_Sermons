@@ -186,15 +186,20 @@ serms.rights$cleaned[1]
 rights <- serms.rights[which(serms.rights$rights_talk_xgboost==1),]
 non.rights <- serms.rights[which(serms.rights$rights_talk_xgboost==0),]
 
-# Sample from non-rights
+# Sample from non-rights and rights
 set.seed(24519)
-non.rights <- non.rights[sample(nrow(non.rights), 40000), ]
+non.rights <- non.rights[sample(nrow(non.rights), 10000),]
+set.seed(24519)
+rights <- rights[sample(nrow(rights), 2000),]
 
 # Combine for FW
 serms.comb <- rbind(rights,non.rights)
 rm(rights,non.rights)
 
 # Prepare data for FW algorithm -> unigrams
+gc()
+memory.limit()
+#memory.limit(100000000000000)
 quanteda_dtm <- quanteda::dfm(serms.comb$cleaned, stem = T, tolower = T, remove = stopwords("english"),
                               verbose = T, remove_punct = TRUE) # , ngrams = 2
 
@@ -205,12 +210,123 @@ dtm <- convert_quanteda_to_slam(quanteda_dtm)
 length(dtm$dimnames$Docs) == length(quanteda_dtm@Dimnames$docs)
 
 # Create dataframe for rights talk versus non-rights talk
-rights <- as.data.frame(df[, c('ground_truth_rights')])
+rights <- as.data.frame(serms.comb[, c('rights_talk_xgboost')])
 colnames(rights) <- 'Rights'
 summary(is.na(rights$Rights))
 
+# Create contigency table
+cont.table <- contingency_table(metadata = rights,
+                                document_term_matrix = dtm,
+                                force_dense = F)
+# Run FW algorithm
+full.corp <- feature_selection(cont.table,
+                               method = c("informed Dirichlet"),
+                               alpha = 0.01,
+                               rank_by_log_odds = F)
+png('rights_nonrights_ml_pred.png', width=15,height=12,units="in",res=100)
+fightin_words_plot(full.corp, positive_category = "Rights Talk", 
+                   negative_category = "Non-Rights Talk", 
+                   clean_publication_plots = FALSE,
+                   title = "Differences in Language: Rights Talk vs. Non-Rights Talk Sermons",
+                   display_top_words = 20,
+                   max_terms_to_display = 1e+10000)
+dev.off()
 
 
+##############################################################################################
+# Prepare data for FW algorithm -> unigrams and bigrams
+# Sample from non-rights and rights
+rights <- serms.rights[which(serms.rights$rights_talk_xgboost==1),]
+non.rights <- serms.rights[which(serms.rights$rights_talk_xgboost==0),]
+set.seed(24519)
+non.rights <- non.rights[sample(nrow(non.rights), 4000),]
+set.seed(24519)
+rights <- rights[sample(nrow(rights), 1200),]
+
+# Combine for FW
+serms.comb <- rbind(rights,non.rights)
+rm(rights,non.rights)
+
+gc()
+quanteda_dtm <- quanteda::dfm(serms.comb$cleaned, stem = T, tolower = T, remove = stopwords("english"),
+                              verbose = T, remove_punct = TRUE, ngrams = 1:2)
+
+# Convert to a slam::simple_triplet_matrix object
+dtm <- convert_quanteda_to_slam(quanteda_dtm)
+
+### Compare indices between slam matrix and dtm
+length(dtm$dimnames$Docs) == length(quanteda_dtm@Dimnames$docs)
+
+# Create dataframe for rights talk versus non-rights talk
+rights <- as.data.frame(serms.comb[, c('rights_talk_xgboost')])
+colnames(rights) <- 'Rights'
+summary(is.na(rights$Rights))
+
+# Create contigency table
+cont.table <- contingency_table(metadata = rights,
+                                document_term_matrix = dtm,
+                                force_dense = F)
+# Run FW algorithm
+full.corp <- feature_selection(cont.table,
+                               method = c("informed Dirichlet"),
+                               alpha = 0.01,
+                               rank_by_log_odds = F)
+png('rights_nonrights_ml_pred_bigram.png', width=15,height=12,units="in",res=100)
+fightin_words_plot(full.corp, positive_category = "Rights Talk", 
+                   negative_category = "Non-Rights Talk", 
+                   clean_publication_plots = FALSE,
+                   title = "Differences in Language: Rights Talk vs. Non-Rights Talk Sermons",
+                   display_top_words = 20,
+                   max_terms_to_display = 1e+10000)
+dev.off()
+
+
+#############################################################################################
+### Bigrams only
+# Sample from non-rights and rights
+rights <- serms.rights[which(serms.rights$rights_talk_xgboost==1),]
+non.rights <- serms.rights[which(serms.rights$rights_talk_xgboost==0),]
+set.seed(24519)
+non.rights <- non.rights[sample(nrow(non.rights), 4000),]
+set.seed(24519)
+rights <- rights[sample(nrow(rights), 1500),]
+
+# Combine for FW
+serms.comb <- rbind(rights,non.rights)
+rm(rights,non.rights)
+
+gc()
+quanteda_dtm <- quanteda::dfm(serms.comb$cleaned, stem = T, tolower = T, remove = stopwords("english"),
+                              verbose = T, remove_punct = TRUE, ngrams = 2)
+
+# Convert to a slam::simple_triplet_matrix object
+dtm <- convert_quanteda_to_slam(quanteda_dtm)
+
+### Compare indices between slam matrix and dtm
+length(dtm$dimnames$Docs) == length(quanteda_dtm@Dimnames$docs)
+
+# Create dataframe for rights talk versus non-rights talk
+rights <- as.data.frame(serms.comb[, c('rights_talk_xgboost')])
+colnames(rights) <- 'Rights'
+summary(is.na(rights$Rights))
+
+# Create contigency table
+cont.table <- contingency_table(metadata = rights,
+                                document_term_matrix = dtm,
+                                force_dense = F)
+# Run FW algorithm
+full.corp <- feature_selection(cont.table,
+                               method = c("informed Dirichlet"),
+                               alpha = 0.01,
+                               rank_by_log_odds = F)
+png('rights_nonrights_ml_pred_bigram_only.png', width=15,height=12,units="in",res=100)
+fightin_words_plot(full.corp, positive_category = "Rights Talk", 
+                   negative_category = "Non-Rights Talk", 
+                   clean_publication_plots = FALSE,
+                   title = "Differences in Language: Rights Talk vs. Non-Rights Talk Sermons",
+                   display_top_words = 20,
+                   max_terms_to_display = 1e+10000)
+dev.off()
 
 
 ##############################################################################################
