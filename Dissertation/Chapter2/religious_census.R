@@ -276,6 +276,7 @@ summary(serms.merge$dem.vote.2016)
 #### Save df
 save(serms.merge, file = 'model_sermons_subset.RData')
 
+serms.rights <- write.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
 
 
 
