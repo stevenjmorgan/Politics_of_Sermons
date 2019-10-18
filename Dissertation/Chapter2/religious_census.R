@@ -532,3 +532,28 @@ census2010$plurality <- 1 - census2010$hhi
 summary(census2010$plurality)
 census2010$plurality <- ifelse(census2010$plurality < 0, 0, census2010$plurality)
 summary(census2010$plurality)
+
+census2010$CNTYNAME <- as.character(census2010$CNTYNAME)
+census2010$CNTYNAME <- trimws(census2010$CNTYNAME)
+census2010$STABBR <- as.character(census2010$STABBR)
+census2010$county.state <- paste(census2010$CNTYNAME, census2010$STABBR, sep = ', ')
+
+county_full <- left_join(county_map, county_data, by = "id")
+county_full$county.state <- paste(county_full$name, county_full$state, sep = ', ')
+county.data.merge <- merge(county_full, census2010, by = 'county.state', all.x = T)
+summary(county.data.merge$TOTCNG)
+
+serms.merge$county.name.fixed
+
+
+deduped.county <- county.data.merge[!duplicated(county.data.merge[c(1,2)]),]
+yolo <- merge(serms.merge, county.data.merge, by.x = 'county.name.fixed', by.y = 'county.state', all.x = T)
+summary(is.na(yolo$plurality))
+
+fit4 <- glm(rights_talk_xgboost~plurality+elect.szn.2wk+cath+main+other+black.final+hispanic.final+api.final+female.pastor+census_region.x+log(pop10),
+            data = yolo) #elect.szn.2wk+dem.share
+summary(fit4)
+stargazer(fit4, no.space = T, covariate.labels = c('Religious Pluralism', 'Elect. Season',
+                                                   'Catholic', 'Mainline Prot', 'Other Christian',
+                                                   'Black', 'Hispanic', 'Asian', 'Female','Northeast',
+                                                   'South','West','Log Pop.','Constant'))
