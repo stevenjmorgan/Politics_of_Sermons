@@ -3,7 +3,8 @@
 
 rm(list=ls())
 #setwd("C:/Users/sum410/Dropbox/Dissertation/Data/Census")
-setwd("C:/Users/steve/Dropbox/Dissertation/Data/Census")
+#setwd("C:/Users/steve/Dropbox/Dissertation/Data/Census")
+setwd("C:/Users/SF515-51T/Desktop/Dissertation")
 
 #library(foreign)
 library(xlsx)
@@ -279,6 +280,13 @@ save(serms.merge, file = 'model_sermons_subset.RData')
 serms.rights <- write.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
 
 
+########################################################################################################
+##### Rights measure
+########################################################################################################
+
+serms.rights <- read.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
+serms.merge <- serms.rights
+rm(serms.rights)
 
 #summary(lm(fair~dem.vote.2000+dem.vote.2004+dem.vote.2008+dem.vote.2012+dem.vote.2016, data = serms.merge))
 
@@ -308,6 +316,16 @@ for (i in 1:nrow(serms.merge)) {
   }
 }
 summary(serms.merge$dem.share)
+serms.merge$dem.share <- serms.merge$dem.share * 100
+
+
+### Two-vote competitiveness
+serms.merge$dem.comp <- abs(serms.merge$dem.share - 50)
+summary(serms.merge$dem.comp)
+library(scales)
+serms.merge$comp.rescale <- rescale(serms.merge$dem.comp, to = c(0, 100))
+summary(serms.merge$comp.rescale)
+
 
 # Code rel. trad
 library(car)
@@ -364,13 +382,35 @@ colnames(serms.merge)
 myvars <- c('gender.final', 'pop10', 'Parenth', 'census_region',
             'pop_dens', 'pct_black', 'white.y', 'female', 'hh_income', 'su_gun4', 'TOTCNG', 
             'TOTADH', 'TOTRATE', 'EVANCNG', 'EVANADH', 'EVANRATE', 'STNAME', 'dem.share', 'year', 'fair',
-            'cath', 'main', 'evang', 'other', 'black.final', 'hispanic.final', 'white.final', 'api.final')
+            'cath', 'main', 'evang', 'other', 'black.final', 'hispanic.final', 'white.final', 'api.final',
+            'rights_talk_xgboost', 'comp.rescale')
 model.data <- serms.merge[myvars]
 
 non.miss <- model.data[complete.cases(model.data),]
 dim(non.miss)
 non.miss$female.pastor <- ifelse(non.miss$gender.final == 'female', 1, 0)
 
-fit1 <- lm(fair~TOTCNG+cath+main+other+black.final+hispanic.final+api.final+female.pastor+census_region,
+library(stargazer)
+
+# Dem vote share
+fit1 <- glm(rights_talk_xgboost~dem.share+TOTCNG+cath+main+other+black.final+hispanic.final+api.final+female.pastor+census_region+log(pop10),
            data = non.miss)
 summary(fit1)
+
+# Competitive districts
+fit2 <- glm(rights_talk_xgboost~comp.rescale+TOTCNG+cath+main+other+black.final+hispanic.final+api.final+female.pastor+census_region+log(pop10),
+            data = non.miss)
+summary(fit2)
+
+stargazer(fit1, fit2, no.space = T, covariate.labels = c('Dem. Vote', 'Two Party Comp.', 'Total Churches',
+                                                           'Catholic', 'Mainline Prot', 'Other Christian',
+                                                           'Black', 'Hispanic', 'Asian', 'Female','Northeast',
+                                                           'South','West','Log Pop.','Constant'))
+
+
+
+
+##########################################################################################################
+### Political events
+##########################################################################################################
+
