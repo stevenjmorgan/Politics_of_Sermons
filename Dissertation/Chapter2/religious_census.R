@@ -6,7 +6,7 @@ rm(list=ls())
 #setwd("C:/Users/steve/Dropbox/Dissertation/Data/Census")
 setwd("C:/Users/SF515-51T/Desktop/Dissertation")
 
-#library(foreign)
+library(foreign)
 library(xlsx)
 
 #census2010 <- read.spss('U.S. Religion Census Religious Congregations and Membership Study, 2010 (County File).SAV', 
@@ -517,3 +517,7 @@ stargazer(fit3, no.space = T, covariate.labels = c('Elect. Season', 'Dem. Vote',
 #####################################################################################################
 ### Religious competition
 #####################################################################################################
+#census2010 <- read.xlsx('U.S. Religion Census Religious Congregations and Membership Study, 2010 (County File).xlsx',
+#                        sheetIndex = 1, stringsAsFactors = FALSE)
+census2010 <- read.spss('U.S. Religion Census Religious Congregations and Membership Study, 2010 (County File).SAV', 
+                        to.data.frame=TRUE)
