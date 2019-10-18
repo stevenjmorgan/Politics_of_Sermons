@@ -413,4 +413,107 @@ stargazer(fit1, fit2, no.space = T, covariate.labels = c('Dem. Vote', 'Two Party
 ##########################################################################################################
 ### Political events
 ##########################################################################################################
+### Temporal Covariates
 
+library(lubridate)
+
+### Check to ensure all obs. have dates
+summary(is.na(serms.merge$date))
+class(serms.merge$date)
+serms.merge$date.con <- as.Date(serms.merge$date,format='%B %d, %Y')
+serms.merge$year <- year(serms.merge$date.con)
+serms.merge$y2018 <- ifelse(serms.merge$year == 2018, 1, 0)
+serms.merge$y2017 <- ifelse(serms.merge$year == 2017, 1, 0)
+serms.merge$y2016 <- ifelse(serms.merge$year == 2016, 1, 0)
+serms.merge$y2015 <- ifelse(serms.merge$year == 2015, 1, 0)
+serms.merge$y2014 <- ifelse(serms.merge$year == 2014, 1, 0)
+serms.merge$y2013 <- ifelse(serms.merge$year == 2013, 1, 0)
+serms.merge$y2012 <- ifelse(serms.merge$year == 2012, 1, 0)
+serms.merge$y2011 <- ifelse(serms.merge$year == 2011, 1, 0)
+serms.merge$y2010 <- ifelse(serms.merge$year == 2010, 1, 0)
+serms.merge$y2009 <- ifelse(serms.merge$year == 2009, 1, 0)
+serms.merge$y2008 <- ifelse(serms.merge$year == 2008, 1, 0)
+serms.merge$y2007 <- ifelse(serms.merge$year == 2007, 1, 0)
+serms.merge$y2006 <- ifelse(serms.merge$year == 2006, 1, 0)
+serms.merge$y2005 <- ifelse(serms.merge$year == 2005, 1, 0)
+serms.merge$y2004 <- ifelse(serms.merge$year == 2004, 1, 0)
+serms.merge$y2003 <- ifelse(serms.merge$year == 2003, 1, 0)
+serms.merge$y2002 <- ifelse(serms.merge$year == 2002, 1, 0)
+serms.merge$y2001 <- ifelse(serms.merge$year == 2001, 1, 0)
+serms.merge$y2000 <- ifelse(serms.merge$year == 2000, 1, 0)
+
+# Calculate dates 1-, 3-, and 6-months out from presidential elections
+election <- as.Date(c('2016-11-08', '2012-11-06', '2008-11-04', '2004-11-02', 
+                      '2000-11-07', '2014-11-04', '2010-11-02', '2006-11-07',
+                      '2002-11-05'))
+pre2016 <- seq(election[1], length = 2, by = "-6 months")[2]
+pre2012 <- seq(election[2], length = 2, by = "-6 months")[2]
+pre2008 <- seq(election[3], length = 2, by = "-6 months")[2]
+pre2004 <- seq(election[4], length = 2, by = "-6 months")[2]
+pre2000 <- seq(election[5], length = 2, by = "-6 months")[2]
+pre2016.3 <- seq(election[1], length = 2, by = "-3 months")[2]
+pre2012.3 <- seq(election[2], length = 2, by = "-3 months")[2]
+pre2008.3 <- seq(election[3], length = 2, by = "-3 months")[2]
+pre2004.3 <- seq(election[4], length = 2, by = "-3 months")[2]
+pre2000.3 <- seq(election[5], length = 2, by = "-3 months")[2]
+pre2016.1 <- seq(election[1], length = 2, by = "-1 months")[2]
+pre2012.1 <- seq(election[2], length = 2, by = "-1 months")[2]
+pre2008.1 <- seq(election[3], length = 2, by = "-1 months")[2]
+pre2004.1 <- seq(election[4], length = 2, by = "-1 months")[2]
+pre2000.1 <- seq(election[5], length = 2, by = "-1 months")[2]
+pre2016.2wk <- seq(election[1], length = 2, by = "-2 weeks")[2]
+pre2012.2wk <- seq(election[2], length = 2, by = "-2 weeks")[2]
+pre2008.2wk <- seq(election[3], length = 2, by = "-2 weeks")[2]
+pre2004.2wk <- seq(election[4], length = 2, by = "-2 weeks")[2]
+pre2000.2wk <- seq(election[5], length = 2, by = "-2 weeks")[2]
+pre2016.after <- seq(election[1], length = 2, by = "+2 weeks")[2]
+pre2012.after <- seq(election[2], length = 2, by = "+2 weeks")[2]
+pre2008.after <- seq(election[3], length = 2, by = "+2 weeks")[2]
+pre2004.after <- seq(election[4], length = 2, by = "+2 weeks")[2]
+pre2000.after <- seq(election[5], length = 2, by = "+2 weeks")[2]
+
+# Function to determine if sermon date is between election and pre-election period
+is.between <- function(x,a,b){ 
+  x < a & x >= b 
+} 
+
+# 3 month
+#serms.merge$pre2016.3 <- ifelse(is.between(serms.merge$date.con, election[1], pre2016.3), 1, 0)
+#serms.merge$pre2012.3 <- ifelse(is.between(serms.merge$date.con, election[2], pre2012.3), 1, 0)
+#serms.merge$pre2008.3 <- ifelse(is.between(serms.merge$date.con, election[3], pre2008.3), 1, 0)
+#serms.merge$pre2004.3 <- ifelse(is.between(serms.merge$date.con, election[4], pre2004.3), 1, 0)
+#serms.merge$pre2000.3 <- ifelse(is.between(serms.merge$date.con, election[5], pre2000.3), 1, 0)
+#serms.merge$elect.szn.3 <- rowSums(serms.merge[,c("pre2016.3", "pre2012.3", "pre2008.3", "pre2004.3", "pre2000.3")])
+
+# 1 month
+serms.merge$pre2016.1 <- ifelse(is.between(serms.merge$date.con, election[1], pre2016.1), 1, 0)
+serms.merge$pre2012.1 <- ifelse(is.between(serms.merge$date.con, election[2], pre2012.1), 1, 0)
+serms.merge$pre2008.1 <- ifelse(is.between(serms.merge$date.con, election[3], pre2008.1), 1, 0)
+serms.merge$pre2004.1 <- ifelse(is.between(serms.merge$date.con, election[4], pre2004.1), 1, 0)
+serms.merge$pre2000.1 <- ifelse(is.between(serms.merge$date.con, election[5], pre2000.1), 1, 0)
+serms.merge$elect.szn.1 <- rowSums(serms.merge[,c("pre2016.1", "pre2012.1", "pre2008.1", "pre2004.1", "pre2000.1")])
+
+# 2 weeks
+serms.merge$pre2016.2wk <- ifelse(is.between(serms.merge$date.con, election[1], pre2016.2wk), 1, 0)
+serms.merge$pre2012.2wk <- ifelse(is.between(serms.merge$date.con, election[2], pre2012.2wk), 1, 0)
+serms.merge$pre2008.2wk <- ifelse(is.between(serms.merge$date.con, election[3], pre2008.2wk), 1, 0)
+serms.merge$pre2004.2wk <- ifelse(is.between(serms.merge$date.con, election[4], pre2004.2wk), 1, 0)
+serms.merge$pre2000.2wk <- ifelse(is.between(serms.merge$date.con, election[5], pre2000.2wk), 1, 0)
+serms.merge$elect.szn.2wk <- rowSums(serms.merge[,c("pre2016.2wk", "pre2012.2wk", "pre2008.2wk", "pre2004.2wk", "pre2000.2wk")])
+
+### Election response
+serms.merge$female.pastor <- ifelse(serms.merge$gender.final == 'female', 1, 0)
+fit3 <- glm(rights_talk_xgboost~elect.szn.2wk+dem.share+TOTCNG+cath+main+other+black.final+hispanic.final+api.final+female.pastor+census_region+log(pop10),
+            data = serms.merge)
+summary(fit3)
+
+stargazer(fit3, no.space = T, covariate.labels = c('Elect. Season', 'Dem. Vote', 'Total Churches',
+                                                         'Catholic', 'Mainline Prot', 'Other Christian',
+                                                         'Black', 'Hispanic', 'Asian', 'Female','Northeast',
+                                                         'South','West','Log Pop.','Constant'))
+
+
+
+#####################################################################################################
+### Religious competition
+#####################################################################################################
