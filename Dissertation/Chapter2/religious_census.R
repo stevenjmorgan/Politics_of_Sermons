@@ -547,8 +547,10 @@ serms.merge$county.name.fixed
 
 
 deduped.county <- county.data.merge[!duplicated(county.data.merge[c(1,2)]),]
-yolo <- merge(serms.merge, county.data.merge, by.x = 'county.name.fixed', by.y = 'county.state', all.x = T)
+yolo <- merge(serms.merge, deduped.county, by.x = 'county.name.fixed', by.y = 'county.state', all.x = T)
 summary(is.na(yolo$plurality))
+yolo1 <- yolo[!duplicated(yolo$cleaned),]
+dim(yolo1)
 
 fit4 <- glm(rights_talk_xgboost~plurality+elect.szn.2wk+cath+main+other+black.final+hispanic.final+api.final+female.pastor+census_region.x+log(pop10),
             data = yolo) #elect.szn.2wk+dem.share
