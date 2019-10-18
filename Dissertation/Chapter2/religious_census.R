@@ -521,3 +521,14 @@ stargazer(fit3, no.space = T, covariate.labels = c('Elect. Season', 'Dem. Vote',
 #                        sheetIndex = 1, stringsAsFactors = FALSE)
 census2010 <- read.spss('U.S. Religion Census Religious Congregations and Membership Study, 2010 (County File).SAV', 
                         to.data.frame=TRUE)
+census2010[is.na(census2010)] <- 0
+census2010$hhi <- (census2010$EVANRATE/1000)^2 + (census2010$BPRTRATE/1000)^2 + (census2010$MPRTRATE/1000)^2 + (census2010$CATHRATE/1000)^2 +
+  (census2010$ORTHRATE/1000)^2 + (census2010$OTHRATE/1000)^2 + (census2010$AMERATE/1000)^2 + (census2010$AMEZRATE/1000)^2 + (census2010$ALBRATE/1000)^2 +
+  (census2010$AWMCRATE/1000)^2 + (census2010$AMANRATE/1000)^2 + (census2010$AAMRATE/1000)^2 + (census2010$AMANRATE/1000)^2 + (census2010$AAMRATE/1000)^2 +
+  (census2010$ABARATE/1000)^2 + (census2010$ACRORATE/1000)^2 + (census2010$AMSHRATE/1000)^2 + (census2010$AFMRATE/1000)^2 + (census2010$ACCARATE/1000)^2
+summary(census2010$hhi)
+
+census2010$plurality <- 1 - census2010$hhi
+summary(census2010$plurality)
+census2010$plurality <- ifelse(census2010$plurality < 0, 0, census2010$plurality)
+summary(census2010$plurality)
