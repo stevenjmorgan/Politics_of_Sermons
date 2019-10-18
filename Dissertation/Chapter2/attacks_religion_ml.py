@@ -150,6 +150,7 @@ print(xgb_results)
 ### Use SVM -> linear
 clf = svm.SVC(kernel='linear')
 linear_svm_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
+print(linear_svm_results)
 
 #### Run on non-labeled data
 full['clean'] = full['clean'].apply(lambda x: remove_punct(x))

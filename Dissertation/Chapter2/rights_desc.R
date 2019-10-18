@@ -8,6 +8,7 @@ rm(list=ls())
 #setwd("C:/Users/steve/Dropbox/Dissertation/Data/handcode")
 setwd("C:/Users/SF515-51T/Desktop/Dissertation")
 
+### Rights
 serms.rights <- read.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
 
 # Plot rights talk over time by month
@@ -25,3 +26,25 @@ png('rights_talk_month.png', width = 680)
 ggplot(data=mon.yr, aes(x=month.yr, y=prop)) +
   geom_bar(stat="identity") + theme_bw() + xlab('Year') + ylab('# of Sermons w/ Rights Talk')
 dev.off()
+
+
+### Attacks on religion
+attacks <- read.csv('sermon_final_rel_attack_ml.csv', stringsAsFactors = F)
+summary(attacks$rel_attack_xgboost == 1)
+
+# Plot attack talk over time by month
+attacks$month.yr <- as.yearmon(as.Date(attacks$date.conv, '%Y-%m-%d'))
+unique(attacks$month.yr)
+
+attack.mon.yr <- plyr::count(attacks, "month.yr")
+attack.mon.yr.rights <- plyr::count(attacks[which(attacks$rel_attack_xgboost == 1),], "month.yr")
+
+yo <- merge(attack.mon.yr, attack.mon.yr.rights, by = 'month.yr', all.x = T)
+yo[is.na(yo)] <- 0
+
+# Merge
+
+
+attack.mon.yr$rights <- attack.mon.yr.rights$freq
+rm(attack.mon.yr.rights)
+attack.mon.yr$prop <- attack.mon.yr$rights / attack.mon.yr$freq
