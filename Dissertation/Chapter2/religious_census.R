@@ -209,28 +209,31 @@ rm(vote.share.wide, county_full, census2010)
 ### Aggregate sermon data to county level w/ Mizzou toolkit ###
 #########################################################################################################
 #load('C:/Users/sum410/Dropbox/Dissertation/Data/sermons_mfd_7-30.RData')
-load('C:/Users/steve/Dropbox/Dissertation/Data/sermons_mfd_7-30.RData')
-
+#load('C:/Users/steve/Dropbox/Dissertation/Data/sermons_mfd_7-30.RData')
+load("C:/Users/SF515-51T/Desktop/Dissertation/sermons_mfd_7-30.RData")
 
 serms.merge <- serms.merge[which(serms.merge$word.count > 100),]
 serms.merge$zip.clean[1:10]
 length(unique(serms.merge$zip.clean))
 
+### Remove spanish sermons
+
 # Read in zip-to-county data
 #geocorr.data <- read.csv('C:/Users/sum410/Dropbox/Dissertation/Data/Census/geocorr2014.csv', stringsAsFactors = F)
-geocorr.data <- read.csv('C:/Users/steve/Dropbox/Dissertation/Data/Census/geocorr2014.csv', stringsAsFactors = F)
+#geocorr.data <- read.csv('C:/Users/steve/Dropbox/Dissertation/Data/Census/geocorr2014.csv', stringsAsFactors = F)
+geocorr.data <- read.csv('C:/Users/SF515-51T/Desktop/Dissertation/geocorr2014.csv', stringsAsFactors = F)
 geocorr.data <- geocorr.data[-1,]
 
 # Subset geocorr data to include zip code, county name, and coutny population
 geocorr.data <- geocorr.data[,c('county','zcta5','cntyname','pop10', 'cntysc')]
 
-
+dim(serms.merge)
 serms.merge <- merge(serms.merge, geocorr.data, by.x = 'zip.clean', by.y = 'zcta5', all.x = T, all.y = F)
 dim(serms.merge)
-dim(serms.county)
+#dim(serms.county)
 
 serms.merge <- serms.merge[!duplicated(serms.merge$sermon),]
-dim(serms.county)
+dim(serms.merge)
 unique(serms.merge$cntyname)
 summary(is.na(serms.merge$cntyname))
 serms.merge$cntyname[1:10]
@@ -242,6 +245,7 @@ dim(serms.merge)
 rm(geocorr.data)
 
 
+### AGAIN USE FREAKING FIPS
 ### Merge to sermon data
 colnames(serms.merge)
 colnames(county.data.merge)
