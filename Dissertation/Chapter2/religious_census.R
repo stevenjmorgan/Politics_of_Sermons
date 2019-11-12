@@ -302,8 +302,19 @@ save(serms.merge, file = 'model_sermons_subset.RData')
 ########################################################################################################
 ##### Rights measure
 ########################################################################################################
+setwd("C:/Users/SF515-51T/Desktop/Dissertation")
 
 serms.rights <- read.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
+
+# Map of rights talk by state
+rights.state <- plyr::count(serms.rights[which(serms.rights$rights_talk_xgboost == 1),], 'state_parse')
+non.rights.state <- plyr::count(serms.rights[which(serms.rights$rights_talk_xgboost == 0),], 'state_parse')
+
+comb.rights <- merge(rights.state, non.rights.state, by = 'state_parse', all.x = T, all.y = T)
+comb.rights$prop <- comb.rights$freq.x / comb.rights$freq.y ### THIS MEANS STATES ARE MISSING
+rm(rights.state, non.rights.state)
+
+
 serms.merge <- serms.rights ### This will need fixed if original merged data is different (maybe just handle in python?)
 rm(serms.rights)
 
