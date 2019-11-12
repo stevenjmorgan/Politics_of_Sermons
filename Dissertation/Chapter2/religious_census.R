@@ -283,7 +283,7 @@ summary(county.data.merge$county.state.x == county.data.merge$county.state.y)
 
 dim(county.data.merge)
 deduped.county <- county.data.merge[!duplicated(county.data.merge[c(1,2)]),]
-dim(deduped.county)
+dim(deduped.county) #3143 x 31
 
 gc()
 #memory.limit(64000)
@@ -291,7 +291,7 @@ serms.merge <- merge(serms.merge, deduped.county, by.x = 'county.name.fixed',
            by.y = 'county.state.y', all.x = T, all.y = F)
 dim(serms.merge)
 
-summary(serms.merge$dem.vote.2016)
+summary(serms.merge$dem.vote.2016) ### Deal w/ NA's
 
 #### Save df
 save(serms.merge, file = 'model_sermons_subset.RData')
