@@ -36,6 +36,11 @@ unique(census2010$CNTYNAME)
 length(unique(census2010$CNTYCODE)) ### 327
 length(unique(census2010$CNTYNAME)) ### 1883
 
+# FIPS
+unique(census2010$FIPS)
+length(unique(census2010$FIPS))
+nrow(census2010)
+
 # County Pop.
 summary(census2010$POP2010)
 
@@ -59,6 +64,9 @@ library(ggplot2)
 
 library(ggthemes)
 library(tidyverse)
+
+
+#### Maybe merge on FIPS???
 county_full <- left_join(county_map, county_data, by = "id")
 county_full$county.state <- paste(county_full$name, county_full$state, sep = ', ')
 county.data.merge <- merge(county_full, census2010, by = 'county.state', all.x = T)
@@ -141,9 +149,11 @@ ggsave('norm_adherents_count_2010.png')
 ### Presidential Vote Share ###
 #########################################################################################################
 #setwd('C:/Users/sum410/Dropbox/Dissertation/Data/Vote_Share')
-setwd('C:/Users/steve/Dropbox/Dissertation/Data/Vote_Share')
+#setwd('C:/Users/steve/Dropbox/Dissertation/Data/Vote_Share')
+setwd("C:/Users/SF515-51T/Desktop/Dissertation/Vote_Share")
 
 
+# Read in county-by-county presidential vote share
 load('countypres_2000-2016.RData')
 vote.share <- x
 rm(x)
@@ -175,6 +185,7 @@ rm(dem_vote_wide, dem_vote_long, y, p, p1, p2)
 
 #########################################################################################################
 # Merge voting data to merged county file
+### AGAIN -> I'd use FIPS here!
 county.data.merge <- merge(county_full, census2010, by = 'county.state', all.x = T)
 rm(county_full)
 
@@ -191,12 +202,15 @@ colnames(county.data.merge)[colnames(county.data.merge)=='2016'] <- 'dem.vote.20
 summary(county.data.merge$TOTCNG)
 rm(vote.share.wide, county_full, census2010)
 
+### Maybe calculate religious economies measure here???
+
 
 #########################################################################################################
 ### Aggregate sermon data to county level w/ Mizzou toolkit ###
 #########################################################################################################
 #load('C:/Users/sum410/Dropbox/Dissertation/Data/sermons_mfd_7-30.RData')
 load('C:/Users/steve/Dropbox/Dissertation/Data/sermons_mfd_7-30.RData')
+
 
 serms.merge <- serms.merge[which(serms.merge$word.count > 100),]
 serms.merge$zip.clean[1:10]
