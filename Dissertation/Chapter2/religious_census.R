@@ -268,6 +268,7 @@ serms.merge$county.name.fixed <- gsub("(.*) ","\\1, \\2",serms.merge$cntyname)
 dim(serms.merge)
 colnames(county.data.merge)
 
+##################### Religious economies measures HERE
 # Select variables to retain
 myvars <- c('fips', 'county.state.x', 'name', 'state', 'census_region', 'pop_dens', 'pct_black',
             'pop', 'female', 'white', 'hh_income', 'su_gun4', 'TOTCNG', 'TOTADH', 'TOTRATE',
