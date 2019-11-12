@@ -296,7 +296,7 @@ summary(serms.merge$dem.vote.2016) ### Deal w/ NA's
 #### Save df
 save(serms.merge, file = 'model_sermons_subset.RData')
 
-serms.rights <- write.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
+#serms.rights <- write.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
 
 
 ########################################################################################################
@@ -304,7 +304,7 @@ serms.rights <- write.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
 ########################################################################################################
 
 serms.rights <- read.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
-serms.merge <- serms.rights
+serms.merge <- serms.rights ### This will need fixed if original merged data is different (maybe just handle in python?)
 rm(serms.rights)
 
 #summary(lm(fair~dem.vote.2000+dem.vote.2004+dem.vote.2008+dem.vote.2012+dem.vote.2016, data = serms.merge))
@@ -345,6 +345,8 @@ library(scales)
 serms.merge$comp.rescale <- rescale(serms.merge$dem.comp, to = c(0, 100))
 summary(serms.merge$comp.rescale)
 
+
+## Consider dropping catholics and creating a dummy for top 10 most popular denomin's in dataset?
 
 # Code rel. trad
 library(car)
