@@ -255,6 +255,16 @@ colnames(county.data.merge)[colnames(county.data.merge)=='2016'] <- 'dem.vote.20
 summary(county.data.merge$TOTCNG)
 rm(vote.share.wide, census2010)
 
+summary(county.data.merge$TOTCNG) # NA = 0
+unique(county.data.merge$state)
+unique(county.data.merge$STABBR)
+length(unique(county.data.merge$STABBR))
+
+# Deduplicated df
+length(unique(county.data.merge$fips)) # 3143
+dedup.county <- county.data.merge[!duplicated(county.data.merge$fips),]
+nrow(dedup.county) #3143
+
 ### Maybe calculate religious economies measure here???
 
 
