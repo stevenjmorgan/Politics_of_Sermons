@@ -386,32 +386,35 @@ summary(serms.merge$cong.by.pop)
 
 
 ##################### Religious economies measures HERE
+
+
+
 # Select variables to retain
-myvars <- c('fips', 'county.state.x', 'name', 'state', 'census_region', 'pop_dens', 'pct_black',
-            'pop', 'female', 'white', 'hh_income', 'su_gun4', 'TOTCNG', 'TOTADH', 'TOTRATE',
-            'EVANCNG', 'EVANADH', 'EVANRATE', 'FIPS', 'STCODE', 'STABBR', 'STNAME', 'CNTYCODE', 
-            'CNTYNAME', 'POP2010', 'county.state.y', 'dem.vote.2000', 'dem.vote.2004', 'dem.vote.2008',
-            'dem.vote.2012', 'dem.vote.2016')
-county.data.merge <- county.data.merge[myvars]
-summary(county.data.merge$TOTCNG)
-summary(county.data.merge$dem.vote.2000)
-summary(county.data.merge$county.state.x == county.data.merge$county.state.y)
-
-
-dim(county.data.merge)
-deduped.county <- county.data.merge[!duplicated(county.data.merge[c(1,2)]),]
-dim(deduped.county) #3143 x 31
-
-gc()
-#memory.limit(64000)
-serms.merge <- merge(serms.merge, deduped.county, by.x = 'county.name.fixed', 
-           by.y = 'county.state.y', all.x = T, all.y = F)
-dim(serms.merge)
-
-summary(serms.merge$dem.vote.2016) ### Deal w/ NA's
+# myvars <- c('fips', 'county.state.x', 'name', 'state', 'census_region', 'pop_dens', 'pct_black',
+#             'pop', 'female', 'white', 'hh_income', 'su_gun4', 'TOTCNG', 'TOTADH', 'TOTRATE',
+#             'EVANCNG', 'EVANADH', 'EVANRATE', 'FIPS', 'STCODE', 'STABBR', 'STNAME', 'CNTYCODE', 
+#             'CNTYNAME', 'POP2010', 'county.state.y', 'dem.vote.2000', 'dem.vote.2004', 'dem.vote.2008',
+#             'dem.vote.2012', 'dem.vote.2016')
+# county.data.merge <- county.data.merge[myvars]
+# summary(county.data.merge$TOTCNG)
+# summary(county.data.merge$dem.vote.2000)
+# summary(county.data.merge$county.state.x == county.data.merge$county.state.y)
+# 
+# 
+# dim(county.data.merge)
+# deduped.county <- county.data.merge[!duplicated(county.data.merge[c(1,2)]),]
+# dim(deduped.county) #3143 x 31
+# 
+# gc()
+# #memory.limit(64000)
+# serms.merge <- merge(serms.merge, deduped.county, by.x = 'county.name.fixed', 
+#            by.y = 'county.state.y', all.x = T, all.y = F)
+# dim(serms.merge)
+# 
+# summary(serms.merge$dem.vote.2016) ### Deal w/ NA's
 
 #### Save df
-save(serms.merge, file = 'model_sermons_subset.RData')
+#save(serms.merge, file = 'model_sermons_subset.RData')
 
 #serms.rights <- write.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
 
