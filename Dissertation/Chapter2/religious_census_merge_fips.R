@@ -342,22 +342,22 @@ serms.merge$cntyname[1:10]
 serms.merge$zip.clean[1:10]
 
 # Drop non-matched counties
-serms.merge <- serms.merge[!is.na(serms.merge$cntyname),]
-dim(serms.merge)
+serms.merge <- serms.merge[!is.na(serms.merge$county),]
+nrow(serms.merge) # 121,827
 rm(geocorr.data)
 
 
-### AGAIN USE FREAKING FIPS
+### AGAIN USE FREAKING FIPS (county)
 ### Merge to sermon data
 colnames(serms.merge)
 colnames(county.data.merge)
 serms.merge$fair <- serms.merge$fairness.vice + serms.merge$fairness.virtue
-unique(serms.merge$cntyname)[1:10]
-unique(county.data.merge$county.state.x)[1:10]
+#unique(serms.merge$cntyname)[1:10]
+#unique(county.data.merge$county.state.x)[1:10]
 
 # Remove county in county merge data, add comma in sermon dataset
-county.data.merge$county.name.fixed <- gsub(' County', '', county.data.merge$county.state.x)
-serms.merge$county.name.fixed <- gsub("(.*) ","\\1, \\2",serms.merge$cntyname)
+###county.data.merge$county.name.fixed <- gsub(' County', '', county.data.merge$county.state.x)
+###serms.merge$county.name.fixed <- gsub("(.*) ","\\1, \\2",serms.merge$cntyname)
 
 #serms.merge$parish <- 0
 #for (i in 1:nrow(serms.merge)) {
@@ -369,6 +369,21 @@ serms.merge$county.name.fixed <- gsub("(.*) ","\\1, \\2",serms.merge$cntyname)
 
 dim(serms.merge)
 colnames(county.data.merge)
+
+
+########################################################################################################
+### Merge by fips/county (retain all vars)
+dim(serms.merge)
+serms.merge <- merge(serms.merge, dedup.county, by.x = 'county', 
+                     by.y = 'fips', all.x = T, all.y = F)
+dim(serms.merge) # 121,827 x 689
+summary(serms.merge$cong.by.pop)
+
+
+########################################################################################################
+### Variable selection
+
+
 
 ##################### Religious economies measures HERE
 # Select variables to retain
