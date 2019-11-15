@@ -302,15 +302,42 @@ geocorr.data <- geocorr.data[-1,]
 # Subset geocorr data to include zip code, county name, and coutny population
 geocorr.data <- geocorr.data[,c('county','zcta5','cntyname','pop10', 'cntysc')]
 
+# Fix zip codes w/ 4 numbers
+class(geocorr.data$zcta5)
+summary(nchar(geocorr.data$zcta5)==4)
+for (i in 1:nrow(geocorr.data)) {
+  if (nchar(geocorr.data$zcta5[i])==4) {
+    geocorr.data$zcta5[i] <- paste('0',geocorr.data$zcta5[i],sep='')
+  }
+}
+
+summary(nchar(geocorr.data$zcta5)==4) #0
+summary(nchar(geocorr.data$zcta5)==5) #ALL!!!
+
+# Fix FIPS w/ 4 numbers
+class(geocorr.data$county)
+summary(nchar(geocorr.data$county))
+summary(nchar(geocorr.data$county)==4)
+for (i in 1:nrow(geocorr.data)) {
+  if (nchar(geocorr.data$county[i])==4) {
+    geocorr.data$county[i] <- paste('0',geocorr.data$county[i],sep='')
+  }
+}
+
+summary(nchar(geocorr.data$county)==4) #0
+summary(nchar(geocorr.data$county)==5) #ALL!!!
+
+# Merge sermon and county data w/ zip code
 dim(serms.merge)
 serms.merge <- merge(serms.merge, geocorr.data, by.x = 'zip.clean', by.y = 'zcta5', all.x = T, all.y = F)
-dim(serms.merge)
-#dim(serms.county)
-
 serms.merge <- serms.merge[!duplicated(serms.merge$sermon),]
 dim(serms.merge)
-unique(serms.merge$cntyname)
-summary(is.na(serms.merge$cntyname))
+summary(is.na(serms.merge$county))
+
+unique(serms.merge$county)
+length(unique(serms.merge$county))
+
+summary(is.na(serms.merge$county))
 serms.merge$cntyname[1:10]
 serms.merge$zip.clean[1:10]
 
