@@ -264,6 +264,8 @@ length(unique(county.data.merge$STABBR))
 length(unique(county.data.merge$fips)) # 3143
 dedup.county <- county.data.merge[!duplicated(county.data.merge$fips),]
 nrow(dedup.county) #3143
+save(dedup.county, file = 'deduped_merge_county.RData')
+
 
 ### Maybe calculate religious economies measure here???
 
@@ -278,8 +280,18 @@ load("C:/Users/SF515-51T/Desktop/Dissertation/sermons_mfd_7-30.RData")
 serms.merge <- serms.merge[which(serms.merge$word.count > 100),]
 serms.merge$zip.clean[1:10]
 length(unique(serms.merge$zip.clean))
+unique(serms.merge$zip.clean)
+summary(nchar(serms.merge$zip.clean)==4)
+
+### Remove sermons w/o zip codes
+serms.merge <- serms.merge[!is.na(serms.merge$zip.clean),]
+serms.merge <- serms.merge[which(nchar(serms.merge$zip.clean)==5),]
 
 ### Remove spanish sermons
+summary(serms.merge$spanish.count)
+serms.merge <- serms.merge[which(serms.merge$spanish.count < 3),]
+nrow(serms.merge) #126,422
+
 
 # Read in zip-to-county data
 #geocorr.data <- read.csv('C:/Users/sum410/Dropbox/Dissertation/Data/Census/geocorr2014.csv', stringsAsFactors = F)
