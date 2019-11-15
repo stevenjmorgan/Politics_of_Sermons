@@ -379,6 +379,7 @@ serms.merge <- merge(serms.merge, dedup.county, by.x = 'county',
 dim(serms.merge) # 121,827 x 689
 summary(serms.merge$cong.by.pop)
 
+write.csv(serms.merge, 'sermon_final.csv', row.names = F)
 
 ########################################################################################################
 ### Variable selection
@@ -424,7 +425,8 @@ summary(serms.merge$cong.by.pop)
 ########################################################################################################
 setwd("C:/Users/SF515-51T/Desktop/Dissertation")
 
-serms.rights <- read.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
+#serms.rights <- read.csv('sermon_final_rights_ml.csv', stringsAsFactors = F)
+serms.merge <- read.csv('sermon_final_rights_ml_11-15.csv', stringsAsFactors = F)
 
 # Map of rights talk by state
 rights.state <- plyr::count(serms.rights[which(serms.rights$rights_talk_xgboost == 1),], 'state_parse')

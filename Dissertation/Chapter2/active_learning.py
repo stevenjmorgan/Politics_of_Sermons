@@ -99,8 +99,8 @@ valid_y = encoder.fit_transform(valid_y)
 
 # Transform tf-idf
 #vectorizer.fit(df['cleaned'])
-vectorizer.get_feature_names()[0:10]
-vectorizer.vocabulary_ #6740
+print(vectorizer.get_feature_names()[0:10])
+print(vectorizer.vocabulary_) #6740
 
 xtrain_tfidf =  vectorizer.transform(train_x)
 xvalid_tfidf =  vectorizer.transform(valid_x)
@@ -173,7 +173,7 @@ full['rights_talk_xgboost'] = predictions
 full['rights_talk_xgboost'].describe()
 full['rights_talk_xgboost'].value_counts()
 
-full.to_csv('sermon_final_rights_ml.csv')
+full.to_csv('sermon_final_rights_ml_11-15.csv')
 
 ###############################################################################
 ### Bigram approach -> does not work well
