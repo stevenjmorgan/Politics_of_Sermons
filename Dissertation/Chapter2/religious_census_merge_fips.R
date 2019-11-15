@@ -27,8 +27,8 @@ summary(census2010$TOTRATE)
 sd(census2010$TOTRATE, na.rm = T)
 
 # State Abbreviation & Name
-unique(census2010$STABBR)
-unique(census2010$STNAME)
+length(unique(census2010$STABBR))
+length(unique(census2010$STNAME))
 
 # County Code & Name
 unique(census2010$CNTYCODE)
@@ -38,11 +38,11 @@ length(unique(census2010$CNTYNAME)) ### 1883
 
 # FIPS
 unique(census2010$FIPS)
-length(unique(census2010$FIPS))
-nrow(census2010)
+length(unique(census2010$FIPS)) ### 3149
+nrow(census2010) ### 3149
 
 # County Pop.
-summary(census2010$POP2010)
+summary(census2010$POP2010) # NA = 6
 
 # Create county-state variable
 census2010$county.state <- paste(census2010$CNTYNAME, census2010$STABBR, sep = ', ')
@@ -65,14 +65,36 @@ library(ggplot2)
 library(ggthemes)
 library(tidyverse)
 
-
 #### Maybe merge on FIPS???
 county_full <- left_join(county_map, county_data, by = "id")
 county_full$county.state <- paste(county_full$name, county_full$state, sep = ', ')
-county.data.merge <- merge(county_full, census2010, by = 'county.state', all.x = T)
-summary(county.data.merge$TOTCNG)
+#county.data.merge <- merge(county_full, census2010, by = 'county.state', all.x = T)
+#dim(county.data.merge) #191382 x 607
+#summary(county.data.merge$TOTCNG) # NA = 1414
+#rm(county.data.merge)
 
-county.data.merge$TOTCNG[is.na(county.data.merge$TOTCNG)] <- min(county.data.merge$TOTCNG, na.rm = T)
+# Add zero to front of four digit characters
+census2010$FIPS <- as.character(census2010$FIPS)
+summary(nchar(census2010$FIPS)==4) #320
+for (i in 1:nrow(census2010)) {
+  if (nchar(census2010$FIPS[i]) == 4) {
+    census2010$FIPS[i] <- paste(0,census2010$FIPS[i],sep='')
+  }
+}
+summary(nchar(census2010$FIPS)==4) #0
+summary(nchar(census2010$FIPS)==5) #3149
+
+
+county.data.merge <- merge(county_full, census2010, by.x = 'id', by.y = 'FIPS', all.x = T)
+dim(county.data.merge) #191382 x 607
+summary(county.data.merge$TOTCNG) # NA = 0!!!
+
+summary(!is.na(county.data.merge$TOTCNG)) # NA = 0
+summary(!is.na(county.data.merge$POP2010)) # NA = 0
+#x <- county.data.merge[!duplicated(county.data.merge$id),]
+#summary(!is.na(x$TOTCNG)) # NA = 0
+
+#county.data.merge$TOTCNG[is.na(county.data.merge$TOTCNG)] <- min(county.data.merge$TOTCNG, na.rm = T)
 summary(county.data.merge$TOTCNG)
 
 ### Raw # of congregations by county, 2010
@@ -87,7 +109,7 @@ p2 + labs(fill = "Congregations by County - 2010") +
   theme_map() +
   guides(fill = guide_legend(nrow = 1)) + 
   theme(legend.position = "bottom")
-ggsave('raw_congregations_count_2010.png')
+ggsave('raw_congregations_count_2010_11-15.png')
 
 
 ### # of congregations divided by population by county, 2010
@@ -102,7 +124,7 @@ p2 + labs(fill = "Congregations Density (Normalized by County Population) - 2010
   theme_map() +
   guides(fill = guide_legend(nrow = 1)) + 
   theme(legend.position = "bottom")
-ggsave('norm_congregations_count_2010.png')
+ggsave('norm_congregations_count_2010_11-15.png')
 
 
 options(scipen = 999)
@@ -117,7 +139,7 @@ p2 + labs(fill = "Total Adherents Per County - 2010") +
   theme_map() +
   guides(fill = guide_legend(nrow = 1)) + 
   theme(legend.position = "bottom")
-ggsave('raw_adherents_count_2010.png')
+ggsave('raw_adherents_count_2010_11-15.png')
 
 
 ### Proportion of adherents by county (per 1,000 people), 2010
@@ -131,7 +153,7 @@ p2 + labs(fill = "Rates of adherence per 1,000 population  by County - 2010") +
   theme_map() +
   guides(fill = guide_legend(nrow = 1)) + 
   theme(legend.position = "bottom")
-ggsave('norm_adherents_count_2010.png')
+ggsave('norm_adherents_count_2010_11-15.png')
 
 
 
@@ -144,14 +166,12 @@ ggsave('norm_adherents_count_2010.png')
 
 
 
-
 #########################################################################################################
 ### Presidential Vote Share ###
 #########################################################################################################
 #setwd('C:/Users/sum410/Dropbox/Dissertation/Data/Vote_Share')
 #setwd('C:/Users/steve/Dropbox/Dissertation/Data/Vote_Share')
 setwd("C:/Users/SF515-51T/Desktop/Dissertation/Vote_Share")
-
 
 # Read in county-by-county presidential vote share
 load('countypres_2000-2016.RData')
@@ -186,9 +206,42 @@ rm(dem_vote_wide, dem_vote_long, y, p, p1, p2)
 #########################################################################################################
 # Merge voting data to merged county file
 ### AGAIN -> I'd use FIPS here!
-county.data.merge <- merge(county_full, census2010, by = 'county.state', all.x = T)
+#county.data.merge1 <- merge(county_full, census2010, by = 'county.state', all.x = T)
+#county.data.merge1 <- merge(county_full, census2010, by.x = 'id', by.y = 'FIPS', all.x = T)
+#dim(county.data.merge1)
+#setdiff(colnames(county.data.merge), colnames(county.data.merge1))
+#dim(county.data.merge)
 rm(county_full)
 
+dim(county.data.merge)
+
+
+# Add zero to front of four digit characters
+county.data.merge$fips <- as.character(county.data.merge$fips)
+summary(nchar(county.data.merge$fips)==4) #34044
+for (i in 1:nrow(county.data.merge)) {
+  if (nchar(county.data.merge$fips[i]) == 4) {
+    county.data.merge$fips[i] <- paste(0,county.data.merge$fips[i],sep='')
+  }
+}
+summary(nchar(county.data.merge$fips)==4) #0
+summary(nchar(county.data.merge$fips)==5) #all
+
+
+vote.share.wide$FIPS <- as.character(vote.share.wide$FIPS)
+summary(nchar(vote.share.wide$FIPS)==4) #327
+for (i in 1:nrow(vote.share.wide)) {
+  if (nchar(vote.share.wide$FIPS[i]) == 4 & !is.na(vote.share.wide$FIPS[i])) {
+    vote.share.wide$FIPS[i] <- paste(0,vote.share.wide$FIPS[i],sep='')
+  }
+}
+summary(nchar(vote.share.wide$FIPS)==4) #0
+summary(nchar(vote.share.wide$FIPS)==5) #all
+
+vote.share.wide <- vote.share.wide[!is.na(vote.share.wide$FIPS),]
+summary(nchar(vote.share.wide$FIPS)==5) #all
+
+# Merge voting data
 dim(county.data.merge)
 county.data.merge <- merge(county.data.merge, vote.share.wide, by.x = 'fips', by.y = 'FIPS', all.x = T)
 dim(county.data.merge)
@@ -200,7 +253,7 @@ colnames(county.data.merge)[colnames(county.data.merge)=='2008'] <- 'dem.vote.20
 colnames(county.data.merge)[colnames(county.data.merge)=='2012'] <- 'dem.vote.2012'
 colnames(county.data.merge)[colnames(county.data.merge)=='2016'] <- 'dem.vote.2016'
 summary(county.data.merge$TOTCNG)
-rm(vote.share.wide, county_full, census2010)
+rm(vote.share.wide, census2010)
 
 ### Maybe calculate religious economies measure here???
 
