@@ -569,7 +569,7 @@ attack.dict <- paste(c('nation', 'murder', 'govern', 'abort', 'freedom',  # remo
 serms.merge$attack_count <- str_count(serms.merge$clean, attack.dict)
 summary(serms.merge$attack_count)
 serms.merge$is.attack <- ifelse(serms.merge$attack_count >= 15, 1, 0)
-summary(serms.merge$is.attack == 1) #5.0%
+summary(serms.merge$is.attack == 1) #10.0%
 
 
 cor(serms.merge$dem.share, serms.merge$comp.rescale, use = 'complete.obs') #-0.263
@@ -586,7 +586,7 @@ cor(serms.merge$is.attack, serms.merge$TOTADH, use = 'complete.obs') #0.037
 ### Evangelical adherence and rhetoric measures
 cor(serms.merge$is.pol, serms.merge$EVANADH, use = 'complete.obs') #0.010
 cor(serms.merge$rights_talk_xgboost, serms.merge$EVANADH, use = 'complete.obs') #0.000
-cor(serms.merge$is.attack, serms.merge$EVANADH, use = 'complete.obs') #0.012
+cor(serms.merge$is.attack, serms.merge$EVANADH, use = 'complete.obs') #0.013
 
 
 ### Examples of attack on religion
@@ -608,7 +608,36 @@ close(fileConn)
 
 ##########################################################################################################
 ### Merge in rural/urban/suburban measures
+rural <- read.csv('rural_urban_fips.csv', stringsAsFactors = F)
+rural <- rural[,c(1,5)]
 
+for (i in 1:nrow(rural)) {
+  if (nchar(rural$FIPS[i])==4) {
+    rural$FIPS[i] <- paste('0',rural$FIPS[i],sep='')
+  }
+}
+summary(nchar(rural$FIPS))
+
+summary(nchar(serms.merge$county))
+for (i in 1:nrow(serms.merge)) {
+  if (nchar(serms.merge$county[i])==4) {
+    serms.merge$county[i] <- paste('0',serms.merge$county[i],sep='')
+  }
+}
+summary(nchar(serms.merge$county))
+
+dim(serms.merge)
+serms.merge <- merge(serms.merge, rural, by.x = 'county', by.y = 'FIPS', all.x = T, all.y = F)
+dim(serms.merge)
+summary(is.na(serms.merge$RUCC_2013))
+
+# Recode rural/urban/suburban -> FIX
+serms.merge$urban <- ifelse(serms.merge$RUCC_2013 < 4, 1, 0)
+serms.merge$rural <- ifelse(serms.merge$RUCC_2013 > 7, 1, 0)
+serms.merge$suburb <- ifelse(serms.merge$RUCC_2013 > 3 & serms.merge$RUCC_2013 < 8, 1, 0)
+summary(serms.merge$suburb==1)
+summary(serms.merge$rural==1)
+summary(serms.merge$urban==1)
 
 
 save(serms.merge, file = 'serms_with_measures.RData')
