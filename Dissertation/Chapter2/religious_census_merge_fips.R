@@ -443,6 +443,31 @@ rm(rights.state, non.rights.state)
 #summary(lm(fair~dem.vote.2000+dem.vote.2004+dem.vote.2008+dem.vote.2012+dem.vote.2016, data = serms.merge))
 
 
+########################################################################################################
+library(stringr)
+pol.dict <- paste(c('republican', 'democrat', 'congress', 'senate', 'gop', 'dem', 
+                    'mcconel', 'schumer', 'trumpcar', 'lawmak', 'senat', 'legisl', 
+                    'obama', 'racist', 'constitut', 'immigr', 'dreamer', 'daca', 
+                    'deport', 'muslim', 'racism', 'lgbtq', 'transgend', 'activist',
+                    'freedom', 'constitut', 'antilgbtq', 'liberti', 'civil', 
+                    'anticivil','bigotri', 'judici', 'nomine', 'gorusch', 'clinton', 
+                    'kennedi', 'feder','protest', 'pelosi','policymak', 'bipartisan',
+                    'bipartisanship','congress', 'legisl', 'medicaid', 'medicar', 
+                    'aca', 'democraci', 'lgbt', 'lgbtq', 'filibust', 'capitol',
+                    'antiimigr','obamacar','migrant', 'refuge','asylum',
+                    'salvadoran', 'elsalvador', 'detent', 'deport', 'incarcer',
+                    'detain','border', 'discriminatori', 'antiabort', 'welfar', 
+                    'grassley','politician', 'aclu', 'partisan', 'delegitim',
+                    'transgend', 'unborn', 'abort', 'kamala', 'vote', 'ballot', 
+                    'voter','abort', 'prolif', 'environ','ideolog', 
+                    'kavanaugh','unconstitut', 'ideologu', 'proabort','antiabort',
+                    'legislatur'), collapse='|')
+serms.merge$pol_count <- str_count(serms.merge$clean, pol.dict)
+serms.merge$is.pol <- ifelse(serms.merge$pol_count >= 7, 1, 0)
+summary(serms.merge$is.pol == 1) #8.0%
+
+cor(serms.merge$is.pol, serms.merge$rights_talk_xgboost) # 0.27
+
 #### Democratic vote share variable
 serms.merge$dem.share <- NA       ###
 for (i in 1:nrow(serms.merge)) {
@@ -469,6 +494,7 @@ for (i in 1:nrow(serms.merge)) {
 }
 summary(serms.merge$dem.share)
 serms.merge$dem.share <- serms.merge$dem.share * 100
+summary(serms.merge$dem.share)
 
 
 ### Two-vote competitiveness
@@ -477,6 +503,9 @@ summary(serms.merge$dem.comp)
 library(scales)
 serms.merge$comp.rescale <- rescale(serms.merge$dem.comp, to = c(0, 100))
 summary(serms.merge$comp.rescale)
+
+serms.merge$rights_talk_xgboost <- serms.merge$rights_talk_xgboost * 100
+summary(serms.merge$rights_talk_xgboost)
 
 
 ## Consider dropping catholics and creating a dummy for top 10 most popular denomin's in dataset?
@@ -530,6 +559,33 @@ serms.merge$black.final <- ifelse(serms.merge$race == 'black', 1, 0)
 serms.merge$hispanic.final <- ifelse(serms.merge$race == 'hispanic', 1, 0)
 serms.merge$white.final <- ifelse(serms.merge$race == 'white', 1, 0)
 serms.merge$api.final <- ifelse(serms.merge$race == 'api', 1, 0)
+
+
+##########################################################################################################
+### Baseline model - rights talk
+base <- lm(rights_talk_xgboost~dem.share, data = serms.merge)
+summary(base)
+
+base1 <- lm(rights_talk_xgboost~comp.rescale, data = serms.merge)
+summary(base1)
+
+base2 <- lm(rights_talk_xgboost~TOTRATE, data = serms.merge)
+summary(base2)
+
+base3 <- lm(rights_talk_xgboost~EVANRATE, data = serms.merge)
+summary(base3)
+
+
+### Baseline models - political speech
+base.pol <- lm(is.pol~dem.share, data = serms.merge)
+summary(base.pol)
+
+base1.pol <- lm(is.pol~comp.rescale, data = serms.merge)
+summary(base1.pol)
+
+
+##########################################################################################################
+
 
 ### Variables for models
 colnames(serms.merge)
