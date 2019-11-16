@@ -429,16 +429,16 @@ setwd("C:/Users/SF515-51T/Desktop/Dissertation")
 serms.merge <- read.csv('sermon_final_rights_ml_11-15.csv', stringsAsFactors = F)
 
 # Map of rights talk by state
-rights.state <- plyr::count(serms.rights[which(serms.rights$rights_talk_xgboost == 1),], 'state_parse')
-non.rights.state <- plyr::count(serms.rights[which(serms.rights$rights_talk_xgboost == 0),], 'state_parse')
+rights.state <- plyr::count(serms.merge[which(serms.merge$rights_talk_xgboost == 1),], 'state_parse')
+non.rights.state <- plyr::count(serms.merge[which(serms.merge$rights_talk_xgboost == 0),], 'state_parse')
 
 comb.rights <- merge(rights.state, non.rights.state, by = 'state_parse', all.x = T, all.y = T)
 comb.rights$prop <- comb.rights$freq.x / comb.rights$freq.y ### THIS MEANS STATES ARE MISSING
 rm(rights.state, non.rights.state)
 
 
-serms.merge <- serms.rights ### This will need fixed if original merged data is different (maybe just handle in python?)
-rm(serms.rights)
+#serms.merge <- serms.rights ### This will need fixed if original merged data is different (maybe just handle in python?)
+#rm(serms.rights)
 
 #summary(lm(fair~dem.vote.2000+dem.vote.2004+dem.vote.2008+dem.vote.2012+dem.vote.2016, data = serms.merge))
 
