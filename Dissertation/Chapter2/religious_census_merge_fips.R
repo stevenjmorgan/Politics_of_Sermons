@@ -589,6 +589,27 @@ cor(serms.merge$rights_talk_xgboost, serms.merge$EVANADH, use = 'complete.obs') 
 cor(serms.merge$is.attack, serms.merge$EVANADH, use = 'complete.obs') #0.012
 
 
+### Examples of attack on religion
+library(dplyr)
+attack.ex <- serms.merge[order(serms.merge$attack_count,decreasing = TRUE),]
+attack.ex <- attack.ex[5:8,]
+
+fileConn<-file("attack_ex1.txt")
+writeLines(attack.ex$sermon[1], fileConn)
+close(fileConn)
+
+fileConn<-file("attack_ex2.txt")
+writeLines(attack.ex$sermon[2], fileConn)
+close(fileConn)
+
+fileConn<-file("attack_ex3.txt")
+writeLines(attack.ex$sermon[3], fileConn)
+close(fileConn)
+
+##########################################################################################################
+### Merge in rural/urban/suburban measures
+
+
 
 
 ##########################################################################################################
