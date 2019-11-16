@@ -632,13 +632,15 @@ dim(serms.merge)
 summary(is.na(serms.merge$RUCC_2013))
 
 # Recode rural/urban/suburban -> FIX
-serms.merge$urban <- ifelse(serms.merge$RUCC_2013 < 4, 1, 0)
-serms.merge$rural <- ifelse(serms.merge$RUCC_2013 > 7, 1, 0)
-serms.merge$suburb <- ifelse(serms.merge$RUCC_2013 > 3 & serms.merge$RUCC_2013 < 8, 1, 0)
-summary(serms.merge$suburb==1)
-summary(serms.merge$rural==1)
-summary(serms.merge$urban==1)
+# serms.merge$urban <- ifelse(serms.merge$RUCC_2013 < 4, 1, 0)
+# serms.merge$rural <- ifelse(serms.merge$RUCC_2013 > 7, 1, 0)
+# serms.merge$suburb <- ifelse(serms.merge$RUCC_2013 > 3 & serms.merge$RUCC_2013 < 8, 1, 0)
+# summary(serms.merge$suburb==1)
+# summary(serms.merge$rural==1)
+# summary(serms.merge$urban==1)
 
+serms.merge$rural <- ifelse(serms.merge$RUCC_2013 > 3, 1, 0)
+summary(serms.merge$rural==1)
 
 save(serms.merge, file = 'serms_with_measures.RData')
 
