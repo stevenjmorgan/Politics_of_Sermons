@@ -563,14 +563,32 @@ serms.merge$api.final <- ifelse(serms.merge$race == 'api', 1, 0)
 
 ##########################################################################################################
 ### Attack on religion
-attack.dict <- paste(c('america', 'nation', 'murder', 'govern', 'abort', 'freedom', 
+attack.dict <- paste(c('nation', 'murder', 'govern', 'abort', 'freedom',  # remove america?
                     'persecut', 'liberti', 'state', 'kill', 'religion', 'war',
-                    'obama', 'racist', 'constitut', 'immigr', 'dreamer', 'daca', 
-                    'american', 'polit', 'countri'), collapse='|')
+                    'polit', 'countri'), collapse='|')
 serms.merge$attack_count <- str_count(serms.merge$clean, attack.dict)
 summary(serms.merge$attack_count)
-serms.merge$is.attack <- ifelse(serms.merge$pol_count >= 9, 1, 0)
+serms.merge$is.attack <- ifelse(serms.merge$attack_count >= 15, 1, 0)
 summary(serms.merge$is.attack == 1) #5.0%
+
+
+cor(serms.merge$dem.share, serms.merge$comp.rescale, use = 'complete.obs') #-0.263
+cor(serms.merge$is.pol, serms.merge$rights_talk_xgboost, use = 'complete.obs') #0.269
+cor(serms.merge$is.pol, serms.merge$is.attack, use = 'complete.obs') #0.310
+cor(serms.merge$rights_talk_xgboost, serms.merge$is.attack, use = 'complete.obs') #0.282
+
+
+### Religious adherence and rhetoric measures
+cor(serms.merge$is.pol, serms.merge$TOTADH, use = 'complete.obs') #0.020
+cor(serms.merge$rights_talk_xgboost, serms.merge$TOTADH, use = 'complete.obs') #0.005
+cor(serms.merge$is.attack, serms.merge$TOTADH, use = 'complete.obs') #0.037
+
+### Evangelical adherence and rhetoric measures
+cor(serms.merge$is.pol, serms.merge$EVANADH, use = 'complete.obs') #0.010
+cor(serms.merge$rights_talk_xgboost, serms.merge$EVANADH, use = 'complete.obs') #0.000
+cor(serms.merge$is.attack, serms.merge$EVANADH, use = 'complete.obs') #0.012
+
+
 
 
 ##########################################################################################################
