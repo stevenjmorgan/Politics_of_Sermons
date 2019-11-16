@@ -11,7 +11,8 @@ library(stargazer)
 library(quanteda)
 library(readtext)
 
-load('serms_with_measures.RData')
+serms.merge <- read.csv('sermon_final_rights_ml_11-15.csv', stringsAsFactors = F)
+#load('serms_with_measures.RData')
 
 set.seed(24519)
 smp.serms <- serms.merge[sample(nrow(serms.merge), 20000), ]
