@@ -66,6 +66,8 @@ text = pd.read_csv('text.csv', index_col = False)
 df['text'] = text['clean']
 del(text)
 
+df.to_csv('coded_attack_fw.csv')
+
 ### Predict rights talk
 print(df.columns)
 df['ground_truth_attack'].describe()

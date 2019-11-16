@@ -562,6 +562,18 @@ serms.merge$api.final <- ifelse(serms.merge$race == 'api', 1, 0)
 
 
 ##########################################################################################################
+### Attack on religion
+attack.dict <- paste(c('america', 'nation', 'murder', 'govern', 'abort', 'freedom', 
+                    'persecut', 'liberti', 'state', 'kill', 'religion', 'war',
+                    'obama', 'racist', 'constitut', 'immigr', 'dreamer', 'daca', 
+                    'american', 'polit', 'countri'), collapse='|')
+serms.merge$attack_count <- str_count(serms.merge$clean, attack.dict)
+summary(serms.merge$attack_count)
+serms.merge$is.attack <- ifelse(serms.merge$pol_count >= 9, 1, 0)
+summary(serms.merge$is.attack == 1) #5.0%
+
+
+##########################################################################################################
 ### Baseline model - rights talk
 base <- lm(rights_talk_xgboost~dem.share, data = serms.merge)
 summary(base)
@@ -582,6 +594,15 @@ summary(base.pol)
 
 base1.pol <- lm(is.pol~comp.rescale, data = serms.merge)
 summary(base1.pol)
+
+
+### Baseline models - attacks on religion speech
+base.attack <- lm(is.attack~dem.share, data = serms.merge)
+summary(base.attack)
+
+base1.attack <- lm(is.attack~comp.rescale, data = serms.merge)
+summary(base1.attack)
+
 
 
 ##########################################################################################################
