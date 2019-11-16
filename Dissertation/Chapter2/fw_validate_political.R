@@ -11,11 +11,10 @@ library(stargazer)
 library(quanteda)
 library(readtext)
 
-serms.merge <- read.csv('sermon_final_rights_ml_11-15.csv', stringsAsFactors = F)
 #load('serms_with_measures.RData')
 
 set.seed(24519)
-smp.serms <- serms.merge[sample(nrow(serms.merge), 20000), ]
+smp.serms <- serms.merge[sample(nrow(serms.merge), 40000), ]
 
 # Remove words less than three characters
 for (i in 1:nrow(smp.serms)) {
@@ -49,7 +48,7 @@ full.corp <- feature_selection(cont.table,
                                method = c("informed Dirichlet"),
                                alpha = 0.01,
                                rank_by_log_odds = F)
-png('pol_nonpol_uni', width=15,height=12,units="in",res=100)
+png('pol_nonpol_uni.png', width=15,height=12,units="in",res=100)
 fightin_words_plot(full.corp, positive_category = "Non-Political Sermons", 
                    negative_category = "Political Sermons", 
                    clean_publication_plots = FALSE,
@@ -57,7 +56,6 @@ fightin_words_plot(full.corp, positive_category = "Non-Political Sermons",
                    display_top_words = 20,
                    max_terms_to_display = 1e+10000)
 dev.off()
-
 
 
 ######################################################################################################
@@ -81,7 +79,7 @@ full.corp <- feature_selection(cont.table,
                                method = c("informed Dirichlet"),
                                alpha = 0.01,
                                rank_by_log_odds = F)
-png('pol_nonpol_uni_bi', width=15,height=12,units="in",res=100)
+png('pol_nonpol_uni_bi.png', width=15,height=12,units="in",res=100)
 fightin_words_plot(full.corp, positive_category = "Non-Political Sermons", 
                    negative_category = "Political Sermons", 
                    clean_publication_plots = FALSE,
@@ -91,4 +89,33 @@ fightin_words_plot(full.corp, positive_category = "Non-Political Sermons",
 dev.off()
 
 
+######################################################################################################
+### Bigrams only
+# Prepare data for FW algorithm -> unigrams
+quanteda_dtm <- quanteda::dfm(smp.serms$cleaned, stem = F, tolower = F, remove = stopwords("english"),
+                              verbose = T, remove_punct = F, ngrams = 2)
+
+# Convert to a slam::simple_triplet_matrix object
+dtm <- convert_quanteda_to_slam(quanteda_dtm)
+
+### Compare indices between slam matrix and dtm
+length(dtm$dimnames$Docs) == length(quanteda_dtm@Dimnames$docs)
+
+# Create contigency table
+cont.table <- contingency_table(metadata = pol,
+                                document_term_matrix = dtm,
+                                force_dense = F)
+# Run FW algorithm
+full.corp <- feature_selection(cont.table,
+                               method = c("informed Dirichlet"),
+                               alpha = 0.01,
+                               rank_by_log_odds = F)
+png('pol_nonpol_bi.png', width=15,height=12,units="in",res=100)
+fightin_words_plot(full.corp, positive_category = "Non-Political Sermons", 
+                   negative_category = "Political Sermons", 
+                   clean_publication_plots = FALSE,
+                   title = "Differences in Language: Political vs. Non-Political Sermons",
+                   display_top_words = 20,
+                   max_terms_to_display = 1e+10000)
+dev.off()
 
