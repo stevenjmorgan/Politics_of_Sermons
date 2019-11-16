@@ -590,7 +590,6 @@ cor(serms.merge$is.attack, serms.merge$EVANADH, use = 'complete.obs') #0.012
 
 
 ### Examples of attack on religion
-library(dplyr)
 attack.ex <- serms.merge[order(serms.merge$attack_count,decreasing = TRUE),]
 attack.ex <- attack.ex[5:8,]
 
