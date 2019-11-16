@@ -92,6 +92,7 @@ dev.off()
 ######################################################################################################
 ### Bigrams only
 # Prepare data for FW algorithm -> unigrams
+gc()
 quanteda_dtm <- quanteda::dfm(smp.serms$cleaned, stem = F, tolower = F, remove = stopwords("english"),
                               verbose = T, remove_punct = F, ngrams = 2)
 
