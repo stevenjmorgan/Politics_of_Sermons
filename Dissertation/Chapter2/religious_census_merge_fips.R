@@ -605,10 +605,13 @@ fileConn<-file("attack_ex3.txt")
 writeLines(attack.ex$sermon[3], fileConn)
 close(fileConn)
 
+
 ##########################################################################################################
 ### Merge in rural/urban/suburban measures
 
 
+
+save(serms.merge, file = 'serms_with_measures.RData')
 
 
 ##########################################################################################################
