@@ -136,23 +136,31 @@ cor.test(serms.merge$is.pol, serms.merge$evan.rate.fix, use = 'complete.obs')
 cor.test(serms.merge$is.pol, serms.merge$elect.szn.2wk, use = 'complete.obs')
 cor.test(serms.merge$is.pol, serms.merge$muslim.rate.fix, use = 'complete.obs')
 
+### Rescale key IV's to 0-100
+library(scales)
+serms.merge$dem.share.rescale <- rescale(serms.merge$dem.share, to = c(0, 100))
+serms.merge$tot.rate.rescale <- rescale(serms.merge$tot.rate.fix, to = c(0, 100))
+serms.merge$evan.rate.rescale <- rescale(serms.merge$evan.rate.fix, to = c(0, 100))
+serms.merge$muslim.rate.rescale <- rescale(serms.merge$muslim.rate.fix, to = c(0, 100))
+
+
 
 ### Baseline models
 # Rights
-base.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                     muslim.rate.fix+as.factor(STABBR), 
+base.rights <- glm(rights_talk_xgboost~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+                     muslim.rate.rescale+as.factor(STABBR), 
                    data = serms.merge)
 summary(base.rights)
 
 # Attacks
-base.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                      muslim.rate.fix+as.factor(STABBR), 
+base.attacks <- glm(is.attack~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+                      muslim.rate.rescale+as.factor(STABBR), 
                     data = serms.merge)
 summary(base.attacks)
 
 # Political
-base.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                  muslim.rate.fix+as.factor(STABBR), 
+base.pol <- glm(is.pol~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+                  muslim.rate.rescale+as.factor(STABBR), 
                   data = serms.merge)
 summary(base.pol)
 
@@ -171,20 +179,20 @@ serms.merge$hh_income <- serms.merge$hh_income/1000
 serms.merge$female.pastor <- ifelse(serms.merge$gender.final == 'female', 1, 0)
 
 ### Models w/ controls
-full.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                     muslim.rate.fix+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+full.rights <- glm(rights_talk_xgboost~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+                     muslim.rate.rescale+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
                      api.final+hh_income+rural+as.factor(STABBR), 
                    data = serms.merge)
 summary(full.rights)
 
-full.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                     muslim.rate.fix+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+full.attacks <- glm(is.attack~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+                     muslim.rate.rescale+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
                      api.final+hh_income+rural+as.factor(STABBR), 
                    data = serms.merge)
 summary(full.attacks)
 
-full.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                      muslim.rate.fix+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+full.pol <- glm(is.pol~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+                      muslim.rate.rescale+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
                       api.final+hh_income+rural+as.factor(STABBR), 
                     data = serms.merge)
 summary(full.pol)
@@ -234,22 +242,22 @@ serms.merge$meth <- ifelse(serms.merge$denom.top9 == 'Methodist', 1, 0)
 
 
 ### Models w/ controls and denom's
-denom.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                     muslim.rate.fix+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
+denom.rights <- glm(rights_talk_xgboost~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+                     muslim.rate.rescale+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
                       pentecostal+assembly+lutheran+presybterian+bible+meth+black.final+hispanic.final+
                      api.final+hh_income+rural+as.factor(STABBR), 
                    data = serms.merge)
 summary(denom.rights)
 
-denom.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                      muslim.rate.fix+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
+denom.attacks <- glm(is.attack~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+                      muslim.rate.rescale+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
                        pentecostal+assembly+lutheran+presybterian+bible+meth+black.final+hispanic.final+
                       api.final+hh_income+rural+as.factor(STABBR), 
                     data = serms.merge)
 summary(denom.attacks)
 
-denom.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                  muslim.rate.fix+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
+denom.pol <- glm(is.pol~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+                  muslim.rate.rescale+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
                    pentecostal+assembly+lutheran+presybterian+bible+meth+black.final+hispanic.final+
                   api.final+hh_income+rural+as.factor(STABBR), 
                 data = serms.merge)
@@ -331,6 +339,13 @@ corstars <-function(x, method=c("pearson", "spearman"), removeTriangle=c("upper"
 } 
 
 corstars(cor.table, result="latex")
+
+
+####################################################################################################################
+## In-sample predicted probabilities
+
+
+
 
 
 ####################################################################################################################
