@@ -92,6 +92,9 @@ dev.off()
 ######################################################################################################
 ### Bigrams only
 # Prepare data for FW algorithm -> unigrams
+load('serms_with_measures.RData')
+set.seed(24519)
+smp.serms <- serms.merge[sample(nrow(serms.merge), 40000), ]
 gc()
 quanteda_dtm <- quanteda::dfm(smp.serms$cleaned, stem = F, tolower = F, remove = stopwords("english"),
                               verbose = T, remove_punct = F, ngrams = 2)
@@ -119,4 +122,3 @@ fightin_words_plot(full.corp, positive_category = "Non-Political Sermons",
                    display_top_words = 20,
                    max_terms_to_display = 1e+10000)
 dev.off()
-
