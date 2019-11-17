@@ -98,31 +98,60 @@ serms.merge$elect.szn.2wk <- rowSums(serms.merge[,c("pre2016.2wk", "pre2012.2wk"
 
 serms.merge$evan.rate.fix <- serms.merge$EVANRATE / 100
 serms.merge$tot.rate.fix <- serms.merge$TOTRATE / 100
+serms.merge$MSLMRATE[is.na(serms.merge$MSLMRATE)] <- 0
+serms.merge$muslim.rate.fix <- serms.merge$MSLMRATE / 100
+
+# Remove catholics
+serms.merge <- serms.merge[which(serms.merge$cath == 0),]
 
 ### Baseline models
 # Rights
-base.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk, 
+base.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                     muslim.rate.fix+as.factor(STABBR), 
                    data = serms.merge)
 summary(base.rights)
 
 # Attacks
-base.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk, 
+base.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                      muslim.rate.fix+as.factor(STABBR), 
                     data = serms.merge)
 summary(base.attacks)
 
 # Political
-base.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk, 
+base.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                  muslim.rate.fix+as.factor(STABBR), 
                   data = serms.merge)
 summary(base.pol)
 
 
 
-# Table w/ correlations
+### Table w/ correlations
+
+
+serms.merge$hh_income <- serms.merge$hh_income/1000
+### Models w/ controls
+full.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                     muslim.rate.fix+gender.final+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+                     api.final+hh_income+as.factor(county), 
+                   data = serms.merge)
+summary(full.rights)
+
+full.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                     muslim.rate.fix+gender.final+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+                     api.final+hh_income+as.factor(STABBR), 
+                   data = serms.merge)
+summary(full.attacks)
+
+full.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                      muslim.rate.fix+gender.final+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+                      api.final+hh_income+as.factor(STABBR), 
+                    data = serms.merge)
+summary(full.pol)
 
 
 
 
-
+####################################################################################################################
 
 myvars <- c('gender.final', 'pop10', 'Parenth', 'census_region',
             'pop_dens', 'pct_black', 'white.y', 'female', 'hh_income', 'su_gun4', 'TOTCNG', 
