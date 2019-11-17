@@ -173,19 +173,19 @@ serms.merge$female.pastor <- ifelse(serms.merge$gender.final == 'female', 1, 0)
 ### Models w/ controls
 full.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
                      muslim.rate.fix+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
-                     api.final+hh_income+as.factor(STABBR), 
+                     api.final+hh_income+rural+as.factor(STABBR), 
                    data = serms.merge)
 summary(full.rights)
 
 full.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
                      muslim.rate.fix+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
-                     api.final+hh_income+as.factor(STABBR), 
+                     api.final+hh_income+rural+as.factor(STABBR), 
                    data = serms.merge)
 summary(full.attacks)
 
 full.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
                       muslim.rate.fix+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
-                      api.final+hh_income+as.factor(STABBR), 
+                      api.final+hh_income+rural+as.factor(STABBR), 
                     data = serms.merge)
 summary(full.pol)
 
@@ -196,9 +196,74 @@ stargazer(full.rights,full.attacks,full.pol, dep.var.labels = c('Rights Talk','A
                                                 'Election Season', 'Muslim Rate of Adherence','Female Pastor',
                                                 'Logged Pop.', 'Northeast', 'South', 'West', 'Other Christian Pastor',
                                                 'Evangelical Pastor', 'Black Pastor','Hispanic Pastor','Asian Pastor',
-                                                'Average County Income'),
+                                                'Average County Income','Rural County'),
           star.cutoffs = c(.05, .01),star.char = c("*", "**"))
 
+
+
+### Break out top 9 denom's
+# Group number of sermons by denomination
+denom.group <- plyr::count(serms.merge, 'denom.fixed')
+denom.group$rel <- round(100 * denom.group$freq / sum(denom.group$freq),2)
+denom.group <- denom.group[order(denom.group$freq, decreasing = T),]
+
+head(denom.group,9)
+
+library(car)
+serms.merge$denom.top9 <- recode(serms.merge$denom.fixed, 
+                               "'Baptist' = 'Baptist'; 'Christian/Church Of Christ' = 'Christian/Church Of Christ';
+                               'Evangelical/Non-Denominational' = 'Evangelical/Non-Denominational';
+                               'Pentecostal' = 'Pentecostal'; 
+                               'Assembly Of God' = 'Assembly Of God';
+                               'Lutheran' = 'Lutheran';
+                               'Presbyterian/Reformed' = 'Presbyterian/Reformed';
+                               'Independent/Bible' = 'Independent/Bible';
+                               'Methodist' = 'Methodist';
+                               else = 'Other'")
+unique(serms.merge$denom.top9)
+
+serms.merge$baptist <- ifelse(serms.merge$denom.top9 == 'Baptist', 1, 0)
+serms.merge$church.christ <- ifelse(serms.merge$denom.top9 == 'Christian/Church Of Christ', 1, 0)
+serms.merge$non.denom <- ifelse(serms.merge$denom.top9 == 'Evangelical/Non-Denominational', 1, 0)
+serms.merge$pentecostal <- ifelse(serms.merge$denom.top9 == 'Pentecostal', 1, 0)
+serms.merge$assembly <- ifelse(serms.merge$denom.top9 == 'Assembly Of God', 1, 0)
+serms.merge$lutheran <- ifelse(serms.merge$denom.top9 == 'Lutheran', 1, 0)
+serms.merge$presybterian <- ifelse(serms.merge$denom.top9 == 'Presbyterian/Reformed', 1, 0)
+serms.merge$bible <- ifelse(serms.merge$denom.top9 == 'Independent/Bible', 1, 0)
+serms.merge$meth <- ifelse(serms.merge$denom.top9 == 'Methodist', 1, 0)
+
+
+### Models w/ controls and denom's
+denom.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                     muslim.rate.fix+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
+                      pentecostal+assembly+lutheran+presybterian+bible+meth+black.final+hispanic.final+
+                     api.final+hh_income+rural+as.factor(STABBR), 
+                   data = serms.merge)
+summary(denom.rights)
+
+denom.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                      muslim.rate.fix+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
+                       pentecostal+assembly+lutheran+presybterian+bible+meth+black.final+hispanic.final+
+                      api.final+hh_income+rural+as.factor(STABBR), 
+                    data = serms.merge)
+summary(denom.attacks)
+
+denom.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                  muslim.rate.fix+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
+                   pentecostal+assembly+lutheran+presybterian+bible+meth+black.final+hispanic.final+
+                  api.final+hh_income+rural+as.factor(STABBR), 
+                data = serms.merge)
+summary(denom.pol)
+
+stargazer(denom.rights,denom.attacks,denom.pol, dep.var.labels = c('Rights Talk','Attacks','Political'),
+          single.row =  T, covariate.labels = c('Dem. Vote Share', 'Electoral Competition', 
+                                                'Total Rate of Adherence', 'Evangelical Rate of Adherence',
+                                                'Election Season', 'Muslim Rate of Adherence','Female Pastor',
+                                                'Logged Pop.', 'Northeast', 'South', 'West', 'Baptist', 'Church of Christ',
+                                                'Non-Denominational', 'Pentecostal', 'Assembly of God', 'Lutheran', 
+                                                'Presbyterian', 'Independent/Bible', 'Methodist', 'Black Pastor',
+                                                'Hispanic Pastor','Asian Pastor', 'Average County Income','Rural County'),
+          star.cutoffs = c(.05, .01),star.char = c("*", "**"))
 
 
 
