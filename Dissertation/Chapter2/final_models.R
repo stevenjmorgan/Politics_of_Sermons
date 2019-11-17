@@ -104,26 +104,6 @@ serms.merge$muslim.rate.fix <- serms.merge$MSLMRATE / 100
 # Remove catholics
 serms.merge <- serms.merge[which(serms.merge$cath == 0),]
 
-### Baseline models
-# Rights
-base.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                     muslim.rate.fix+as.factor(STABBR), 
-                   data = serms.merge)
-summary(base.rights)
-
-# Attacks
-base.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                      muslim.rate.fix+as.factor(STABBR), 
-                    data = serms.merge)
-summary(base.attacks)
-
-# Political
-base.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                  muslim.rate.fix+as.factor(STABBR), 
-                  data = serms.merge)
-summary(base.pol)
-
-
 
 ### Table w/ correlations (in Latex)
 ## Rights
@@ -157,26 +137,67 @@ cor.test(serms.merge$is.pol, serms.merge$elect.szn.2wk, use = 'complete.obs')
 cor.test(serms.merge$is.pol, serms.merge$muslim.rate.fix, use = 'complete.obs')
 
 
+### Baseline models
+# Rights
+base.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                     muslim.rate.fix+as.factor(STABBR), 
+                   data = serms.merge)
+summary(base.rights)
+
+# Attacks
+base.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                      muslim.rate.fix+as.factor(STABBR), 
+                    data = serms.merge)
+summary(base.attacks)
+
+# Political
+base.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
+                  muslim.rate.fix+as.factor(STABBR), 
+                  data = serms.merge)
+summary(base.pol)
+
+
+library(stargazer)
+stargazer(base.rights,base.attacks,base.pol, dep.var.labels = c('Rights Talk','Attacks','Political'),
+          single.row =  T, covariate.labels = c('Dem. Vote Share', 'Electoral Competition', 
+                                                'Total Rate of Adherence', 'Evangelical Rate of Adherence',
+                                                'Election Season', 'Muslim Rate of Adherence'),
+          star.cutoffs = c(.05, .01),star.char = c("*", "**"))
+
+
+
 
 serms.merge$hh_income <- serms.merge$hh_income/1000
+serms.merge$female.pastor <- ifelse(serms.merge$gender.final == 'female', 1, 0)
+
 ### Models w/ controls
 full.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                     muslim.rate.fix+gender.final+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+                     muslim.rate.fix+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
                      api.final+hh_income+as.factor(STABBR), 
                    data = serms.merge)
 summary(full.rights)
 
 full.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                     muslim.rate.fix+gender.final+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+                     muslim.rate.fix+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
                      api.final+hh_income+as.factor(STABBR), 
                    data = serms.merge)
 summary(full.attacks)
 
 full.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
-                      muslim.rate.fix+gender.final+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+                      muslim.rate.fix+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
                       api.final+hh_income+as.factor(STABBR), 
                     data = serms.merge)
 summary(full.pol)
+
+
+stargazer(full.rights,full.attacks,full.pol, dep.var.labels = c('Rights Talk','Attacks','Political'),
+          single.row =  T, covariate.labels = c('Dem. Vote Share', 'Electoral Competition', 
+                                                'Total Rate of Adherence', 'Evangelical Rate of Adherence',
+                                                'Election Season', 'Muslim Rate of Adherence','Female Pastor',
+                                                'Logged Pop.', 'Northeast', 'South', 'West', 'Other Christian Pastor',
+                                                'Evangelical Pastor', 'Black Pastor','Hispanic Pastor','Asian Pastor',
+                                                'Average County Income'),
+          star.cutoffs = c(.05, .01),star.char = c("*", "**"))
 
 
 
