@@ -132,7 +132,7 @@ serms.merge$hh_income <- serms.merge$hh_income/1000
 ### Models w/ controls
 full.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk+
                      muslim.rate.fix+gender.final+log(pop10)+census_region+other+evang+black.final+hispanic.final+
-                     api.final+hh_income+as.factor(county), 
+                     api.final+hh_income+as.factor(STABBR), 
                    data = serms.merge)
 summary(full.rights)
 
