@@ -100,15 +100,24 @@ serms.merge$evan.rate.fix <- serms.merge$EVANRATE / 100
 serms.merge$tot.rate.fix <- serms.merge$TOTRATE / 100
 
 ### Baseline models
-base.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk, data = serms.merge)
+# Rights
+base.rights <- glm(rights_talk_xgboost~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk, 
+                   data = serms.merge)
 summary(base.rights)
 
+# Attacks
+base.attacks <- glm(is.attack~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk, 
+                    data = serms.merge)
+summary(base.attacks)
+
+# Political
+base.pol <- glm(is.pol~dem.share+comp.rescale+tot.rate.fix+evan.rate.fix+elect.szn.2wk, 
+                  data = serms.merge)
+summary(base.pol)
 
 
 
-
-
-
+# Table w/ correlations
 
 
 
