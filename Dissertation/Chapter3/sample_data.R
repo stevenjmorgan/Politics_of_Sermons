@@ -35,12 +35,13 @@
 ################################################################################
 
   
-vars <- c('educ', 'income', 'gender', 'age', 'hisp', 'black', 'other',
-          'know.lgbtq', 'PID', 'ideo', 'region', 'rel.trad', 'evang', 'bible',
-          'rel.import', 'pol.know', 'discrim', 'fire', 'pol.interest', 
-          'rights.treat', 'moral.treat', 'rights.attack.treat', 'manip', 
-          'issue.agree', 'cand.eval.dv', 'cand.vote.dv')
+#vars <- c('educ', 'income', 'gender', 'age', 'hisp', 'black', 'other',
+#          'know.lgbtq', 'PID', 'ideo', 'region', 'rel.trad', 'evang', 'bible',
+#          'rel.import', 'pol.know', 'discrim', 'fire', 'pol.interest', 
+#          'rights.treat', 'moral.treat', 'rights.attack.treat', 'manip', 
+#          'issue.agree', 'cand.eval.dv', 'cand.vote.dv')
 
+set.seed(24519)
 educ <- round(runif(1000, 1, 6), 0)
 educ <- ifelse(educ > 6, 6, educ)
 educ <- ifelse(educ < 1, 1, educ)
@@ -48,6 +49,10 @@ educ <- ifelse(educ < 1, 1, educ)
 income <- round(runif(1000, 1, 6), 0)
 income <- ifelse(income > 6, 6, income)
 income <- ifelse(income < 1, 1, income)
+
+gender <- rbinom(1000, 1, 0.50)
+
+age <- round(runif(1000, 18, 70), 0)
 
 hisp <- rbinom(1000, 1, 0.12)
 black <- rbinom(1000, 1, 0.15)
@@ -103,4 +108,29 @@ cand.eval.dv <- ifelse(cand.eval.dv < 0, 0, issue.pos)
 cand.vote.dv <- round(runif(1000, 1, 5),0)
 cand.vote.dv <- ifelse(cand.vote.dv > 5, 5, cand.vote.dv)
 cand.vote.dv <- ifelse(cand.vote.dv < 1, 1, cand.vote.dv)
+
+
+sim.data <- cbind(educ, income, gender, age, hisp, black, other,
+                  know.lgbtq, PID, ideo, midwest, south, northeast, cath, main, other.rel, evang, bible,
+                  pol.know, pol.interest,  # discrim, fire, rel.import, 
+                  rights.treat, moral.treat, rights.attack.treat, control, #manip, 
+                  cand.eval.dv, cand.vote.dv) #issue.agree, 
+sim.data <- as.data.frame(sim.data)
+
+# Candidate evaluation
+fit1 <- lm(cand.eval.dv~rights.treat+moral.treat+rights.attack.treat+
+             educ+income+gender+age+hisp+black+other+know.lgbtq+PID+ideo+midwest+south+
+             northeast+cath+main+other.rel+evang+bible+pol.know+pol.interest, data=sim.data)
+summary(fit1)
+
+t.test(sim.data$cand.eval.dv[which(sim.data$rights.treat==1)],sim.data$cand.eval.dv[which(sim.data$control==0)])
+
+library(stargazer)
+stargazer(fit1)
+
+# Vote likelihood
+fit2 <- lm(cand.vote.dv~rights.treat+moral.treat+rights.attack.treat+
+             educ+income+gender+age+hisp+black+other+know.lgbtq+PID+ideo+midwest+south+
+             northeast+cath+main+other.rel+evang+bible+pol.know+pol.interest, data=sim.data)
+summary(fit2)
 
