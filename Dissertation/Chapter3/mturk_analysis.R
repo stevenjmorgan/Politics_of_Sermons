@@ -277,14 +277,24 @@ unique(mturk$Q45)
 mturk$cand.ideo <- as.numeric(mturk$Q45)
 summary(mturk$cand.ideo)
 
-write.csv(mturk, 'cleaned_mturk_50sample.csv', row.names = F)
+# Binarize treatment groups
+mturk$moral <- ifelse(mturk$group == 'Moral', 1, 0)
+mturk$attack <- ifelse(mturk$group == 'Attack', 1, 0)
+mturk$rights <- ifelse(mturk$group == 'Rights', 1, 0)
+mturk$control <- ifelse(mturk$group == 'Control', 1, 0)
+summary(mturk$moral==1)
+summary(mturk$attack==1)
+summary(mturk$rights==1)
+summary(mturk$control==1)
 
+write.csv(mturk, 'cleaned_mturk_50sample.csv', row.names = F)
 
 
 ######################################################################################################
 ### Analysis
 ######################################################################################################
 
+### T tests
 # Candidate support
 t.test(mturk$cand.ft[which(mturk$group == 'Rights')], mturk$cand.ft[which(mturk$group == 'Control')])
 t.test(mturk$cand.ft[which(mturk$group == 'Rights')], mturk$cand.ft[which(mturk$group == 'Moral')])
@@ -314,3 +324,19 @@ t.test(mturk$cand.ideo[which(mturk$group == 'Moral')], mturk$cand.ideo[which(mtu
 t.test(mturk$cand.ideo[which(mturk$group == 'Moral')], mturk$cand.ideo[which(mturk$group == 'Attack')])
 
 t.test(mturk$cand.ideo[which(mturk$group == 'Attack')], mturk$cand.ideo[which(mturk$group == 'Control')])
+
+### OLS regression
+# Candidate support
+cand.support <- lm(cand.ft~moral+rights+attack, data = mturk)
+summary(cand.support)
+
+cand.support.full <- lm(cand.ft~moral+rights+attack+female+black+hisp+gay+PID+ideo+evang.belief.score, data = mturk)
+summary(cand.support.full)
+
+# Candidate vote
+cand.vote <- lm(cand.vote~moral+rights+attack, data = mturk)
+summary(cand.vote)
+
+# Candidate ideological perception
+cand.ideo.lm <- lm(cand.ideo~moral+rights+attack, data = mturk)
+summary(cand.ideo.lm)
