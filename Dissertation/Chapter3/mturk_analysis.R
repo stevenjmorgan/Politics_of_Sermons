@@ -202,3 +202,17 @@ mturk$evang.belief.score <- mturk$bible + mturk$evangelize + mturk$heaven + mtur
 hist(mturk$evang.belief.score)
 
 # Pol. Knowledge -> ordinal 0, 1, or 2
+
+
+# Support for gay rights -> ordinal 0, 1, 2
+
+
+# Pol. interest
+
+
+# Manipulation check
+
+
+# Treatment group
+unique(mturk$group)
+barplot(table(mturk$group))
