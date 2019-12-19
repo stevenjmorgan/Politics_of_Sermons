@@ -124,8 +124,10 @@ fit1 <- lm(cand.eval.dv~rights.treat+moral.treat+rights.attack.treat+
 summary(fit1)
 
 t.test(sim.data$cand.eval.dv[which(sim.data$rights.treat==1)],sim.data$cand.eval.dv[which(sim.data$control==0)])
+t.test(sim.data$cand.eval.dv[which(sim.data$moral.treat==1)],sim.data$cand.eval.dv[which(sim.data$control==0)])
 
-library(stargazer)
+
+slibrary(stargazer)
 stargazer(fit1)
 
 # Vote likelihood
