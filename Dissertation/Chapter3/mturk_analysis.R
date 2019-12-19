@@ -5,6 +5,8 @@ rm(list=ls())
 setwd("C:/Users/SF515-51T/Desktop/Dissertation/Ch3")
 
 library(car)
+library(tidyverse)
+library(RCurl)
 
 mturk <- read.csv('Rights_Talk_First50.csv', stringsAsFactors = F)
 
@@ -121,13 +123,21 @@ mturk$ideo <- car::recode(mturk$Q10, as.factor = F, "'Strongly Liberal' = 0;
 summary(mturk$ideo)
 hist(mturk$ideo)
 
-### State to region -> come back to
-library(tidyverse)
-st_crosswalk <- tibble(state = state.name) %>%
-  bind_cols(tibble(abb = state.abb))
+# State to region
+url <- 'https://raw.githubusercontent.com/cphalpert/census-regions/master/us%20census%20bureau%20regions%20and%20divisions.csv'
+state.region <- read.csv(url, stringsAsFactors = F)
+colnames(state.region)[which(colnames(state.region) == 'State.Code')] <- 'Q11_1'
+mturk <- left_join(mturk, state.region, by = 'Q11_1')
+rm(url,state.region)
 
-#left_join(mturk, st_crosswalk, by = "state")
-
+mturk$midwest <- car::recode(mturk$Region, as.factor = F, "'Midwest' = 1; 
+                             'South' = 0; 'West' = 0; 'Northeast' = 0; else = NA")
+mturk$south <- car::recode(mturk$Region, as.factor = F, "'Midwest' = 0; 
+                             'South' = 1; 'West' = 0; 'Northeast' = 0; else = NA")
+mturk$northeast <- car::recode(mturk$Region, as.factor = F, "'Midwest' = 0; 
+                             'South' = 0; 'West' = 0; 'Northeast' = 1; else = NA")
+mturk$west <- car::recode(mturk$Region, as.factor = F, "'Midwest' = 0; 
+                             'South' = 0; 'West' = 1; 'Northeast' = 0; else = NA")
 
 # Religious affiliation
 unique(mturk$Q42)
@@ -202,17 +212,105 @@ mturk$evang.belief.score <- mturk$bible + mturk$evangelize + mturk$heaven + mtur
 hist(mturk$evang.belief.score)
 
 # Pol. Knowledge -> ordinal 0, 1, or 2
-
+unique(mturk$Q17)
+unique(mturk$Q18)
+mturk$pol.know <- 0
+mturk$pol.know <- ifelse(mturk$Q17 == 'Republicans', mturk$pol.know + 1, mturk$pol.know)
+mturk$pol.know <- ifelse(mturk$Q18 == 'Democrats', mturk$pol.know + 1, mturk$pol.know)
+unique(mturk$pol.know)
+summary(mturk$pol.know)
 
 # Support for gay rights -> ordinal 0, 1, 2
+unique(mturk$Q19)
+unique(mturk$Q20)
+mturk$support.gays <- 0
+mturk$support.gays <- ifelse(mturk$Q19 == 'Yes, new laws needed', mturk$support.gays + 1, mturk$support.gays)
+mturk$support.gays <- ifelse(mturk$Q20 == 'No', mturk$support.gays + 1, mturk$support.gays) # Reverse coded
+unique(mturk$support.gays)
+summary(mturk$support.gays)
 
-
-# Pol. interest
-
+# Pol. interest -> ordinal 0 (not at all) to 4 (extremely)
+unique(mturk$Q21)
+mturk$pol.int <- car::recode(mturk$Q21, as.factor = F, "'Not interested at all' = 0;
+                             'Slightly interested' = 1; 'Moderately interested' = 2;
+                             'Very interested' = 3; 'Extremely interested' = 4; else = NA")
+unique(mturk$pol.int)
+summary(mturk$pol.int)
 
 # Manipulation check
-
+unique(mturk$Q23)
+mturk$manip <- ifelse(mturk$Q23 == 'HIV', 1, 0)
+summary(mturk$manip==1)
 
 # Treatment group
 unique(mturk$group)
 barplot(table(mturk$group))
+
+
+### DV's
+# Candidate FT (0-100)
+mturk$cand.ft <- as.numeric(mturk$Q25_1)
+summary(mturk$cand.ft)
+
+# Vote for candidate -> ordinal 0 (very unlikely) 4 (Very likely)
+unique(mturk$Q26)
+mturk$cand.vote <- car::recode(mturk$Q26, as.factor = F, "'Very unlikely' = 0; 
+                               'Somewhat unlikely' = 1; 'Neither likely nor unlikely' = 2;
+                               'Somewhat likely' = 3; 'Very likely' = 4; else = NA")
+unique(mturk$cand.vote)
+summary(mturk$cand.vote==4)
+
+# Agree w/ refusal -> ordinal 0 (strongly disagree) 4 (strongly agree)
+unique(mturk$Q27)
+mturk$cand.agree <- car::recode(mturk$Q27, as.factor = F, "'Strongly Disagree' = 0; 
+                                'Disagree' = 1; 'Neither agree nor disagree' = 2;
+                                'Agree' = 3; 'Strongly Agree' = 4; else = NA")
+unique(mturk$cand.agree)
+summary(mturk$cand.agree==3)
+
+# Open-ended response
+class(mturk$Q43)
+mturk$text <- mturk$Q43
+
+# Candidate ideol. perception -> 0-10 (0 very liberal, 10 very conservative)
+unique(mturk$Q45)
+mturk$cand.ideo <- as.numeric(mturk$Q45)
+summary(mturk$cand.ideo)
+
+write.csv(mturk, 'cleaned_mturk_50sample.csv', row.names = F)
+
+
+
+######################################################################################################
+### Analysis
+######################################################################################################
+
+# Candidate support
+t.test(mturk$cand.ft[which(mturk$group == 'Rights')], mturk$cand.ft[which(mturk$group == 'Control')])
+t.test(mturk$cand.ft[which(mturk$group == 'Rights')], mturk$cand.ft[which(mturk$group == 'Moral')])
+t.test(mturk$cand.ft[which(mturk$group == 'Rights')], mturk$cand.ft[which(mturk$group == 'Attack')])
+
+t.test(mturk$cand.ft[which(mturk$group == 'Moral')], mturk$cand.ft[which(mturk$group == 'Control')])
+t.test(mturk$cand.ft[which(mturk$group == 'Moral')], mturk$cand.ft[which(mturk$group == 'Attack')])
+
+t.test(mturk$cand.ft[which(mturk$group == 'Attack')], mturk$cand.ft[which(mturk$group == 'Control')])
+
+# Candidate vote
+t.test(mturk$cand.vote[which(mturk$group == 'Rights')], mturk$cand.vote[which(mturk$group == 'Control')])
+t.test(mturk$cand.vote[which(mturk$group == 'Rights')], mturk$cand.vote[which(mturk$group == 'Moral')])
+t.test(mturk$cand.vote[which(mturk$group == 'Rights')], mturk$cand.vote[which(mturk$group == 'Attack')])
+
+t.test(mturk$cand.vote[which(mturk$group == 'Moral')], mturk$cand.vote[which(mturk$group == 'Control')])
+t.test(mturk$cand.vote[which(mturk$group == 'Moral')], mturk$cand.vote[which(mturk$group == 'Attack')])
+
+t.test(mturk$cand.vote[which(mturk$group == 'Attack')], mturk$cand.vote[which(mturk$group == 'Control')])
+
+# Candidate ideological perception
+t.test(mturk$cand.ideo[which(mturk$group == 'Rights')], mturk$cand.ideo[which(mturk$group == 'Control')])
+t.test(mturk$cand.ideo[which(mturk$group == 'Rights')], mturk$cand.ideo[which(mturk$group == 'Moral')])
+t.test(mturk$cand.ideo[which(mturk$group == 'Rights')], mturk$cand.ideo[which(mturk$group == 'Attack')])
+
+t.test(mturk$cand.ideo[which(mturk$group == 'Moral')], mturk$cand.ideo[which(mturk$group == 'Control')])
+t.test(mturk$cand.ideo[which(mturk$group == 'Moral')], mturk$cand.ideo[which(mturk$group == 'Attack')])
+
+t.test(mturk$cand.ideo[which(mturk$group == 'Attack')], mturk$cand.ideo[which(mturk$group == 'Control')])
