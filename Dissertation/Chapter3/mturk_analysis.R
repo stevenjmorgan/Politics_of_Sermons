@@ -9,7 +9,7 @@ library(tidyverse)
 library(RCurl)
 
 #mturk <- read.csv('Rights_Talk_First50.csv', stringsAsFactors = F)
-mturk <- read.csv('Rights_Talk_MTurk_Final.csv', stringsAsFactors = F)
+mturk <- read.csv('MTurk_Rights_Final_12-30.csv', stringsAsFactors = F)
 
 # Remove first two rows (extra headers)
 mturk <- mturk[3:nrow(mturk),]
@@ -22,11 +22,9 @@ unique(mturk$group)
 mturk <- mturk[which(mturk$group != ''),]
 
 nrow(mturk[which(mturk$group == 'Control'),])  # 311
-nrow(mturk[which(mturk$group == 'Moral'),])    # 310
-nrow(mturk[which(mturk$group == 'Rights'),])   # 311
-nrow(mturk[which(mturk$group == 'Attack'),])   # 309
-
-### Seven more respondents (1 control, 2 moral, 1 rights, 3 attack)
+nrow(mturk[which(mturk$group == 'Moral'),])    # 313
+nrow(mturk[which(mturk$group == 'Rights'),])   # 314
+nrow(mturk[which(mturk$group == 'Attack'),])   # 310
 
 
 ### Convert variables
@@ -157,6 +155,10 @@ mturk$northeast <- car::recode(mturk$Region, as.factor = F, "'Midwest' = 0;
                              'South' = 0; 'West' = 0; 'Northeast' = 1; else = NA")
 mturk$west <- car::recode(mturk$Region, as.factor = F, "'Midwest' = 0; 
                              'South' = 0; 'West' = 1; 'Northeast' = 0; else = NA")
+unique(mturk$midwest)
+unique(mturk$northeast)
+unique(mturk$south)
+unique(mturk$west)
 
 # Religious affiliation
 unique(mturk$Q42)
@@ -306,12 +308,32 @@ summary(mturk$attack==1)
 summary(mturk$rights==1)
 summary(mturk$control==1)
 
-write.csv(mturk, 'cleaned_mturk_final.csv', row.names = F)
+
+### Subset variables for analysis
+vars <- c('group', 'female', 'gay', 'educ', 'age', 'income', 'hisp', 'black', 'white', 
+          'asian', 'other.race','gay.know', 'PID', 'ideo', 'midwest', 'south', 
+          'northeast', 'south', 'west', 'cath', 'prot', 'jew', 'none', 'other.religion', 
+          'evang.self.ident', 'rel.attend', 'bible', 'evangelize', 'heaven', 'jesus.sin', 
+          'faith.import', 'devil', 'belief.god', 'Barna.Scale_1', 'Barna.Scale_2', 
+          'Barna.Scale_3', 'Barna.Scale_4', 'Barna.Scale_5', 'Barna.Scale_6', 
+          'evang.belief.score', 'pol.know', 'support.gays', 'pol.int', 'manip', 'cand.ft', 
+          'cand.vote', 'cand.agree', 'text', 'cand.ideo', 'moral', 'rights', 'attack', 'control')
+mturk.sub <- mturk[vars]
+
+write.csv(mturk.sub, 'cleaned_mturk_final.csv', row.names = F)
+save(mturk.sub, file = 'final_cleaned_mturk.RData')
 
 
 ######################################################################################################
 ### Analysis
 ######################################################################################################
+
+rm(list=ls())
+load('final_cleaned_mturk.RData')
+mturk <- mturk.sub
+rm(mturk.sub)
+
+### Imputation
 
 ### T tests
 # Candidate support
