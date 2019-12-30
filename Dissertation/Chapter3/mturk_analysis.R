@@ -8,10 +8,26 @@ library(car)
 library(tidyverse)
 library(RCurl)
 
-mturk <- read.csv('Rights_Talk_First50.csv', stringsAsFactors = F)
+#mturk <- read.csv('Rights_Talk_First50.csv', stringsAsFactors = F)
+mturk <- read.csv('Rights_Talk_MTurk_Final.csv', stringsAsFactors = F)
 
 # Remove first two rows (extra headers)
 mturk <- mturk[3:nrow(mturk),]
+
+# Remove checks I made after initial sample of 50
+mturk <- mturk[which(mturk$Q43 != 'This is a test ensuring condition names are correct.'),]
+
+# Remove individuals that did not make it to randomization stage
+unique(mturk$group)
+mturk <- mturk[which(mturk$group != ''),]
+
+nrow(mturk[which(mturk$group == 'Control'),])  # 311
+nrow(mturk[which(mturk$group == 'Moral'),])    # 310
+nrow(mturk[which(mturk$group == 'Rights'),])   # 311
+nrow(mturk[which(mturk$group == 'Attack'),])   # 309
+
+### Seven more respondents (1 control, 2 moral, 1 rights, 3 attack)
+
 
 ### Convert variables
 # Gender
@@ -37,12 +53,14 @@ mturk$educ <- car::recode(mturk$Q2, as.factor = F, "'Did not graduate high schoo
                                               'Some College' = 3;
                                               'College Degree' = 4;
                                               'Graduate or Professional Degree' = 5;
-                                              'Prefer not to say' = NA")
+                                              'Prefer not to say' = NA;
+                                              else = NA")
 unique(mturk$educ)
 
 # Age
 class(mturk$Q3_1)
 mturk$age <- as.numeric(mturk$Q3_1)
+summary(mturk$age)
 
 # Income
 unique(mturk$Q4)
@@ -52,32 +70,33 @@ mturk$income <- car::recode(mturk$Q4, as.factor = F, "'Less than $30,000' = 0;
                                                 '$75,001-100,000' = 3;
                                                 '$100,001-150,000' = 4;
                                                 'Over $150,000' = 5;
-                                                'Prefer not to say' = NA")
+                                                'Prefer not to say' = NA;
+                                                else = NA")
 unique(mturk$income)
 
 # Hispanic
 unique(mturk$Q5)
 mturk$hisp <- car::recode(mturk$Q5, as.factor = F, "'Yes' = 1; 'No' = 0;
-                                                'Prefer not to say' = NA")
+                                                'Prefer not to say' = NA; else = NA")
 unique(mturk$hisp)
 summary(mturk$hisp==1)
 
 # Race - Black
 unique(mturk$Q6)
 mturk$black <- car::recode(mturk$Q6, as.factor = F, "'Black or African American' = 1;
-                                                'Prefer not to say' = NA;
+                                                'Prefer not to say' = NA; '' = NA;
                                                 else = 0")
 unique(mturk$black)
 
 # Race - White
 mturk$white <- car::recode(mturk$Q6, as.factor = F, "'White' = 1;
-                                                'Prefer not to say' = NA;
+                                                'Prefer not to say' = NA; '' = NA;
                                                 else = 0")
 unique(mturk$white)
 
 # Race - Asian
 mturk$asian <- car::recode(mturk$Q6, as.factor = F, "'Asian' = 1;
-                                                'Prefer not to say' = NA;
+                                                'Prefer not to say' = NA; '' = NA;
                                                 else = 0")
 unique(mturk$asian)
 
@@ -85,13 +104,13 @@ unique(mturk$asian)
 mturk$other.race <- car::recode(mturk$Q6, as.factor = F, "'American Indian or Alaska Native' = 1;
                                                 'Native Hawaiian or Pacific Islander' = 1;
                                                 'Other' = 1;
-                                                'Prefer not to say' = NA;
+                                                'Prefer not to say' = NA; '' = NA;
                                                 else = 0")
 unique(mturk$other.race)
 
 # Know a gay person
 unique(mturk$Q7)
-mturk$gay.know <- car::recode(mturk$Q7, as.factor = F, "'Yes' = 1; 'No' = 0; 'Prefer not to say' = NA")
+mturk$gay.know <- car::recode(mturk$Q7, as.factor = F, "'Yes' = 1; 'No' = 0; 'Prefer not to say' = NA;'' = NA")
 unique(mturk$gay.know)
 
 # PID -> 7 point scale, 0 strong Dem, 6 strong GOP
@@ -142,31 +161,31 @@ mturk$west <- car::recode(mturk$Region, as.factor = F, "'Midwest' = 0;
 # Religious affiliation
 unique(mturk$Q42)
 mturk$cath <- car::recode(mturk$Q42, as.factor = F, "'Roman Catholic' = 1;
-                     'Prefer not to say' = NA; else = 0")
+                     'Prefer not to say' = NA; '' = NA; else = 0")
 unique(mturk$cath)
 
 main <- "Protestant (including Baptist, Lutheran, Methodist, Presbyterian, Episcopalian, Pentecostal, Jehovah's Witness, Church of Christ, etc.)"
 mturk$prot <- car::recode(mturk$Q42, as.factor = F, "main = 1;
-                     'Prefer not to say' = NA; else = 0")
+                     'Prefer not to say' = NA; '' = NA; else = 0")
 unique(mturk$prot)
 
-mturk$jew <- car::recode(mturk$Q42, as.factor = F, "'Jewish' = 1; 'Prefer not to say' = NA;
+mturk$jew <- car::recode(mturk$Q42, as.factor = F, "'Jewish' = 1; 'Prefer not to say' = NA; '' = NA;
                          else = 0")
 unique(mturk$jew)
 
 mturk$none <- car::recode(mturk$Q42, as.factor = F, "'No religion, not a believer, atheist, agnostic' = 1;
-                          'Prefer not to say' = NA; else = 0")
+                          'Prefer not to say' = NA; '' = NA; else = 0")
 unique(mturk$none)
 
 mturk$other.religion <- car::recode(mturk$Q42, as.factor = F, "'Jewish' = 0; 'Roman Catholic' = 0;
                                     main = 0; 'No religion, not a believer, atheist, agnostic' = 0;
-                                    'Prefer not to say' = NA; else = 1")
+                                    'Prefer not to say' = NA; '' = NA; else = 1")
 unique(mturk$other.religion)
 
 # Evangelical self-identification
 unique(mturk$Q13)
 mturk$evang.self.ident <- car::recode(mturk$Q13, as.factor = F, "'Yes, would' = 1;
-                                      'No, would not' = 0; else = NA")
+                                      'No, would not' = 0; '' = NA; else = NA")
 unique(mturk$evang.self.ident)
 summary(mturk$evang.self.ident==1)
 
@@ -175,7 +194,7 @@ unique(mturk$Q14)
 mturk$rel.attend <- car::recode(mturk$Q14, as.factor = F, "'Never' = 0;
                                 'Seldom' = 1; 'A few times a year' = 2;
                                 'Once or twice a month' = 3; 'Once a week' = 4;
-                                'More than once a week' = 5")
+                                'More than once a week' = 5; else = NA")
 unique(mturk$rel.attend)
 
 
@@ -184,7 +203,7 @@ unique(mturk$rel.attend)
 unique(mturk$Q16)
 mturk$bible <- car::recode(mturk$Q16, as.factor = F, "'The Bible is an ancient book of fables, legends, history, and moral precepts recorded by men.' = 0;
                            'The Bible is the inspired Word of God but not everything in it should be taken literally, word for word.' = 0;
-                           'The Bible is the actual Word of God and is to be taken literally, word for word.' = 1; else = 0")
+                           'The Bible is the actual Word of God and is to be taken literally, word for word.' = 1; else = NA")
 unique(mturk$bible)
 hist(mturk$bible)
 
@@ -287,7 +306,7 @@ summary(mturk$attack==1)
 summary(mturk$rights==1)
 summary(mturk$control==1)
 
-write.csv(mturk, 'cleaned_mturk_50sample.csv', row.names = F)
+write.csv(mturk, 'cleaned_mturk_final.csv', row.names = F)
 
 
 ######################################################################################################
