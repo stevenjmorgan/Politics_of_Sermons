@@ -56,6 +56,7 @@ ggplot(storage$results, aes(x=semcoh, y=exclus)) + geom_text(aes(label=K)) + #+ 
 ggsave('sem_excl_tradeoff_mturk_2-75.pdf')
 
 
+# Fit STM w/ k = __ topics
 poliblogPrevFit <- stm(documents = out$documents, vocab = out$vocab, K = 20, 
                        prevalence =~ rating + s(day), max.em.its = 75, 
                        data = out$meta, init.type = "Spectral")
