@@ -30,4 +30,31 @@ mturk <- mturk[which(mturk$text != ''),] #1196 (from 1248)
 library(zoo)
 mturk <- na.locf(mturk)
 
+# Pre-process text data
+processed <- textProcessor(mturk$text, metadata = mturk, onlycharacter = TRUE)
+out <- prepDocuments(processed$documents, processed$vocab, processed$meta)
+docs <- out$documents
+vocab <- out$vocab
+meta  <- out$meta
 
+# Remove sparse terms (less than 5 documents)
+plotRemoved(processed$documents, lower.thresh = seq(1, 200, by = 100))
+out <- prepDocuments(processed$documents, processed$vocab, processed$meta, lower.thresh = 3) # 5 docs removed
+
+# Calculate optimal number of topics
+storage <- searchK(out$documents, out$vocab, K = seq(2,50,1),
+                   #prevalence =~ s(integer.seq), 
+                   data = meta)
+
+save(storage, file = 'many_models_2_50.RData')
+
+plot(storage$results$semcoh, storage$results$exclus)
+
+ggplot(storage$results, aes(x=semcoh, y=exclus)) + geom_text(aes(label=K)) + #+ geom_point() + 
+  labs(x="Semantic Coherence", y="Exclusivity") + theme_bw()
+ggsave('sem_excl_tradeoff_mturk.pdf')
+
+
+poliblogPrevFit <- stm(documents = out$documents, vocab = out$vocab, K = 20, 
+                       prevalence =~ rating + s(day), max.em.its = 75, 
+                       data = out$meta, init.type = "Spectral")
