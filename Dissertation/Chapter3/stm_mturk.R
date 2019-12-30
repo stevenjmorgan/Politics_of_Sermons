@@ -37,22 +37,23 @@ docs <- out$documents
 vocab <- out$vocab
 meta  <- out$meta
 
-# Remove sparse terms (less than 5 documents)
+# Remove sparse terms (less than 3 documents)
 plotRemoved(processed$documents, lower.thresh = seq(1, 200, by = 100))
-out <- prepDocuments(processed$documents, processed$vocab, processed$meta, lower.thresh = 3) # 5 docs removed
+out <- prepDocuments(processed$documents, processed$vocab, processed$meta, 
+                     lower.thresh = 3, upper.thresh= 1067) # 3 docs removed
 
 # Calculate optimal number of topics
-storage <- searchK(out$documents, out$vocab, K = seq(2,50,1),
+storage <- searchK(out$documents, out$vocab, K = seq(2,75,1),
                    #prevalence =~ s(integer.seq), 
                    data = meta)
 
-save(storage, file = 'many_models_2_50.RData')
+save(storage, file = 'many_models_2_75.RData')
 
 plot(storage$results$semcoh, storage$results$exclus)
 
 ggplot(storage$results, aes(x=semcoh, y=exclus)) + geom_text(aes(label=K)) + #+ geom_point() + 
   labs(x="Semantic Coherence", y="Exclusivity") + theme_bw()
-ggsave('sem_excl_tradeoff_mturk.pdf')
+ggsave('sem_excl_tradeoff_mturk_2-75.pdf')
 
 
 poliblogPrevFit <- stm(documents = out$documents, vocab = out$vocab, K = 20, 
