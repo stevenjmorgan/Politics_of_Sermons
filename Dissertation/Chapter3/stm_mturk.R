@@ -107,8 +107,11 @@ prep.mturk <- estimateEffect(1:7 ~ rights + attack + moral + evang.self.ident + 
                                gay.know + support.gays + evang.belief.score, mturkfit,
                            meta = out$meta, uncertainty = "Global")
 summary(prep.mturk)
+#library(stargazer)
+#stargazer(prep.mturk)
 
 # Rights frame
+pdf('rights_stm.pdf')
 plot(prep.mturk, covariate = "rights",
      model = mturkfit, method = "difference",
      cov.value1 = 1, cov.value2 = 0,
@@ -117,8 +120,10 @@ plot(prep.mturk, covariate = "rights",
      xlim = c(-.05, .05), 
      labeltype = "custom",
      custom.labels = labels)
+dev.off()
 
 # Moral frame
+pdf('moral_stm.pdf')
 plot(prep.mturk, covariate = "moral",
      model = mturkfit, method = "difference",
      cov.value1 = 1, cov.value2 = 0,
@@ -127,8 +132,10 @@ plot(prep.mturk, covariate = "moral",
      xlim = c(-.05, .05), 
      labeltype = "custom",
      custom.labels = labels)
+dev.off()
 
 # Attack frame
+pdf('attack_stm.pdf')
 plot(prep.mturk, covariate = "attack",
      model = mturkfit, method = "difference",
      cov.value1 = 1, cov.value2 = 0,
@@ -137,8 +144,10 @@ plot(prep.mturk, covariate = "attack",
      xlim = c(-.05, .05), 
      labeltype = "custom",
      custom.labels = labels)
+dev.off()
 
 # Evangelical identifiers
+pdf('evang_ident_stm.pdf')
 plot(prep.mturk, covariate = "evang.self.ident",
      model = mturkfit, method = "difference",
      cov.value1 = 1, cov.value2 = 0,
@@ -147,16 +156,41 @@ plot(prep.mturk, covariate = "evang.self.ident",
      xlim = c(-.12, .14), 
      labeltype = "custom",
      custom.labels = labels)
+dev.off()
 
 # Effect of evangelical score
-plot(prep.mturk, covariate = "evang.belief.score",
+png('evang_belief_duty_libert.png')
+plot(prep.mturk, covariate = "evang.belief.score", topics = c(1, 2),
      model = mturkfit, method = "continuous", 
      #cov.value1 = 0, cov.value2 = 6,
-     xlab = "More Evangelical ... Less Evangelical",
+     xlab = "Less Evangelical ... More Evangelical",
      main = "Effect of Evangelical Beliefs",
      #xlim = c(-.1, .1), 
      labeltype = "custom",
-     custom.labels = labels)
+     custom.labels = labels[1:2])
+dev.off()
+
+png('evang_belief_refuse_rel_freedom.png')
+plot(prep.mturk, covariate = "evang.belief.score", topics = c(4, 5),
+     model = mturkfit, method = "continuous", 
+     #cov.value1 = 0, cov.value2 = 6,
+     xlab = "Less Evangelical ... More Evangelical",
+     main = "Effect of Evangelical Beliefs",
+     #xlim = c(-.1, .1), 
+     labeltype = "custom",
+     custom.labels = labels[4:5])
+dev.off()
+
+png('evang_belief_discrim.png')
+plot(prep.mturk, covariate = "evang.belief.score", topics = c(7),
+     model = mturkfit, method = "continuous", 
+     #cov.value1 = 0, cov.value2 = 6,
+     xlab = "Less Evangelical ... More Evangelical",
+     main = "Effect of Evangelical Beliefs",
+     #xlim = c(-.1, .1), 
+     labeltype = "custom",
+     custom.labels = labels[7])
+dev.off()
 
 
 #####################################################################################
