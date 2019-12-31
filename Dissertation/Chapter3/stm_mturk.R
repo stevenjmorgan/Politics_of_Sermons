@@ -273,6 +273,13 @@ plot(prep.mturk, covariate = "support.gays",
 dev.off()
 
 
+### Make table w/ just top word probability and expected topic proportion
+
+
+#### Make table like Kuhn 2019 (appendix)
+
+
+
 ##############################################################################
 ### Done
 ##############################################################################
