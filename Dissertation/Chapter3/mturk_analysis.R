@@ -334,16 +334,49 @@ mturk <- mturk.sub
 rm(mturk.sub)
 
 # Last value carried forward (for now)
-library(zoo)
-mturk <- na.locf(mturk)
+#library(zoo)
+#mturk <- na.locf(mturk)
+
+# # Imputed evang. belief score
+# mturk$evang.belief.imp <- mturk$bible + mturk$evangelize + mturk$heaven + mturk$jesus.sin + 
+#   mturk$faith.import + mturk$devil + mturk$belief.god
+# summary(mturk$evang.belief.imp)
+# cor(mturk$evang.belief.imp, mturk$evang.belief.score) #0.97
 
 
-# Imputed evang. belief score
-mturk$evang.belief.imp <- mturk$bible + mturk$evangelize + mturk$heaven + mturk$jesus.sin + 
-  mturk$faith.import + mturk$devil + mturk$belief.god
-summary(mturk$evang.belief.imp)
-cor(mturk$evang.belief.imp, mturk$evang.belief.score) #0.97
+# Amelia-based multiple imputation
+library(Amelia)
 
+# Multiple imputation assuming multivariate normal distribution
+drops <- c('group', 'Barna.Scale_1', 'Barna.Scale_2', 'Barna.Scale_3', 'Barna.Scale_4',
+           'Barna.Scale_5', 'Barna.Scale_6','text', 'control', 'evang.belief.score', 'other.religion',
+           'other.race', 'west', 'control')
+mturk.a <- mturk[,!(names(mturk) %in% drops)]
+a.out <- amelia(mturk.a)
+a.out
+
+#hist(a.out$imputations[[3]]$evangelize, col="grey", border="white")
+
+mturk.mi <- a.out[[1]]$imp3
+rm(mturk.a, a.out, drops)
+
+# Correlation of MI evang. belief score versus original
+mturk.mi$evang.belief.imp <- mturk.mi$bible + mturk.mi$evangelize + mturk.mi$heaven + mturk.mi$jesus.sin + 
+  mturk.mi$faith.import + mturk.mi$devil + mturk.mi$belief.god
+#cor(mturk.mi$evang.belief.imp, mturk$evang.belief.score, use = 'complete.obs') #1
+mturk.mi$evang.belief.imp <- round(mturk.mi$evang.belief.imp, 0)
+cor(mturk.mi$evang.belief.imp, mturk$evang.belief.score, use = 'complete.obs') #1
+
+mturk <- mturk.mi
+rm(mturk.mi)
+mturk$control <- ifelse(mturk$rights == 0 & mturk$moral == 0 & mturk$attack == 0, 1, 0)
+summary(mturk$control==1)
+
+mturk$group <- NA
+mturk$group <- ifelse(mturk$rights == 1, 'Rights', mturk$group)
+mturk$group <- ifelse(mturk$moral == 1, 'Moral', mturk$group)
+mturk$group <- ifelse(mturk$attack == 1, 'Attack', mturk$group)
+mturk$group <- ifelse(mturk$control == 1, 'Control', mturk$group)
 
 ######################################################################################################
 ### Analysis
@@ -352,7 +385,7 @@ cor(mturk$evang.belief.imp, mturk$evang.belief.score) #0.97
 ### T tests
 # Candidate support
 t.test(mturk$cand.ft[which(mturk$group == 'Rights')], mturk$cand.ft[which(mturk$group == 'Control')])
-t.test(mturk$cand.ft[which(mturk$group == 'Rights')], mturk$cand.ft[which(mturk$group == 'Moral')])
+t.test(mturk$cand.ft[which(mturk$group == 'Rights')], mturk$cand.ft[which(mturk$group == 'Moral')]) # Significant at p<0.05
 t.test(mturk$cand.ft[which(mturk$group == 'Rights')], mturk$cand.ft[which(mturk$group == 'Attack')])
 
 t.test(mturk$cand.ft[which(mturk$group == 'Moral')], mturk$cand.ft[which(mturk$group == 'Control')])
@@ -362,7 +395,7 @@ t.test(mturk$cand.ft[which(mturk$group == 'Attack')], mturk$cand.ft[which(mturk$
 
 # Candidate vote
 t.test(mturk$cand.vote[which(mturk$group == 'Rights')], mturk$cand.vote[which(mturk$group == 'Control')])
-t.test(mturk$cand.vote[which(mturk$group == 'Rights')], mturk$cand.vote[which(mturk$group == 'Moral')])
+t.test(mturk$cand.vote[which(mturk$group == 'Rights')], mturk$cand.vote[which(mturk$group == 'Moral')])# Significant at p=0.05
 t.test(mturk$cand.vote[which(mturk$group == 'Rights')], mturk$cand.vote[which(mturk$group == 'Attack')])
 
 t.test(mturk$cand.vote[which(mturk$group == 'Moral')], mturk$cand.vote[which(mturk$group == 'Control')])
@@ -376,7 +409,7 @@ t.test(mturk$cand.ideo[which(mturk$group == 'Rights')], mturk$cand.ideo[which(mt
 t.test(mturk$cand.ideo[which(mturk$group == 'Rights')], mturk$cand.ideo[which(mturk$group == 'Attack')])
 
 t.test(mturk$cand.ideo[which(mturk$group == 'Moral')], mturk$cand.ideo[which(mturk$group == 'Control')])
-t.test(mturk$cand.ideo[which(mturk$group == 'Moral')], mturk$cand.ideo[which(mturk$group == 'Attack')])
+t.test(mturk$cand.ideo[which(mturk$group == 'Moral')], mturk$cand.ideo[which(mturk$group == 'Attack')]) #p=0.08 (more conservative w/ attack)
 
 t.test(mturk$cand.ideo[which(mturk$group == 'Attack')], mturk$cand.ideo[which(mturk$group == 'Control')])
 
