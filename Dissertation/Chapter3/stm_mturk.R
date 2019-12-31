@@ -12,7 +12,6 @@ mturk <- mturk.sub
 rm(mturk.sub)
 
 
-
 # Remove observations w/ no open-ended answer
 mturk <- mturk[which(mturk$text != ''),] #1196 (from 1248)
 
@@ -75,6 +74,7 @@ mturkfit <- stm(documents = out$documents, vocab = out$vocab, K = 7,
                        gay.know + support.gays + evang.belief.score, max.em.its = 1000,  data = out$meta, init.type = "Spectral",
                        seed = 24519)
 save(mturkfit, file = 'mturk_7k.RData')
+load('mturk_7k.RData')
 
 pdf('topic_proportions_7k.pdf')
 plot(mturkfit, type = "summary", xlim = c(0, .4), main = '')
@@ -250,10 +250,32 @@ plot(prep.mturk, covariate = "ideo", topics = c(7),
      custom.labels = labels[7])
 dev.off()
 
+pdf('know_gay_stm.pdf')
+plot(prep.mturk, covariate = "gay.know",
+     model = mturkfit, method = "difference",
+     cov.value1 = 1, cov.value2 = 0,
+     xlab = "Don't Know LGBTQ                                                                               Know LGBTQ",
+     main = "Estimated Marginal Effect of Knowing LGBTQ: Topic Prevalence",
+     xlim = c(-.05, .05), 
+     labeltype = "custom",
+     custom.labels = labels)
+dev.off()
+
+pdf('support_gay_stm.pdf')
+plot(prep.mturk, covariate = "support.gays",
+     model = mturkfit, method = "difference",
+     cov.value1 = 2, cov.value2 = 0,
+     xlab = "Anti-LGBTQ                                                                               Pro-LGBTQ",
+     main = "Estimated Marginal Effect of Supporting LGBTQ Rights: Topic Prevalence",
+     xlim = c(-.15, .15), 
+     labeltype = "custom",
+     custom.labels = labels)
+dev.off()
+
+
 ##############################################################################
 ### Done
 ##############################################################################
-
 
 
 ################ Multiply in original dataframe, run separate STM?
