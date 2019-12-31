@@ -378,6 +378,8 @@ mturk$group <- ifelse(mturk$moral == 1, 'Moral', mturk$group)
 mturk$group <- ifelse(mturk$attack == 1, 'Attack', mturk$group)
 mturk$group <- ifelse(mturk$control == 1, 'Control', mturk$group)
 
+mturk$evang.self.ident <- round(mturk$evang.self.ident,0)
+
 ######################################################################################################
 ### Analysis
 ######################################################################################################
@@ -412,6 +414,176 @@ t.test(mturk$cand.ideo[which(mturk$group == 'Moral')], mturk$cand.ideo[which(mtu
 t.test(mturk$cand.ideo[which(mturk$group == 'Moral')], mturk$cand.ideo[which(mturk$group == 'Attack')]) #p=0.08 (more conservative w/ attack)
 
 t.test(mturk$cand.ideo[which(mturk$group == 'Attack')], mturk$cand.ideo[which(mturk$group == 'Control')])
+
+# Agree w/ candidate stance
+t.test(mturk$cand.agree[which(mturk$group == 'Rights')], mturk$cand.agree[which(mturk$group == 'Control')])
+t.test(mturk$cand.agree[which(mturk$group == 'Rights')], mturk$cand.agree[which(mturk$group == 'Moral')]) # p = 0.06 (rights more likely to agree)
+t.test(mturk$cand.agree[which(mturk$group == 'Rights')], mturk$cand.agree[which(mturk$group == 'Attack')])
+
+t.test(mturk$cand.agree[which(mturk$group == 'Moral')], mturk$cand.agree[which(mturk$group == 'Control')])
+t.test(mturk$cand.agree[which(mturk$group == 'Moral')], mturk$cand.agree[which(mturk$group == 'Attack')])
+
+t.test(mturk$cand.agree[which(mturk$group == 'Attack')], mturk$cand.agree[which(mturk$group == 'Control')])
+
+
+### Plot differences in DV for each treatment group
+## Candidate FT
+require(dplyr)
+alpha <- 0.1
+
+x <- mturk %>% 
+  group_by(group) %>% 
+  summarize(mean = mean(cand.ft),
+            lower = mean(cand.ft) - qt(1- alpha/2, (n() - 1))*sd(cand.ft)/sqrt(n()),
+            upper = mean(cand.ft) + qt(1- alpha/2, (n() - 1))*sd(cand.ft)/sqrt(n()))
+y <- mturk %>% 
+  group_by(group, evang.self.ident) %>% 
+  summarize(mean = mean(cand.ft),
+            lower = mean(cand.ft) - qt(1- alpha/2, (n() - 1))*sd(cand.ft)/sqrt(n()),
+            upper = mean(cand.ft) + qt(1- alpha/2, (n() - 1))*sd(cand.ft)/sqrt(n()))
+
+x %>%
+  ggplot(aes(x = group, y = mean)) +
+  #geom_bar(stat = "identity", position = "dodge") +
+  geom_errorbar(aes(ymin = lower, ymax = upper), position = "dodge") + theme_bw() +
+  xlab('') + ylab('Candidate Feeling Thermometer') #+ ggtitle('Mean Candidate FT Scores by Treatment')
+ggsave('Mean Candidate FT Scores by Treatment.png')
+
+
+# y %>%
+#   ggplot(aes(x = group, y = mean)) +
+#   #geom_bar(stat = "identity", position = "dodge") +
+#   geom_errorbar(aes(ymin = lower, ymax = upper), position = "dodge") + theme_bw() +
+#   xlab('') + ylab('Candidate Feeling Thermometer')
+
+x$evang.self.ident <- 999
+evang.plus.sample <- as.data.frame(rbind(as.data.frame(x), as.data.frame(y)))
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==1, 'Evangelical', evang.plus.sample$evang.self.ident)
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==0, 'Non-Evangelical', evang.plus.sample$evang.self.ident)
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==999, 'Total Sample', evang.plus.sample$evang.self.ident)
+
+#evang.plus.sample %>%
+#  ggplot(aes(x = group, y = mean)) +
+#  #geom_bar(stat = "identity", position = "dodge") +
+#  geom_errorbar(aes(ymin = lower, ymax = upper), position = "dodge") + theme_bw() +
+#  xlab('') + ylab('Candidate Feeling Thermometer')
+
+# Broken out by subgroup
+ggplot(evang.plus.sample, aes(x = group, y = mean, color=as.factor(evang.self.ident), shape=as.factor(evang.self.ident))) +
+  geom_point(
+    #aes(color = evang.self.ident, fill = evang.self.ident),
+    stat = "identity", position = position_dodge(0.8), size = 3
+  ) + theme_bw() + xlab('') + ylab('Candidate Feeling Thermometer') +
+  geom_errorbar(aes(ymin = lower, ymax = upper), position = position_dodge(0.8)) +
+  theme(legend.position="bottom", legend.title = element_blank())
+ggsave('candidate ft subgroup.png')
+
+
+## Candidate Likely to vote
+rm(x, y, evang.plus.sample)
+x <- mturk %>% 
+  group_by(group) %>% 
+  summarize(mean = mean(cand.vote),
+            lower = mean(cand.vote) - qt(1- alpha/2, (n() - 1))*sd(cand.vote)/sqrt(n()),
+            upper = mean(cand.vote) + qt(1- alpha/2, (n() - 1))*sd(cand.vote)/sqrt(n()))
+y <- mturk %>% 
+  group_by(group, evang.self.ident) %>% 
+  summarize(mean = mean(cand.vote),
+            lower = mean(cand.vote) - qt(1- alpha/2, (n() - 1))*sd(cand.vote)/sqrt(n()),
+            upper = mean(cand.vote) + qt(1- alpha/2, (n() - 1))*sd(cand.vote)/sqrt(n()))
+
+x %>%
+  ggplot(aes(x = group, y = mean)) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), position = "dodge") + theme_bw() +
+  xlab('') + ylab('Likely Vote For Candidate') 
+ggsave('Mean Likely Vote by Treatment.png')
+
+x$evang.self.ident <- 999
+evang.plus.sample <- as.data.frame(rbind(as.data.frame(x), as.data.frame(y)))
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==1, 'Evangelical', evang.plus.sample$evang.self.ident)
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==0, 'Non-Evangelical', evang.plus.sample$evang.self.ident)
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==999, 'Total Sample', evang.plus.sample$evang.self.ident)
+
+# Broken out by subgroup
+ggplot(evang.plus.sample, aes(x = group, y = mean, color=as.factor(evang.self.ident), shape=as.factor(evang.self.ident))) +
+  geom_point(
+    stat = "identity", position = position_dodge(0.8), size = 3
+  ) + theme_bw() + xlab('') + ylab('Likely Vote For Candidate') +
+  geom_errorbar(aes(ymin = lower, ymax = upper), position = position_dodge(0.8)) +
+  theme(legend.position="bottom", legend.title = element_blank())
+ggsave('likely vote subgroup.png')
+
+
+## Agree w/ candidate stance
+rm(x, y, evang.plus.sample)
+x <- mturk %>% 
+  group_by(group) %>% 
+  summarize(mean = mean(cand.agree),
+            lower = mean(cand.agree) - qt(1- alpha/2, (n() - 1))*sd(cand.agree)/sqrt(n()),
+            upper = mean(cand.agree) + qt(1- alpha/2, (n() - 1))*sd(cand.agree)/sqrt(n()))
+y <- mturk %>% 
+  group_by(group, evang.self.ident) %>% 
+  summarize(mean = mean(cand.agree),
+            lower = mean(cand.agree) - qt(1- alpha/2, (n() - 1))*sd(cand.agree)/sqrt(n()),
+            upper = mean(cand.agree) + qt(1- alpha/2, (n() - 1))*sd(cand.agree)/sqrt(n()))
+
+x %>%
+  ggplot(aes(x = group, y = mean)) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), position = "dodge") + theme_bw() +
+  xlab('') + ylab('Agree with Candidate Stance') 
+ggsave('Mean agree stance by Treatment.png')
+
+x$evang.self.ident <- 999
+evang.plus.sample <- as.data.frame(rbind(as.data.frame(x), as.data.frame(y)))
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==1, 'Evangelical', evang.plus.sample$evang.self.ident)
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==0, 'Non-Evangelical', evang.plus.sample$evang.self.ident)
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==999, 'Total Sample', evang.plus.sample$evang.self.ident)
+
+# Broken out by subgroup
+ggplot(evang.plus.sample, aes(x = group, y = mean, color=as.factor(evang.self.ident), shape=as.factor(evang.self.ident))) +
+  geom_point(
+    stat = "identity", position = position_dodge(0.8), size = 3
+  ) + theme_bw() + xlab('') + ylab('Agree with Candidate Stance') +
+  geom_errorbar(aes(ymin = lower, ymax = upper), position = position_dodge(0.8)) +
+  theme(legend.position="bottom", legend.title = element_blank())
+ggsave('agree stance subgroup.png')
+
+
+## Candidate ideology
+rm(x, y, evang.plus.sample)
+x <- mturk %>% 
+  group_by(group) %>% 
+  summarize(mean = mean(cand.ideo),
+            lower = mean(cand.ideo) - qt(1- alpha/2, (n() - 1))*sd(cand.ideo)/sqrt(n()),
+            upper = mean(cand.ideo) + qt(1- alpha/2, (n() - 1))*sd(cand.ideo)/sqrt(n()))
+y <- mturk %>% 
+  group_by(group, evang.self.ident) %>% 
+  summarize(mean = mean(cand.ideo),
+            lower = mean(cand.ideo) - qt(1- alpha/2, (n() - 1))*sd(cand.ideo)/sqrt(n()),
+            upper = mean(cand.ideo) + qt(1- alpha/2, (n() - 1))*sd(cand.ideo)/sqrt(n()))
+
+x %>%
+  ggplot(aes(x = group, y = mean)) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), position = "dodge") + theme_bw() +
+  xlab('') + ylab('Perceived Candidate Ideology') 
+ggsave('Mean candidate ideology by Treatment.png')
+
+x$evang.self.ident <- 999
+evang.plus.sample <- as.data.frame(rbind(as.data.frame(x), as.data.frame(y)))
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==1, 'Evangelical', evang.plus.sample$evang.self.ident)
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==0, 'Non-Evangelical', evang.plus.sample$evang.self.ident)
+evang.plus.sample$evang.self.ident <- ifelse(evang.plus.sample$evang.self.ident==999, 'Total Sample', evang.plus.sample$evang.self.ident)
+
+# Broken out by subgroup
+ggplot(evang.plus.sample, aes(x = group, y = mean, color=as.factor(evang.self.ident), shape=as.factor(evang.self.ident))) +
+  geom_point(
+    stat = "identity", position = position_dodge(0.8), size = 3
+  ) + theme_bw() + xlab('') + ylab('Perceived Candidate Ideology') +
+  geom_errorbar(aes(ymin = lower, ymax = upper), position = position_dodge(0.8)) +
+  theme(legend.position="bottom", legend.title = element_blank())
+ggsave('candidate ideology subgroup.png')
+
+
 
 ### OLS regression
 # Candidate support
