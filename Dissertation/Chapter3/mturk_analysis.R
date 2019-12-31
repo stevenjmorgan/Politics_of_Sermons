@@ -338,6 +338,11 @@ library(zoo)
 mturk <- na.locf(mturk)
 
 
+# Imputed evang. belief score
+mturk$evang.belief.imp <- mturk$bible + mturk$evangelize + mturk$heaven + mturk$jesus.sin + 
+  mturk$faith.import + mturk$devil + mturk$belief.god
+summary(mturk$evang.belief.imp)
+cor(mturk$evang.belief.imp, mturk$evang.belief.score) #0.97
 
 
 ######################################################################################################
