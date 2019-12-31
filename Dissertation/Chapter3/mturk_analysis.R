@@ -128,7 +128,7 @@ mturk$PID <- ifelse(mturk$Q8 == 'An Independent' & mturk$Q9c == '', 3, mturk$PID
 # Other ?????
 mturk$PID <- ifelse(mturk$Q8 == 'Other Party' | mturk$Q8 == 'Prefer not to say', NA, mturk$PID)
 summary(mturk$PID)
-hist(mturk$PID)
+#hist(mturk$PID)
 
 # Ideology -> 0 Strong liberal, 6 Strong conservatie
 unique(mturk$Q10)
@@ -138,7 +138,7 @@ mturk$ideo <- car::recode(mturk$Q10, as.factor = F, "'Strongly Liberal' = 0;
                     'Somewhat Conservative' = 4; 'Moderately Conservative' = 5;
                     'Strongly Conservative' = 6; else = NA")
 summary(mturk$ideo)
-hist(mturk$ideo)
+#hist(mturk$ideo)
 
 # State to region
 url <- 'https://raw.githubusercontent.com/cphalpert/census-regions/master/us%20census%20bureau%20regions%20and%20divisions.csv'
@@ -324,16 +324,25 @@ write.csv(mturk.sub, 'cleaned_mturk_final.csv', row.names = F)
 save(mturk.sub, file = 'final_cleaned_mturk.RData')
 
 
-######################################################################################################
-### Analysis
-######################################################################################################
 
+######################################################################################################
+### Imputation
+######################################################################################################
 rm(list=ls())
 load('final_cleaned_mturk.RData')
 mturk <- mturk.sub
 rm(mturk.sub)
 
-### Imputation
+# Last value carried forward (for now)
+library(zoo)
+mturk <- na.locf(mturk)
+
+
+
+
+######################################################################################################
+### Analysis
+######################################################################################################
 
 ### T tests
 # Candidate support
