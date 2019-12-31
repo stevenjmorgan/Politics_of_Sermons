@@ -312,7 +312,7 @@ summary(mturk$control==1)
 ### Subset variables for analysis
 vars <- c('group', 'female', 'gay', 'educ', 'age', 'income', 'hisp', 'black', 'white', 
           'asian', 'other.race','gay.know', 'PID', 'ideo', 'midwest', 'south', 
-          'northeast', 'south', 'west', 'cath', 'prot', 'jew', 'none', 'other.religion', 
+          'northeast', 'west', 'cath', 'prot', 'jew', 'none', 'other.religion', 
           'evang.self.ident', 'rel.attend', 'bible', 'evangelize', 'heaven', 'jesus.sin', 
           'faith.import', 'devil', 'belief.god', 'Barna.Scale_1', 'Barna.Scale_2', 
           'Barna.Scale_3', 'Barna.Scale_4', 'Barna.Scale_5', 'Barna.Scale_6', 
