@@ -192,6 +192,21 @@ plot(prep.mturk, covariate = "evang.belief.score", topics = c(7),
      custom.labels = labels[7])
 dev.off()
 
+### Interaction of evangelical and attack treatment
+# inter.prep <- estimateEffect(1:7 ~ rights + attack + moral + church.bi + 
+#                                gay.know + support.gays + evang.belief.score + attack:evang.belief.score,
+#                                mturkfit,
+#                              meta = out$meta, uncertainty = "Global")
+# summary(inter.prep)
+
+#plot(inter.prep, covariate = "atack:evang.belief.score",
+#     model = mturkfit, method = "difference",
+#     cov.value1 = 1, cov.value2 = 0,
+#     xlab = "Control                                                                               Rights Frame",
+#     main = "Estimated Marginal Effect of Rights Frame: Topic Prevalence",
+#     xlim = c(-.05, .05), 
+#     labeltype = "custom",
+#     custom.labels = labels)
 
 #####################################################################################
 ### Content
