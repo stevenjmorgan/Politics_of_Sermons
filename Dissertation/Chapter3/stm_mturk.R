@@ -192,6 +192,8 @@ plot(prep.mturk, covariate = "evang.belief.score", topics = c(7),
      custom.labels = labels[7])
 dev.off()
 
+
+################ Multiply in original dataframe, run separate STM?
 ### Interaction of evangelical and attack treatment
 # inter.prep <- estimateEffect(1:7 ~ rights + attack + moral + church.bi + 
 #                                gay.know + support.gays + evang.belief.score + attack:evang.belief.score,
