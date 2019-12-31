@@ -103,8 +103,8 @@ print(xtable(dat), type = "html", file="stm_mturk_7k.html")
 
 ### Model topic prevalence
 #out$meta <- within(out$meta, group <- relevel(group, ref = 'Control'))
-prep.mturk <- estimateEffect(1:7 ~ rights + attack + moral + evang.self.ident + church.bi + 
-                               gay.know + support.gays + evang.belief.score, mturkfit,
+prep.mturk <- estimateEffect(1:7 ~ rights + attack + moral + evang.self.ident + church.bi + ideo +
+                               gay.know + support.gays + evang.belief.score + gop.bi, mturkfit,
                            meta = out$meta, uncertainty = "Global")
 summary(prep.mturk)
 #library(stargazer)
@@ -192,6 +192,69 @@ plot(prep.mturk, covariate = "evang.belief.score", topics = c(7),
      custom.labels = labels[7])
 dev.off()
 
+# Church attendance
+pdf('church_stm.pdf')
+plot(prep.mturk, covariate = "church.bi",
+     model = mturkfit, method = "difference",
+     cov.value1 = 1, cov.value2 = 0,
+     xlab = "Do not attend weekly                                                                     Attend at least weekly",
+     main = "Estimated Marginal Effect of Church Attendance: Topic Prevalence",
+     xlim = c(-.05, .05), 
+     labeltype = "custom",
+     custom.labels = labels)
+dev.off()
+
+# GOP affiliation
+pdf('gop_stm.pdf')
+plot(prep.mturk, covariate = "gop.bi",
+     model = mturkfit, method = "difference",
+     cov.value1 = 1, cov.value2 = 0,
+     xlab = "Non-GOP Identifiier                                                                     GOP Identifier",
+     main = "Estimated Marginal Effect of GOP Identification: Topic Prevalence",
+     xlim = c(-.05, .05), 
+     labeltype = "custom",
+     custom.labels = labels)
+dev.off()
+
+# Political Ideology
+png('ideology_duty_libert.png')
+plot(prep.mturk, covariate = "ideo", topics = c(1, 2),
+     model = mturkfit, method = "continuous", 
+     #cov.value1 = 0, cov.value2 = 6,
+     xlab = "More Liberal ... More Conservative",
+     main = "Effect of Political Ideology",
+     #xlim = c(-.1, .1), 
+     labeltype = "custom",
+     custom.labels = labels[1:2])
+dev.off()
+
+png('ideology_refuse_rel_freedom.png')
+plot(prep.mturk, covariate = "evang.belief.score", topics = c(4, 5),
+     model = mturkfit, method = "continuous", 
+     #cov.value1 = 0, cov.value2 = 6,
+     xlab = "More Liberal ... More Conservative",
+     main = "Effect of Political Ideology",
+     #xlim = c(-.1, .1), 
+     labeltype = "custom",
+     custom.labels = labels[4:5])
+dev.off()
+
+png('ideology_discrim.png')
+plot(prep.mturk, covariate = "ideo", topics = c(7),
+     model = mturkfit, method = "continuous", 
+     #cov.value1 = 0, cov.value2 = 6,
+     xlab = "More Liberal ... More Conservative",
+     main = "Effect of Political Ideology",
+     #xlim = c(-.1, .1), 
+     labeltype = "custom",
+     custom.labels = labels[7])
+dev.off()
+
+##############################################################################
+### Done
+##############################################################################
+
+
 
 ################ Multiply in original dataframe, run separate STM?
 ### Interaction of evangelical and attack treatment
@@ -212,6 +275,6 @@ dev.off()
 
 #####################################################################################
 ### Content
-poliblogContent <- stm(out$documents, out$vocab, K = 20,
-                      prevalence =~ rating + s(day), content =~ rating,
-                      max.em.its = 75, data = out$meta, init.type = "Spectral")
+#poliblogContent <- stm(out$documents, out$vocab, K = 20,
+#                      prevalence =~ rating + s(day), content =~ rating,
+#                      max.em.its = 75, data = out$meta, init.type = "Spectral")
