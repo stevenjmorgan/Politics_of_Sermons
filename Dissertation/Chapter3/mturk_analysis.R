@@ -334,31 +334,31 @@ mturk <- mturk.sub
 rm(mturk.sub)
 
 # Last value carried forward (for now)
-#library(zoo)
-#mturk <- na.locf(mturk)
+library(zoo)
+mturk <- na.locf(mturk)
 
-# # Imputed evang. belief score
-# mturk$evang.belief.imp <- mturk$bible + mturk$evangelize + mturk$heaven + mturk$jesus.sin + 
-#   mturk$faith.import + mturk$devil + mturk$belief.god
-# summary(mturk$evang.belief.imp)
-# cor(mturk$evang.belief.imp, mturk$evang.belief.score) #0.97
+# Imputed evang. belief score
+mturk$evang.belief.imp <- mturk$bible + mturk$evangelize + mturk$heaven + mturk$jesus.sin + 
+   mturk$faith.import + mturk$devil + mturk$belief.god
+summary(mturk$evang.belief.imp)
+cor(mturk$evang.belief.imp, mturk$evang.belief.score) #0.97
 
 
-# Amelia-based multiple imputation
-library(Amelia)
-
-# Multiple imputation assuming multivariate normal distribution
-drops <- c('group', 'Barna.Scale_1', 'Barna.Scale_2', 'Barna.Scale_3', 'Barna.Scale_4',
-           'Barna.Scale_5', 'Barna.Scale_6','text', 'control', 'evang.belief.score', 'other.religion',
-           'other.race', 'west', 'control')
-mturk.a <- mturk[,!(names(mturk) %in% drops)]
-a.out <- amelia(mturk.a)
-a.out
-
-#hist(a.out$imputations[[3]]$evangelize, col="grey", border="white")
-
-mturk.mi <- a.out[[1]]$imp3
-rm(mturk.a, a.out, drops)
+# # Amelia-based multiple imputation
+# library(Amelia)
+# 
+# # Multiple imputation assuming multivariate normal distribution
+# drops <- c('group', 'Barna.Scale_1', 'Barna.Scale_2', 'Barna.Scale_3', 'Barna.Scale_4',
+#            'Barna.Scale_5', 'Barna.Scale_6','text', 'control', 'evang.belief.score', 'other.religion',
+#            'other.race', 'west', 'control')
+# mturk.a <- mturk[,!(names(mturk) %in% drops)]
+# a.out <- amelia(mturk.a)
+# a.out
+# 
+# #hist(a.out$imputations[[3]]$evangelize, col="grey", border="white")
+# 
+# mturk.mi <- a.out[[1]]$imp3
+# rm(mturk.a, a.out, drops)
 
 # Correlation of MI evang. belief score versus original
 mturk.mi$evang.belief.imp <- mturk.mi$bible + mturk.mi$evangelize + mturk.mi$heaven + mturk.mi$jesus.sin + 
@@ -681,7 +681,133 @@ stargazer(cand.vote.full, cand.vote.int, cand.vote.belief, cand.bel.int.vote,
                              'Attack*Evang. Belief'))
 
 
+### Cand. vote -> ordinal logit
+library(MASS)
+
+mturk$cand.vote.ord <- factor(mturk$cand.vote, levels = c(0, 1, 2, 3, 4), ordered = TRUE) 
+
+cand.vote.full.ord <- polr(as.formula(paste('cand.vote.ord', f, sep = '~')), data = mturk, Hess=TRUE)
+summary(cand.vote.full.ord)
+
+# Evang. belief
+cand.vote.belief.ord <- polr(as.formula(paste('cand.vote.ord', f.evan, sep = '~')), data = mturk, Hess=TRUE)
+summary(cand.vote.belief.ord)
+
+# Self-ident w/ interactions w/ treatment
+cand.vote.int.ord <- polr(cand.vote.ord ~ moral + rights + attack + female + gay + educ + age + 
+                      income + hisp + black + gay.know + PID + ideo + midwest + 
+                      south + northeast + cath + prot + jew + none + evang.self.ident + 
+                      rel.attend + pol.know + support.gays + pol.int + manip +
+                      moral:evang.self.ident + rights:evang.self.ident +
+                      attack:evang.self.ident, data = mturk, Hess=TRUE)
+summary(cand.vote.int.ord)
+
+# Belief scale w/ interactions w/ treatment
+cand.bel.int.vote.ord <- polr(cand.vote.ord ~ moral + rights + attack + female + gay + educ + age + 
+                          income + hisp + black + gay.know + PID + ideo + midwest + 
+                          south + northeast + cath + prot + jew + none + evang.belief.imp + 
+                          rel.attend + pol.know + support.gays + pol.int + manip +
+                          moral:evang.belief.imp + rights:evang.belief.imp +
+                          attack:evang.belief.imp, data = mturk, Hess=TRUE)
+summary(cand.bel.int.vote.ord)
+
+
+stargazer(cand.vote.full.ord, cand.vote.int.ord, cand.vote.belief.ord, cand.bel.int.vote.ord,
+          no.space=TRUE, dep.var.labels.include = F, 
+          covariate.labels=c('Moral', 'Rights', 'Attack', 'Female', 'LGBTQ-Identifying', 'Education',
+                             'Age', 'Income', 'Hispanic', 'Black', 'Know LGBTQ', 'PID', 'Ideology',
+                             'Midwest', 'South', 'Northeast', 'Catholic', 'Protestant', 'Jewish',
+                             'No Religion', 'Evang. Ident', 'Evang. Belief', 'Rel. Attend.','Pol. Knowledge', 'Support LGBTQ',
+                             'Pol. Interest', 'Manipulation', 'Moral*Evang. Ident.', 'Rights*Evang. Ident.',
+                             'Attack*Evang. Ident.', 'Moral*Evang. Belief', 'Rights*Evang. Belief',
+                             'Attack*Evang. Belief'))
+
 
 ### Candidate ideological perception
 #cand.ideo.lm <- lm(cand.ideo~moral+rights+attack, data = mturk)
 #summary(cand.ideo.lm)
+
+
+
+### Plot coefficients
+library(dotwhisker)
+library(broom)
+library(dplyr)
+
+## Candidate FT
+cand.support.full_df <- tidy(cand.support.full) %>% filter(term == "moral" | term == 'rights' | term == 'attack') %>%
+  relabel_predictors(c(moral = "Moral",                      # relabel predictors
+                      rights = "Rights",          
+                      attack = "Attack"))
+dwplot(cand.support.full_df, conf.level = .95, 
+       vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2))+ theme_bw() +
+  xlab("Coefficient Estimate") + theme(legend.position="none")
+ggsave('cand_ft_dotplot.png')
+
+## Candidate Vote
+cand.vote.full_df <- tidy(cand.vote.full.ord) %>% filter(term == "moral" | term == 'rights' | term == 'attack') %>%
+  relabel_predictors(c(moral = "Moral",                      # relabel predictors
+                       rights = "Rights",          
+                       attack = "Attack"))
+dwplot(cand.vote.full_df, conf.level = .95, 
+       vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2))+ theme_bw() +
+  xlab("Coefficient Estimate") + theme(legend.position="none")
+ggsave('cand_vote_dotplot.png')
+
+
+### Marginal effects
+## Candidate FT
+library(sjPlot)
+library(sjmisc)
+#plot_model(cand.ident.int, type = "pred", terms = c("moral", 'rights', 'attack', "evang.self.ident"))
+
+ex <- tidy(cand.ident.int) %>% filter(term == "moral" | term == 'rights' | term == 'attack' | term == 'moral:evang.self.ident'
+                                      | term == 'rights:evang.self.ident' | term == 'attack:evang.self.ident') 
+ex$term <- c('Non-Evangelical: Moral', "Non-Evangelical: Rights", "Non-Evangelical: Attack", 'Evangelical: Moral',
+            'Evangelical: Rights', 'Evangelical: Attack')
+ex
+
+dwplot(ex, conf.level = .90, 
+       vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2))+ theme_bw() +
+  xlab("Coefficient Estimate") + theme(legend.position="none")
+ggsave('cand_ft_dotplot_evang.png')
+
+## Cand vote
+ex1 <- tidy(cand.vote.int.ord) %>% filter(term == "moral" | term == 'rights' | term == 'attack' | term == 'moral:evang.self.ident'
+                                      | term == 'rights:evang.self.ident' | term == 'attack:evang.self.ident') 
+ex1$term <- c('Non-Evangelical: Moral', "Non-Evangelical: Rights", "Non-Evangelical: Attack", 'Evangelical: Moral',
+             'Evangelical: Rights', 'Evangelical: Attack')
+ex1
+
+dwplot(ex1, conf.level = .90, 
+       vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2))+ theme_bw() +
+  xlab("Coefficient Estimate") + theme(legend.position="none")
+ggsave('cand_vote_dotplot_evang.png')
+
+
+# Belief interaction
+# Cand FT
+plot_model(cand.bel.int, type = "pred", terms = c("evang.belief.imp", "moral"), legend.title = 'Moral',
+           axis.title = c('Evangelical Belief Index','Candidate FT'), p.threshold = c(0.05), title = "")
+ggsave('cand_ft_marg_moral.png')
+plot_model(cand.bel.int, type = "pred", terms = c("evang.belief.imp", "rights"), legend.title = 'Rights',
+           axis.title = c('Evangelical Belief Index','Candidate FT'), p.threshold = c(0.05), title = "")
+ggsave('cand_ft_marg_rights.png')
+plot_model(cand.bel.int, type = "pred", terms = c("evang.belief.imp", "attack"), legend.title = 'Attack',
+           axis.title = c('Evangelical Belief Index','Candidate FT'), p.threshold = c(0.05), title = "")
+ggsave('cand_ft_marg_attack.png')
+
+
+stargazer(mturk, summary = T, nobs = FALSE, mean.sd = TRUE, median = TRUE,
+          iqr = FALSE, omit.summary.stat = c("p25", "p75"))
+
+# ## Cand vote
+# plot_model(cand.bel.int.vote.ord, type = "pred", terms = c("evang.belief.imp", "moral"), legend.title = 'Moral',
+#            axis.title = c('Evangelical Belief Index','Candidate FT'), p.threshold = c(0.05), title = "")
+# ggsave('cand_ft_marg_moral.png')
+# plot_model(cand.bel.int, type = "pred", terms = c("evang.belief.imp", "rights"), legend.title = 'Rights',
+#            axis.title = c('Evangelical Belief Index','Candidate FT'), p.threshold = c(0.05), title = "")
+# ggsave('cand_ft_marg_rights.png')
+# plot_model(cand.bel.int, type = "pred", terms = c("evang.belief.imp", "attack"), legend.title = 'Attack',
+#            axis.title = c('Evangelical Belief Index','Candidate FT'), p.threshold = c(0.05), title = "")
+# ggsave('cand_ft_marg_attack.png')
