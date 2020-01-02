@@ -361,24 +361,24 @@ cor(mturk$evang.belief.imp, mturk$evang.belief.score) #0.97
 # rm(mturk.a, a.out, drops)
 
 # Correlation of MI evang. belief score versus original
-mturk.mi$evang.belief.imp <- mturk.mi$bible + mturk.mi$evangelize + mturk.mi$heaven + mturk.mi$jesus.sin + 
-  mturk.mi$faith.import + mturk.mi$devil + mturk.mi$belief.god
+#mturk.mi$evang.belief.imp <- mturk.mi$bible + mturk.mi$evangelize + mturk.mi$heaven + mturk.mi$jesus.sin + 
+#  mturk.mi$faith.import + mturk.mi$devil + mturk.mi$belief.god
 #cor(mturk.mi$evang.belief.imp, mturk$evang.belief.score, use = 'complete.obs') #1
-mturk.mi$evang.belief.imp <- round(mturk.mi$evang.belief.imp, 0)
-cor(mturk.mi$evang.belief.imp, mturk$evang.belief.score, use = 'complete.obs') #1
+#mturk.mi$evang.belief.imp <- round(mturk.mi$evang.belief.imp, 0)
+#cor(mturk.mi$evang.belief.imp, mturk$evang.belief.score, use = 'complete.obs') #1
 
-mturk <- mturk.mi
-rm(mturk.mi)
-mturk$control <- ifelse(mturk$rights == 0 & mturk$moral == 0 & mturk$attack == 0, 1, 0)
-summary(mturk$control==1)
+#mturk <- mturk.mi
+#rm(mturk.mi)
+#mturk$control <- ifelse(mturk$rights == 0 & mturk$moral == 0 & mturk$attack == 0, 1, 0)
+#summary(mturk$control==1)
 
-mturk$group <- NA
-mturk$group <- ifelse(mturk$rights == 1, 'Rights', mturk$group)
-mturk$group <- ifelse(mturk$moral == 1, 'Moral', mturk$group)
-mturk$group <- ifelse(mturk$attack == 1, 'Attack', mturk$group)
-mturk$group <- ifelse(mturk$control == 1, 'Control', mturk$group)
-
-mturk$evang.self.ident <- round(mturk$evang.self.ident,0)
+# mturk$group <- NA
+# mturk$group <- ifelse(mturk$rights == 1, 'Rights', mturk$group)
+# mturk$group <- ifelse(mturk$moral == 1, 'Moral', mturk$group)
+# mturk$group <- ifelse(mturk$attack == 1, 'Attack', mturk$group)
+# mturk$group <- ifelse(mturk$control == 1, 'Control', mturk$group)
+# 
+# mturk$evang.self.ident <- round(mturk$evang.self.ident,0)
 
 ######################################################################################################
 ### Analysis
@@ -429,7 +429,7 @@ t.test(mturk$cand.agree[which(mturk$group == 'Attack')], mturk$cand.agree[which(
 ### Plot differences in DV for each treatment group
 ## Candidate FT
 require(dplyr)
-alpha <- 0.1
+alpha <- 0.15
 
 x <- mturk %>% 
   group_by(group) %>% 
@@ -443,7 +443,10 @@ y <- mturk %>%
             upper = mean(cand.ft) + qt(1- alpha/2, (n() - 1))*sd(cand.ft)/sqrt(n()))
 
 x %>%
-  ggplot(aes(x = group, y = mean)) +
+  ggplot(aes(x = group, y = mean)) + geom_point(
+    #aes(color = evang.self.ident, fill = evang.self.ident),
+    stat = "identity", position = position_dodge(0.8), size = 3
+  ) +
   #geom_bar(stat = "identity", position = "dodge") +
   geom_errorbar(aes(ymin = lower, ymax = upper), position = "dodge") + theme_bw() +
   xlab('') + ylab('Candidate Feeling Thermometer') #+ ggtitle('Mean Candidate FT Scores by Treatment')
@@ -493,7 +496,10 @@ y <- mturk %>%
             upper = mean(cand.vote) + qt(1- alpha/2, (n() - 1))*sd(cand.vote)/sqrt(n()))
 
 x %>%
-  ggplot(aes(x = group, y = mean)) +
+  ggplot(aes(x = group, y = mean)) + geom_point(
+    #aes(color = evang.self.ident, fill = evang.self.ident),
+    stat = "identity", position = position_dodge(0.8), size = 3
+  ) +
   geom_errorbar(aes(ymin = lower, ymax = upper), position = "dodge") + theme_bw() +
   xlab('') + ylab('Likely Vote For Candidate') 
 ggsave('Mean Likely Vote by Treatment.png')
@@ -528,7 +534,10 @@ y <- mturk %>%
             upper = mean(cand.agree) + qt(1- alpha/2, (n() - 1))*sd(cand.agree)/sqrt(n()))
 
 x %>%
-  ggplot(aes(x = group, y = mean)) +
+  ggplot(aes(x = group, y = mean)) + geom_point(
+    #aes(color = evang.self.ident, fill = evang.self.ident),
+    stat = "identity", position = position_dodge(0.8), size = 3
+  ) +
   geom_errorbar(aes(ymin = lower, ymax = upper), position = "dodge") + theme_bw() +
   xlab('') + ylab('Agree with Candidate Stance') 
 ggsave('Mean agree stance by Treatment.png')
