@@ -682,6 +682,6 @@ stargazer(cand.vote.full, cand.vote.int, cand.vote.belief, cand.bel.int.vote,
 
 
 
-# Candidate ideological perception
+### Candidate ideological perception
 #cand.ideo.lm <- lm(cand.ideo~moral+rights+attack, data = mturk)
 #summary(cand.ideo.lm)
