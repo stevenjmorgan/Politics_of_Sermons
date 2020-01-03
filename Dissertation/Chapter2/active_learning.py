@@ -93,17 +93,24 @@ print(vectorizer.vocabulary_)
 train_x, valid_x, train_y, valid_y = model_selection.train_test_split(df['cleaned'], df['ground_truth_rights'], test_size=0.3, random_state=24519)
 
 # label encode the target variable 
-encoder = preprocessing.LabelEncoder()
-train_y = encoder.fit_transform(train_y)
-valid_y = encoder.fit_transform(valid_y)
+#encoder = preprocessing.LabelEncoder()
+#train_y = encoder.fit_transform(train_y)
+#valid_y = encoder.fit_transform(valid_y)
 
 # Transform tf-idf
 #vectorizer.fit(df['cleaned'])
 print(vectorizer.get_feature_names()[0:10])
 print(vectorizer.vocabulary_) #6740
 
-xtrain_tfidf =  vectorizer.transform(train_x)
-xvalid_tfidf =  vectorizer.transform(valid_x)
+### Try with count vectorizer
+vectorizer = CountVectorizer(max_features=10000, max_df = 0.8, min_df = 3)
+vectorizer.fit_transform(df['cleaned'])
+
+#xtrain_tfidf =  vectorizer.transform(train_x)
+#xvalid_tfidf =  vectorizer.transform(valid_x)
+
+xtrain_tfidf =  vectorizer.fit_transform(train_x)
+xvalid_tfidf =  vectorizer.fit_transform(valid_x)
 
 xtrain_tfidf.shape
 xvalid_tfidf.shape
@@ -111,9 +118,59 @@ xvalid_tfidf.shape
 
 ### Models
 # SVM - Linear
-clf = svm.SVC(kernel='linear')
-linear_svm_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
-print(linear_svm_results)
+clf = svm.SVC(kernel='linear', probability = True)
+#linear_svm_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
+#print(linear_svm_results)
+
+# Extract coefficients
+clf.fit(xtrain_tfidf, train_y) # Class weight, coef0, degree?
+    
+# predict the labels on validation dataset
+predictions = clf.predict(xvalid_tfidf)
+
+print(metrics.accuracy_score(predictions, valid_y))
+print(metrics.recall_score(predictions, valid_y))
+print(metrics.precision_score(predictions, valid_y))
+print(metrics.f1_score(predictions, valid_y))
+
+print(predictions[0:10]) # all zero's
+
+
+### Recall that a linear SVM creates a hyperplane that uses support vectors to 
+### maximise the distance between the two classes. The weights obtained from 
+### svm.coef_ represent the vector coordinates which are orthogonal to the 
+### hyperplane and their direction indicates the predicted class. The absolute 
+### size of the coefficients in relation to each other can then be used to 
+### determine feature importance for the data separation task.
+print(clf.coef_)
+
+#clf.score(x,y)
+
+
+### Try with count vectorizer
+feature_names = vectorizer.get_feature_names() 
+coefs_with_fns = sorted(zip(clf.coef_[0], feature_names)) 
+df=pd.DataFrame(coefs_with_fns)
+df.columns='coefficient','word'
+df.sort_values(by='coefficient')
+
+
+
+
+
+coef = np.ravel(clf.coef_)
+top_positive_coefficients = np.argsort(coef)[-20:]
+top_negative_coefficients = np.argsort(coef)[:20]
+top_coefficients = np.hstack([top_negative_coefficients, top_positive_coefficients])
+
+top_features=20
+top_features = vectorizer.get_feature_names()
+plt.figure(figsize=(15, 5))
+colors = ['red' if c < 0 else 'blue' for c in coef[top_coefficients]]
+plt.bar(np.arange(2 * top_features), coef[top_coefficients], color=colors)
+feature_names = np.array(feature_names)
+plt.xticks(np.arange(1, 1 + 2 * top_features), feature_names[top_coefficients], rotation=60, ha='right')
+plt.show()
 
 # SVM - RBF
 clf = svm.SVC(kernel='rbf')
