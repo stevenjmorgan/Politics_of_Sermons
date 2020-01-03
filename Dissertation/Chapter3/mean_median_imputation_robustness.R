@@ -6,8 +6,55 @@ mturk <- mturk.sub
 rm(mturk.sub)
 
 ### Mean/Median imputation
+colnames(mturk)
+
+# Mean imputation -> Continous variables
+summary(mturk$cand.ft)
+mturk$cand.ft[is.na(mturk$cand.ft)] <- mean(mturk$cand.ft, na.rm = TRUE)
+summary(mturk$cand.ft)
+mturk$age[is.na(mturk$age)] <- mean(mturk$age, na.rm = TRUE)
 
 
+# Median-imputation -> categorical and ordinal variables
+mturk$female[is.na(mturk$female)] <- median(mturk$female, na.rm = TRUE)
+mturk$gay[is.na(mturk$gay)] <- median(mturk$gay, na.rm = TRUE)
+mturk$income[is.na(mturk$income)] <- median(mturk$income, na.rm = TRUE)
+mturk$educ[is.na(mturk$educ)] <- median(mturk$educ, na.rm = TRUE)
+mturk$hisp[is.na(mturk$hisp)] <- median(mturk$hisp, na.rm = TRUE)
+mturk$black[is.na(mturk$black)] <- median(mturk$black, na.rm = TRUE)
+mturk$white[is.na(mturk$white)] <- median(mturk$white, na.rm = TRUE)
+mturk$asian[is.na(mturk$asian)] <- median(mturk$asian, na.rm = TRUE)
+mturk$other.race[is.na(mturk$other.race)] <- median(mturk$other.race, na.rm = TRUE)
+mturk$gay.know[is.na(mturk$gay.know)] <- median(mturk$gay.know, na.rm = TRUE)
+mturk$PID[is.na(mturk$PID)] <- median(mturk$PID, na.rm = TRUE)
+mturk$ideo[is.na(mturk$ideo)] <- median(mturk$ideo, na.rm = TRUE)
+mturk$midwest[is.na(mturk$midwest)] <- median(mturk$midwest, na.rm = TRUE)
+mturk$south[is.na(mturk$south)] <- median(mturk$south, na.rm = TRUE)
+mturk$northeast[is.na(mturk$northeast)] <- median(mturk$northeast, na.rm = TRUE)
+mturk$west[is.na(mturk$west)] <- median(mturk$west, na.rm = TRUE)
+mturk$cath[is.na(mturk$cath)] <- median(mturk$cath, na.rm = TRUE)
+mturk$prot[is.na(mturk$prot)] <- median(mturk$prot, na.rm = TRUE)
+mturk$jew[is.na(mturk$jew)] <- median(mturk$jew, na.rm = TRUE)
+mturk$none[is.na(mturk$none)] <- median(mturk$none, na.rm = TRUE)
+mturk$other.religion[is.na(mturk$other.religion)] <- median(mturk$other.religion, na.rm = TRUE)
+mturk$evang.self.ident[is.na(mturk$evang.self.ident)] <- median(mturk$evang.self.ident, na.rm = TRUE)
+mturk$rel.attend[is.na(mturk$rel.attend)] <- median(mturk$rel.attend, na.rm = TRUE)
+mturk$bible[is.na(mturk$bible)] <- median(mturk$bible, na.rm = TRUE)
+mturk$evangelize[is.na(mturk$evangelize)] <- median(mturk$evangelize, na.rm = TRUE)
+mturk$heaven[is.na(mturk$heaven)] <- median(mturk$heaven, na.rm = TRUE)
+mturk$jesus.sin[is.na(mturk$jesus.sin)] <- median(mturk$jesus.sin, na.rm = TRUE)
+mturk$faith.import[is.na(mturk$faith.import)] <- median(mturk$faith.import, na.rm = TRUE)
+mturk$devil[is.na(mturk$devil)] <- median(mturk$devil, na.rm = TRUE)
+mturk$belief.god[is.na(mturk$belief.god)] <- median(mturk$belief.god, na.rm = TRUE)
+mturk$pol.know[is.na(mturk$pol.know)] <- median(mturk$pol.know, na.rm = TRUE)
+mturk$support.gays[is.na(mturk$support.gays)] <- median(mturk$support.gays, na.rm = TRUE)
+mturk$pol.int[is.na(mturk$pol.int)] <- median(mturk$pol.int, na.rm = TRUE)
+mturk$manip[is.na(mturk$manip)] <- median(mturk$manip, na.rm = TRUE)
+mturk$cand.vote[is.na(mturk$cand.vote)] <- median(mturk$cand.vote, na.rm = TRUE)
+
+
+
+x <- mturk[is.na(mturk),]
 
 # Imputed evang. belief score
 mturk$evang.belief.imp <- mturk$bible + mturk$evangelize + mturk$heaven + mturk$jesus.sin + 
