@@ -596,22 +596,17 @@ ggsave('candidate ideology subgroup.png')
 
 ### OLS regression
 # IV's
-variables <- c('moral', 'rights', 'attack', 'female', 'gay', 'educ', 'age', 'income', 'hisp', 'black', 
-               'gay.know', 'PID', 'ideo', 
-               'midwest', 'south', 'northeast', 'cath', 'prot', 'jew', 'none', 'evang.self.ident', 
+variables <- c('moral', 'rights', 'attack', 'female', 'gay', 'educ', 'age', 'income', 'hisp', 'black', 'other.race',
+               'asian', 'gay.know', 'PID', 'ideo', 'midwest', 'south', 'northeast', 'cath', 'prot', 'jew', 'none', 
+               'evang.self.ident', 
                'rel.attend', 'pol.know', 'support.gays', 'pol.int', 'manip')
 f <- paste(variables, collapse = " + ")
 
 evang.belief.vars <- c('moral', 'rights', 'attack', 'female', 'gay', 'educ', 'age', 'income', 'hisp', 'black', 
-                       'gay.know', 'PID', 'ideo', 
+                       'gay.know', 'PID', 'ideo', 'other.race', 'asian',
                        'midwest', 'south', 'northeast', 'cath', 'prot', 'jew', 'none', 'evang.belief.imp', 
                        'rel.attend', 'pol.know', 'support.gays', 'pol.int', 'manip')
 f.evan <- paste(evang.belief.vars, collapse = " + ")
-
-
-### Candidate support
-#cand.support <- lm(cand.ft~moral+rights+attack, data = mturk)
-#summary(cand.support)
 
 cand.support.full <- lm(as.formula(paste('cand.ft', f, sep = '~')), data = mturk)
 summary(cand.support.full)
@@ -622,7 +617,7 @@ summary(cand.support.belief)
 
 # Self-ident w/ interactions w/ treatment
 cand.ident.int <- lm(cand.ft ~ moral + rights + attack + female + gay + educ + age + 
-                       income + hisp + black + gay.know + PID + ideo + midwest + 
+                       income + hisp + black + asian + other.race + gay.know + PID + ideo + midwest + 
                        south + northeast + cath + prot + jew + none + evang.self.ident + 
                        rel.attend + pol.know + support.gays + pol.int + manip +
                        moral:evang.self.ident + rights:evang.self.ident +
@@ -631,11 +626,11 @@ summary(cand.ident.int)
 
 # Belief scale w/ interactions w/ treatment
 cand.bel.int <- lm(cand.ft ~ moral + rights + attack + female + gay + educ + age + 
-                       income + hisp + black + gay.know + PID + ideo + midwest + 
-                       south + northeast + cath + prot + jew + none + evang.belief.imp + 
-                       rel.attend + pol.know + support.gays + pol.int + manip +
-                       moral:evang.belief.imp + rights:evang.belief.imp +
-                       attack:evang.belief.imp, data = mturk)
+                     income + hisp + black + asian + other.race + gay.know + PID + ideo + midwest + 
+                     south + northeast + cath + prot + jew + none + evang.belief.imp + 
+                     rel.attend + pol.know + support.gays + pol.int + manip +
+                     moral:evang.belief.imp + rights:evang.belief.imp +
+                     attack:evang.belief.imp, data = mturk)
 summary(cand.bel.int)
 
 library(stargazer)
