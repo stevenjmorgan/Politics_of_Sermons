@@ -28,6 +28,7 @@ impmethod<-c("polr", "polr", "polr", "polr", "polr", "polr", "polr", "polr", "po
              , "polr", "polr", "polr", "polr", "polr", 'logreg','logreg')
 tempData <- mice(mturk,m=5,maxit=100,seed=24519)
 summary(tempData)
+save(tempData, file ='mice_imp.RData')
 
 
 # Imputed evang. belief score
@@ -36,7 +37,7 @@ summary(tempData)
 #summary(mturk$evang.belief.imp)
 #cor(mturk$evang.belief.imp, mturk$evang.belief.score) #0.97
 
-mturk <- tempData
+mturk <- tempData$data
 mturk$evang.belief.imp <- mturk$evang.belief.score
 
 ### OLS: Candidate Evaluation

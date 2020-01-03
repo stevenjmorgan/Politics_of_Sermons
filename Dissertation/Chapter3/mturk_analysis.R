@@ -343,6 +343,12 @@ mturk$evang.belief.imp <- mturk$bible + mturk$evangelize + mturk$heaven + mturk$
 summary(mturk$evang.belief.imp)
 cor(mturk$evang.belief.imp, mturk$evang.belief.score) #0.97
 
+x <- mturk %>% group_by(evang.belief.imp) %>% summarise(n = sum(n))
+x <- mturk %>% count(evang.belief.imp)
+
+ggplot(x, aes(x=evang.belief.imp, y = n)) + 
+  geom_bar(stat = "identity") + theme_bw() + xlab('Evangelical Belief Index') + ylab('# Subjects')
+ggsave('evang_belief_plot.png')
 
 # # Amelia-based multiple imputation
 # library(Amelia)
