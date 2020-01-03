@@ -384,6 +384,11 @@ cor(mturk$evang.belief.imp, mturk$evang.belief.score) #0.97
 ### Analysis
 ######################################################################################################
 
+KendallTauA()
+cor(mturk$evang.belief.imp, mturk$evang.self.ident)
+cor(mturk$evang.belief.imp, mturk$evang.self.ident, method = 'pearson')
+
+
 ### T tests
 # Candidate support
 t.test(mturk$cand.ft[which(mturk$group == 'Rights')], mturk$cand.ft[which(mturk$group == 'Control')])
@@ -637,7 +642,7 @@ library(stargazer)
 stargazer(cand.support.full, cand.ident.int, cand.support.belief, cand.bel.int,
           no.space=TRUE, dep.var.labels.include = F, 
           covariate.labels=c('Moral', 'Rights', 'Attack', 'Female', 'LGBTQ-Identifying', 'Education',
-                             'Age', 'Income', 'Hispanic', 'Black', 'Know LGBTQ', 'PID', 'Ideology',
+                             'Age', 'Income', 'Hispanic', 'Black', 'Other Race', 'Asian', 'Know LGBTQ', 'PID', 'Ideology',
                              'Midwest', 'South', 'Northeast', 'Catholic', 'Protestant', 'Jewish',
                              'No Religion', 'Evang. Ident', 'Evang. Belief', 'Rel. Attend.','Pol. Knowledge', 'Support LGBTQ',
                              'Pol. Interest', 'Manipulation', 'Moral*Evang. Ident.', 'Rights*Evang. Ident.',
@@ -658,7 +663,7 @@ summary(cand.vote.belief)
 
 # Self-ident w/ interactions w/ treatment
 cand.vote.int <- lm(cand.vote ~ moral + rights + attack + female + gay + educ + age + 
-                       income + hisp + black + gay.know + PID + ideo + midwest + 
+                       income + hisp + black + other.race + asian + gay.know + PID + ideo + midwest + 
                        south + northeast + cath + prot + jew + none + evang.self.ident + 
                        rel.attend + pol.know + support.gays + pol.int + manip +
                        moral:evang.self.ident + rights:evang.self.ident +
@@ -667,7 +672,7 @@ summary(cand.vote.int)
 
 # Belief scale w/ interactions w/ treatment
 cand.bel.int.vote <- lm(cand.vote ~ moral + rights + attack + female + gay + educ + age + 
-                     income + hisp + black + gay.know + PID + ideo + midwest + 
+                     income + hisp + black + other.race + asian + gay.know + PID + ideo + midwest + 
                      south + northeast + cath + prot + jew + none + evang.belief.imp + 
                      rel.attend + pol.know + support.gays + pol.int + manip +
                      moral:evang.belief.imp + rights:evang.belief.imp +
@@ -699,7 +704,7 @@ summary(cand.vote.belief.ord)
 
 # Self-ident w/ interactions w/ treatment
 cand.vote.int.ord <- polr(cand.vote.ord ~ moral + rights + attack + female + gay + educ + age + 
-                      income + hisp + black + gay.know + PID + ideo + midwest + 
+                      income + hisp + black + other.race + asian + gay.know + PID + ideo + midwest + 
                       south + northeast + cath + prot + jew + none + evang.self.ident + 
                       rel.attend + pol.know + support.gays + pol.int + manip +
                       moral:evang.self.ident + rights:evang.self.ident +
@@ -708,7 +713,7 @@ summary(cand.vote.int.ord)
 
 # Belief scale w/ interactions w/ treatment
 cand.bel.int.vote.ord <- polr(cand.vote.ord ~ moral + rights + attack + female + gay + educ + age + 
-                          income + hisp + black + gay.know + PID + ideo + midwest + 
+                          income + hisp + black + other.race + asian + gay.know + PID + ideo + midwest + 
                           south + northeast + cath + prot + jew + none + evang.belief.imp + 
                           rel.attend + pol.know + support.gays + pol.int + manip +
                           moral:evang.belief.imp + rights:evang.belief.imp +
@@ -719,7 +724,7 @@ summary(cand.bel.int.vote.ord)
 stargazer(cand.vote.full.ord, cand.vote.int.ord, cand.vote.belief.ord, cand.bel.int.vote.ord,
           no.space=TRUE, dep.var.labels.include = F, 
           covariate.labels=c('Moral', 'Rights', 'Attack', 'Female', 'LGBTQ-Identifying', 'Education',
-                             'Age', 'Income', 'Hispanic', 'Black', 'Know LGBTQ', 'PID', 'Ideology',
+                             'Age', 'Income', 'Hispanic', 'Black', 'Other Race', 'Asian', 'Know LGBTQ', 'PID', 'Ideology',
                              'Midwest', 'South', 'Northeast', 'Catholic', 'Protestant', 'Jewish',
                              'No Religion', 'Evang. Ident', 'Evang. Belief', 'Rel. Attend.','Pol. Knowledge', 'Support LGBTQ',
                              'Pol. Interest', 'Manipulation', 'Moral*Evang. Ident.', 'Rights*Evang. Ident.',
