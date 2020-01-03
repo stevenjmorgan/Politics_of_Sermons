@@ -5,7 +5,30 @@ load('final_cleaned_mturk.RData')
 mturk <- mturk.sub
 rm(mturk.sub)
 
+library(mice)
+
 ### MICE
+colnames(mturk)
+variables <- c('moral', 'rights', 'attack', 'female', 'gay', 'educ', 'income', 'hisp', 'black', 'other.race',
+               'asian', 'gay.know', 'PID', 'ideo', 'midwest', 'south', 'northeast', 'cath', 'prot', 'jew', 'none', 
+               'evang.self.ident','evang.belief.score',
+               'rel.attend', 'pol.know', 'support.gays', 'pol.int', 'manip', 'cand.vote', 'age', 'cand.ft')
+mturk <- subset(mturk, select = variables)
+colnames(mturk)
+
+#transfer type of binary & categorical data into factor (from numeric)
+for(i in c(1:29)){
+  mturk[,i]<-as.factor(mturk[,i])
+}
+str(mturk)
+
+#imputation method for each variable
+impmethod<-c("polr", "polr", "polr", "polr", "polr", "polr", "polr", "polr", "polr", "polr", "polr", "polr", 
+             "polr", "polr", "polr", "polr", "polr", "polr", "polr", "polr", "polr", "polr", "polr", "polr"
+             , "polr", "polr", "polr", "polr", "polr", 'logreg','logreg')
+tempData <- mice(mturk,m=5,maxit=100,seed=24519)
+summary(tempData)
+
 
 
 

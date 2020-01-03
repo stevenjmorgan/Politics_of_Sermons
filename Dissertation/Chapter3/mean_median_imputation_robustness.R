@@ -53,15 +53,14 @@ mturk$manip[is.na(mturk$manip)] <- median(mturk$manip, na.rm = TRUE)
 mturk$cand.vote[is.na(mturk$cand.vote)] <- median(mturk$cand.vote, na.rm = TRUE)
 
 
-
-x <- mturk[is.na(mturk),]
+#x <- subset(mturk, select = -c(text))
+#x <- mturk[!complete.cases(x),]
 
 # Imputed evang. belief score
 mturk$evang.belief.imp <- mturk$bible + mturk$evangelize + mturk$heaven + mturk$jesus.sin + 
   mturk$faith.import + mturk$devil + mturk$belief.god
 summary(mturk$evang.belief.imp)
-cor(mturk$evang.belief.imp, mturk$evang.belief.score) #0.97
-
+cor(mturk$evang.belief.imp, mturk$evang.belief.score, use = 'complete.obs') #1
 
 
 ### OLS: Candidate Evaluation
@@ -155,3 +154,4 @@ stargazer(cand.vote.full.ord, cand.vote.int.ord, cand.vote.belief.ord, cand.bel.
                              'Pol. Interest', 'Manipulation', 'Moral*Evang. Ident.', 'Rights*Evang. Ident.',
                              'Attack*Evang. Ident.', 'Moral*Evang. Belief', 'Rights*Evang. Belief',
                              'Attack*Evang. Belief'))
+
