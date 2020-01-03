@@ -60,11 +60,16 @@ storage <- searchK(out$documents, out$vocab, K = seq(2,75,1),
                    data = meta)
 
 save(storage, file = 'many_models_2_75.RData')
+
+load('many_models_2_75.RData')
 #plot(storage$results$semcoh, storage$results$exclus)
 
-ggplot(storage$results[which(storage$results$K > 2 & storage$results$K < 51),], aes(x=semcoh, y=exclus)) + 
-  geom_text(aes(label=K)) + #+ geom_point() + 
-  labs(x="Semantic Coherence", y="Exclusivity") + theme_bw()
+storage$results$col <- ifelse(storage$results$K == 7, 'red', 'black')
+
+ggplot(storage$results[which(storage$results$K >= 2 & storage$results$K < 51),], aes(x=semcoh, y=exclus)) + 
+  geom_text(aes(label=K, color=(storage$results$col[which(storage$results$K >= 2 & storage$results$K < 51)]))) +
+  labs(x="Semantic Coherence", y="Exclusivity") + theme_bw() +
+  scale_color_manual(values = c("black", "red")) + theme(legend.position="none")
 ggsave('sem_excl_tradeoff_mturk_3-50.pdf')
 
 
