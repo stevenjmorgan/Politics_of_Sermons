@@ -159,7 +159,14 @@ y.sort_values(by='coefficient')
 y
 
 
+### Recall that a linear SVM creates a hyperplane that uses support vectors to 
+### maximise the distance between the two classes. The weights obtained from 
+### svm.coef_ represent the vector coordinates which are orthogonal to the 
+### hyperplane and their direction indicates the predicted class. The absolute 
+### size of the coefficients in relation to each other can then be used to 
+### determine feature importance for the data separation task.
 
+### This works!!!
 coef = np.ravel(model.coef_[0]) #.to_dense
 top_positive_coefficients = np.argsort(coef)[-20:]
 top_negative_coefficients = np.argsort(coef)[:20]
@@ -179,12 +186,7 @@ plt.tick_params(axis='x', labelsize=18)
 plt.savefig('top_pol_words_rd1.png')
 
 
-### Recall that a linear SVM creates a hyperplane that uses support vectors to 
-### maximise the distance between the two classes. The weights obtained from 
-### svm.coef_ represent the vector coordinates which are orthogonal to the 
-### hyperplane and their direction indicates the predicted class. The absolute 
-### size of the coefficients in relation to each other can then be used to 
-### determine feature importance for the data separation task.
+
 print(clf.coef_)
 print(type(clf.coef_[0]))
 
