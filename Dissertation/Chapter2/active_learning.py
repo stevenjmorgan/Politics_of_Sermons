@@ -16,6 +16,7 @@ from sklearn import model_selection, preprocessing, linear_model, naive_bayes, m
 from sklearn import decomposition, ensemble
 from sklearn.model_selection import KFold, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import SGDClassifier
 
 def remove_punct(text):
     text  = "".join([char for char in text if char not in string.punctuation])
@@ -87,9 +88,9 @@ df['cleaned'] = df['cleaned'].str.replace(',', '')
 df['cleaned'][0]
 
 # Vectorize, train-test split
-vectorizer = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3)
-vectorizer.fit(df['cleaned'])
-print(vectorizer.vocabulary_)
+##vectorizer = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3)
+##vectorizer.fit(df['cleaned'])
+##print(vectorizer.vocabulary_)
 train_x, valid_x, train_y, valid_y = model_selection.train_test_split(df['cleaned'], df['ground_truth_rights'], test_size=0.3, random_state=24519)
 
 # label encode the target variable 
@@ -99,18 +100,18 @@ train_x, valid_x, train_y, valid_y = model_selection.train_test_split(df['cleane
 
 # Transform tf-idf
 #vectorizer.fit(df['cleaned'])
-print(vectorizer.get_feature_names()[0:10])
-print(vectorizer.vocabulary_) #6740
+##print(vectorizer.get_feature_names()[0:10])
+##print(vectorizer.vocabulary_) #6740
 
 ### Try with count vectorizer
 vectorizer = CountVectorizer(max_features=10000, max_df = 0.8, min_df = 3)
-vectorizer.fit_transform(df['cleaned'])
+vectorizer.fit_transform(df['cleaned']) # 500x6740 sparse matrix
 
-#xtrain_tfidf =  vectorizer.transform(train_x)
-#xvalid_tfidf =  vectorizer.transform(valid_x)
+xtrain_tfidf =  vectorizer.transform(train_x)
+xvalid_tfidf =  vectorizer.transform(valid_x)
 
-xtrain_tfidf =  vectorizer.fit_transform(train_x)
-xvalid_tfidf =  vectorizer.fit_transform(valid_x)
+#xtrain_tfidf =  vectorizer.fit_transform(train_x)
+#xvalid_tfidf =  vectorizer.fit_transform(valid_x)
 
 xtrain_tfidf.shape
 xvalid_tfidf.shape
@@ -119,6 +120,7 @@ xvalid_tfidf.shape
 ### Models
 # SVM - Linear
 clf = svm.SVC(kernel='linear', probability = True)
+#clf=SGDClassifier(loss='log', penalty='l1', alpha=0.001)
 #linear_svm_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
 #print(linear_svm_results)
 
@@ -136,6 +138,47 @@ print(metrics.f1_score(predictions, valid_y))
 print(predictions[0:10]) # all zero's
 
 
+
+######
+model = svm.SVC(kernel='linear', probability = True)
+
+vectorizer = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3)
+vectorizer.fit(df['cleaned'])
+xtrain_tfidf = vectorizer.fit_transform(train_x)
+xtrain_tfidf = xtrain_tfidf.toarray()
+
+a=model.fit(xtrain_tfidf, train_y)
+model.score(xtrain_tfidf, train_y)
+
+feature_names = vectorizer.get_feature_names() 
+coefs_with_fns = sorted(zip(model.coef_[0], feature_names)) 
+
+y=pd.DataFrame(coefs_with_fns)
+y.columns='coefficient','word'
+y.sort_values(by='coefficient')
+y
+
+
+
+coef = np.ravel(model.coef_[0]) #.to_dense
+top_positive_coefficients = np.argsort(coef)[-20:]
+top_negative_coefficients = np.argsort(coef)[:20]
+top_coefficients = np.hstack([top_negative_coefficients, top_positive_coefficients])
+
+import matplotlib.pyplot as plt
+top_features=20
+xyz = vectorizer.get_feature_names()
+plt.figure(figsize=([15, 12]))
+#plt.figure()
+colors = ['red' if c < 0 else 'blue' for c in coef[top_coefficients]]
+plt.bar(np.arange(2 * top_features), coef[top_coefficients], color=colors)
+feature_names = np.array(xyz)
+plt.xticks(np.arange(1, 1 + 2 * top_features), feature_names[top_coefficients], rotation=60, ha='right')
+plt.tick_params(axis='x', labelsize=18)
+#plt.show()
+plt.savefig('top_pol_words_rd1.png')
+
+
 ### Recall that a linear SVM creates a hyperplane that uses support vectors to 
 ### maximise the distance between the two classes. The weights obtained from 
 ### svm.coef_ represent the vector coordinates which are orthogonal to the 
@@ -143,8 +186,23 @@ print(predictions[0:10]) # all zero's
 ### size of the coefficients in relation to each other can then be used to 
 ### determine feature importance for the data separation task.
 print(clf.coef_)
+print(type(clf.coef_[0]))
+
+x = pd.DataFrame(clf.coef_.todense().tolist())
+
+x = pd.DataFrame(clf.coef_[0].todense())
+x
 
 #clf.score(x,y)
+
+### FL code
+coef_ = np.array([None], ndmin=2)
+
+mif_indices = sorted(enumerate(clf.coef_[0]), key=lambda x: x[1], 
+                             reverse=True)
+mif_indices = [x[0] for x in mif_indices]
+
+
 
 
 ### Try with count vectorizer
