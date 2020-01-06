@@ -473,7 +473,7 @@ fourth_rd_al = third_rd_al.append(tocode2)
 print(fourth_rd_al.shape) # 1100 x 4
 
 # Train SVM again
-fourth_rd_al['ground_truth_pol'].value_counts() # 522 instances of political speech (out of 800)
+fourth_rd_al['ground_truth_pol'].value_counts() # 604 instances of political speech (out of 800)
 
 train_x2, valid_x2, train_y2, valid_y2 = model_selection.train_test_split(fourth_rd_al['cleaned'], fourth_rd_al['ground_truth_pol'], test_size=0.3, random_state=24519)
 
