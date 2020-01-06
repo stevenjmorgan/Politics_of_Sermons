@@ -183,7 +183,7 @@ feature_names = np.array(xyz)
 plt.xticks(np.arange(1, 1 + 2 * top_features), feature_names[top_coefficients], rotation=60, ha='right')
 plt.tick_params(axis='x', labelsize=18)
 #plt.show()
-plt.savefig('top_pol_words_rd1.png')
+plt.savefig('top_rights_words_rd1.png')
 
 # Evaluate model
 xvalid_tfidf = vectorizer.transform(valid_x)
