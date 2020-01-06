@@ -104,48 +104,49 @@ train_x, valid_x, train_y, valid_y = model_selection.train_test_split(df['cleane
 ##print(vectorizer.vocabulary_) #6740
 
 ### Try with count vectorizer
-vectorizer = CountVectorizer(max_features=10000, max_df = 0.8, min_df = 3)
-vectorizer.fit_transform(df['cleaned']) # 500x6740 sparse matrix
+#vectorizer = CountVectorizer(max_features=10000, max_df = 0.8, min_df = 3)
+#vectorizer.fit_transform(df['cleaned']) # 500x6740 sparse matrix
+#
+#xtrain_tfidf =  vectorizer.transform(train_x)
+#xvalid_tfidf =  vectorizer.transform(valid_x)
+#
+##xtrain_tfidf =  vectorizer.fit_transform(train_x)
+##xvalid_tfidf =  vectorizer.fit_transform(valid_x)
+#
+#xtrain_tfidf.shape
+#xvalid_tfidf.shape
+#
+#
+#### Models
+## SVM - Linear
+#clf = svm.SVC(kernel='linear', probability = True)
+##clf=SGDClassifier(loss='log', penalty='l1', alpha=0.001)
+##linear_svm_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
+##print(linear_svm_results)
+#
+## Extract coefficients
+#clf.fit(xtrain_tfidf, train_y) # Class weight, coef0, degree?
+#    
+## predict the labels on validation dataset
+#predictions = clf.predict(xvalid_tfidf)
+#
+#print(metrics.accuracy_score(predictions, valid_y))
+#print(metrics.recall_score(predictions, valid_y))
+#print(metrics.precision_score(predictions, valid_y))
+#print(metrics.f1_score(predictions, valid_y))
+#
+#print(predictions[0:10]) # all zero's
 
-xtrain_tfidf =  vectorizer.transform(train_x)
-xvalid_tfidf =  vectorizer.transform(valid_x)
-
-#xtrain_tfidf =  vectorizer.fit_transform(train_x)
-#xvalid_tfidf =  vectorizer.fit_transform(valid_x)
-
-xtrain_tfidf.shape
-xvalid_tfidf.shape
 
 
-### Models
-# SVM - Linear
-clf = svm.SVC(kernel='linear', probability = True)
-#clf=SGDClassifier(loss='log', penalty='l1', alpha=0.001)
-#linear_svm_results = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf)
-#print(linear_svm_results)
-
-# Extract coefficients
-clf.fit(xtrain_tfidf, train_y) # Class weight, coef0, degree?
-    
-# predict the labels on validation dataset
-predictions = clf.predict(xvalid_tfidf)
-
-print(metrics.accuracy_score(predictions, valid_y))
-print(metrics.recall_score(predictions, valid_y))
-print(metrics.precision_score(predictions, valid_y))
-print(metrics.f1_score(predictions, valid_y))
-
-print(predictions[0:10]) # all zero's
-
-
-
-######
-model = svm.SVC(kernel='linear', probability = True)
-
-vectorizer = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3)
+###### Implement SVM - linear
+vectorizer = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3, ngram_range=(1, 2))
 vectorizer.fit(df['cleaned'])
 xtrain_tfidf = vectorizer.fit_transform(train_x)
 xtrain_tfidf = xtrain_tfidf.toarray()
+
+model = svm.SVC(kernel='linear', probability = True)
+
 
 a=model.fit(xtrain_tfidf, train_y)
 model.score(xtrain_tfidf, train_y)
@@ -157,7 +158,6 @@ y=pd.DataFrame(coefs_with_fns)
 y.columns='coefficient','word'
 y.sort_values(by='coefficient')
 y
-
 
 ### Recall that a linear SVM creates a hyperplane that uses support vectors to 
 ### maximise the distance between the two classes. The weights obtained from 
@@ -185,52 +185,48 @@ plt.tick_params(axis='x', labelsize=18)
 #plt.show()
 plt.savefig('top_pol_words_rd1.png')
 
+# Evaluate model
+xvalid_tfidf = vectorizer.transform(valid_x)
+xvalid_tfidf = xvalid_tfidf.toarray()
+
+print(xtrain_tfidf.shape)
+print(xvalid_tfidf.shape)
+
+model = svm.SVC(kernel='linear', probability = True)
+model.fit(xtrain_tfidf, train_y) # Class weight, coef0, degree?
+
+# predict the labels on validation dataset
+predictions = model.predict(xvalid_tfidf)
+
+print(metrics.accuracy_score(predictions, valid_y))
+print(metrics.recall_score(predictions, valid_y))
+print(metrics.precision_score(predictions, valid_y))
+print(metrics.f1_score(predictions, valid_y))
 
 
-print(clf.coef_)
-print(type(clf.coef_[0]))
+#print(clf.coef_)
+#print(type(clf.coef_[0]))
+#
+#x = pd.DataFrame(clf.coef_.todense().tolist())
+#
+#x = pd.DataFrame(clf.coef_[0].todense())
+#x
+#
+##clf.score(x,y)
+#
+#### FL code
+#coef_ = np.array([None], ndmin=2)
+#mif_indices = sorted(enumerate(clf.coef_[0]), key=lambda x: x[1], 
+#                             reverse=True)
+#mif_indices = [x[0] for x in mif_indices]
+#
+#### Try with count vectorizer
+#feature_names = vectorizer.get_feature_names() 
+#coefs_with_fns = sorted(zip(clf.coef_[0], feature_names)) 
+#df=pd.DataFrame(coefs_with_fns)
+#df.columns='coefficient','word'
+#df.sort_values(by='coefficient')
 
-x = pd.DataFrame(clf.coef_.todense().tolist())
-
-x = pd.DataFrame(clf.coef_[0].todense())
-x
-
-#clf.score(x,y)
-
-### FL code
-coef_ = np.array([None], ndmin=2)
-
-mif_indices = sorted(enumerate(clf.coef_[0]), key=lambda x: x[1], 
-                             reverse=True)
-mif_indices = [x[0] for x in mif_indices]
-
-
-
-
-### Try with count vectorizer
-feature_names = vectorizer.get_feature_names() 
-coefs_with_fns = sorted(zip(clf.coef_[0], feature_names)) 
-df=pd.DataFrame(coefs_with_fns)
-df.columns='coefficient','word'
-df.sort_values(by='coefficient')
-
-
-
-
-
-coef = np.ravel(clf.coef_)
-top_positive_coefficients = np.argsort(coef)[-20:]
-top_negative_coefficients = np.argsort(coef)[:20]
-top_coefficients = np.hstack([top_negative_coefficients, top_positive_coefficients])
-
-top_features=20
-top_features = vectorizer.get_feature_names()
-plt.figure(figsize=(15, 5))
-colors = ['red' if c < 0 else 'blue' for c in coef[top_coefficients]]
-plt.bar(np.arange(2 * top_features), coef[top_coefficients], color=colors)
-feature_names = np.array(feature_names)
-plt.xticks(np.arange(1, 1 + 2 * top_features), feature_names[top_coefficients], rotation=60, ha='right')
-plt.show()
 
 # SVM - RBF
 clf = svm.SVC(kernel='rbf')
