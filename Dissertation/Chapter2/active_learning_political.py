@@ -50,7 +50,7 @@ full.shape
 
 
 # Read in hand labels
-df = pd.read_csv('hand_code_sample_10-15_coded_no_text.csv', index_col = False)
+df = pd.read_csv('hand_code_political.csv', index_col = False)
 text = pd.read_csv('text.csv', index_col = False)
 
 df['text'] = text['clean']
