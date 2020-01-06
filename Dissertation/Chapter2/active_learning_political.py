@@ -111,7 +111,7 @@ political_dict = ['republican', 'democrat', 'congress', 'senate', 'gop', 'dem',
                  'transgend', 'unborn', 'abort', 'kamala', 'vote', 'ballot', 
                  'voter','abort', 'prolif', 'environ','ideolog', 
                  'kavanaugh','unconstitut', 'ideologu', 'proabort','antiabort',
-                 'legislatur', 'homosexual', 'president', 'abortion', 'court']
+                 'legislatur', 'homosexual', 'president', 'abortion']
 
 df['is_political'] = df.apply(search_func, axis=1)
 df['is_political'].value_counts() # 256 instances of political speech
@@ -127,6 +127,7 @@ train_x, valid_x, train_y, valid_y = model_selection.train_test_split(df['cleane
 ###### Implement SVM - linear
 vectorizer = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3, ngram_range=(1, 2))
 vectorizer.fit(df['cleaned'])
+#vectorizer.fit(full['cleaned'])
 xtrain_tfidf = vectorizer.fit_transform(train_x)
 xtrain_tfidf = xtrain_tfidf.toarray()
 
