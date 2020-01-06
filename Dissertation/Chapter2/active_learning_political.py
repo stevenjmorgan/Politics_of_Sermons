@@ -48,7 +48,15 @@ def search_func(row):
         return 1
     else:
         return 0
+    
+def pol_count(row):
+    matches = [test_value in political_dict 
+               for test_value in row["cleaned"].split(' ')]
 
+    if sum(matches) > 2:
+        return 1
+    else:
+        return 0
 
 os.chdir('C:/Users/SF515-51T/Desktop/Dissertation')
 
@@ -332,6 +340,7 @@ full['prediction0_round1'] = probs[:,0]
 full['prediction1_round1'] = probs[:,1]
 print(full['prediction0_round1'].describe())
 print(full['prediction1_round1'].describe())
+full.to_csv('sermon_round2.csv')
 
 # Extract 150 doc's closest to 50% pred prob
 uncertain_pol = full['prediction0_round1'] > 0.5
@@ -339,15 +348,190 @@ uncertain_nonpol = full['prediction0_round1'] <= 0.5
 over = full[uncertain_pol]
 under = full[uncertain_nonpol]
  
-un = under.sort_values('prediction0_round1',ascending=False).head(150)
-over = over.sort_values('prediction0_round1',ascending=True).head(150)
+un = under.sort_values('prediction0_round1',ascending=False).head(75)
+over = over.sort_values('prediction0_round1',ascending=True).head(75)
 
-tocode = un.append(over)
-print(tocode.shape)
+tocode2 = un.append(over)
+print(tocode2.shape)
 del(un,over,uncertain_pol,uncertain_nonpol)
 
 # Dictionary-based labeling
-tocode = tocode.reset_index(drop=True)
-tocode['cleaned'] = tocode['clean']
-tocode['ground_truth_pol'] = tocode.apply(search_func, axis=1)
-print(tocode['ground_truth_pol'].describe())
+tocode2 = tocode2.reset_index(drop=True)
+tocode2['cleaned'] = tocode2['clean']
+tocode2['ground_truth_pol'] = tocode2.apply(search_func, axis=1)
+#tocode2['ground_truth_pol'] = tocode2.apply(pol_count, axis=1)
+print(tocode2['ground_truth_pol'].describe())
+
+
+###############################################################################
+### Third Round
+###############################################################################
+#df = df[['ground_truth_rights','ground_truth_attack', 'ground_truth_pol', 'cleaned']]
+tocode2 = tocode2[['ground_truth_pol', 'cleaned']]
+third_rd_al = second_rd_al.append(tocode2)
+print(third_rd_al.shape) # 950 x 4
+
+# Train SVM again
+third_rd_al['ground_truth_pol'].value_counts() # 522 instances of political speech (out of 800)
+
+train_x2, valid_x2, train_y2, valid_y2 = model_selection.train_test_split(third_rd_al['cleaned'], third_rd_al['ground_truth_pol'], test_size=0.3, random_state=24519)
+
+###### Implement SVM - linear
+new_vect = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3, ngram_range=(1, 2))
+new_vect.fit(third_rd_al['cleaned'])
+#vectorizer.fit(full['cleaned'])
+xtrain_tfidf2 = new_vect.fit_transform(train_x2)
+xtrain_tfidf2 = xtrain_tfidf2.toarray()
+
+xvalid_tfidf2 = new_vect.transform(valid_x2)
+xvalid_tfidf2 = xvalid_tfidf2.toarray()
+
+print(xtrain_tfidf2.shape)
+print(xvalid_tfidf2.shape)
+
+model2 = svm.SVC(kernel='linear', probability = True)
+model2.fit(xtrain_tfidf2, train_y2) # Class weight, coef0, degree?
+
+# predict the labels on validation dataset
+predictions2 = model2.predict(xvalid_tfidf2)
+
+print(metrics.accuracy_score(predictions2, valid_y2))
+print(metrics.recall_score(predictions2, valid_y2))
+print(metrics.precision_score(predictions2, valid_y2))
+print(metrics.f1_score(predictions2, valid_y2))
+
+# Run on full sample
+vectorizer1 = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3, ngram_range=(1, 2))
+smp_trans = vectorizer1.fit_transform(third_rd_al['cleaned'])
+smp_trans = smp_trans.toarray()
+smp_dv = third_rd_al['ground_truth_pol']
+print(smp_trans.shape)
+print(smp_dv.shape)
+
+clf = svm.SVC(kernel='linear', probability = True)
+clf.fit(smp_trans, smp_dv)
+
+# Plot top coefficients - second round
+feature_names = vectorizer1.get_feature_names() 
+coefs_with_fns = sorted(zip(clf.coef_[0], feature_names)) 
+coef = np.ravel(clf.coef_[0]) #.to_dense
+top_positive_coefficients = np.argsort(coef)[-20:]
+top_negative_coefficients = np.argsort(coef)[:20]
+top_coefficients = np.hstack([top_negative_coefficients, top_positive_coefficients])
+
+top_features=20
+xyz = vectorizer1.get_feature_names()
+plt.figure(figsize=([15, 12]))
+#plt.figure()
+colors = ['red' if c < 0 else 'blue' for c in coef[top_coefficients]]
+plt.bar(np.arange(2 * top_features), coef[top_coefficients], color=colors)
+feature_names = np.array(xyz)
+plt.xticks(np.arange(1, 1 + 2 * top_features), feature_names[top_coefficients], rotation=60, ha='right')
+plt.tick_params(axis='x', labelsize=18)
+#plt.show()
+plt.savefig('top_political_words_rd3_final.png')
+
+# Run on full dataset
+# Vectorize full dataset
+#full_vect = vectorizer.fit_transform(full['clean'])
+#print(full_vect.shape)
+#full_vect1 = full_vect.toarray()
+print(full_vect1.shape)
+probs = clf.predict_proba(full_vect1)
+
+# Append to full dataset
+full['prediction0_round2'] = probs[:,0]
+full['prediction1_round2'] = probs[:,1]
+print(full['prediction0_round2'].describe())
+print(full['prediction1_round2'].describe())
+#full.to_csv('sermon_round2.csv')
+
+# Extract 150 doc's closest to 50% pred prob
+uncertain_pol = full['prediction0_round2'] > 0.5
+uncertain_nonpol = full['prediction0_round2'] <= 0.5
+over = full[uncertain_pol]
+under = full[uncertain_nonpol]
+ 
+un = under.sort_values('prediction0_round2',ascending=False).head(75)
+over = over.sort_values('prediction0_round2',ascending=True).head(75)
+
+tocode3 = un.append(over)
+print(tocode3.shape)
+del(un,over,uncertain_pol,uncertain_nonpol)
+
+# Dictionary-based labeling
+tocode3 = tocode3.reset_index(drop=True)
+tocode3['cleaned'] = tocode3['clean']
+tocode3['ground_truth_pol'] = tocode3.apply(search_func, axis=1)
+#tocode2['ground_truth_pol'] = tocode2.apply(pol_count, axis=1)
+print(tocode3['ground_truth_pol'].describe())
+
+
+### Train classifier last time
+tocode3 = tocode3[['ground_truth_pol', 'cleaned']]
+fourth_rd_al = third_rd_al.append(tocode2)
+print(fourth_rd_al.shape) # 1100 x 4
+
+# Train SVM again
+fourth_rd_al['ground_truth_pol'].value_counts() # 522 instances of political speech (out of 800)
+
+train_x2, valid_x2, train_y2, valid_y2 = model_selection.train_test_split(fourth_rd_al['cleaned'], fourth_rd_al['ground_truth_pol'], test_size=0.3, random_state=24519)
+
+###### Implement SVM - linear
+new_vect = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3, ngram_range=(1, 2))
+new_vect.fit(fourth_rd_al['cleaned'])
+#vectorizer.fit(full['cleaned'])
+xtrain_tfidf2 = new_vect.fit_transform(train_x2)
+xtrain_tfidf2 = xtrain_tfidf2.toarray()
+
+xvalid_tfidf2 = new_vect.transform(valid_x2)
+xvalid_tfidf2 = xvalid_tfidf2.toarray()
+
+print(xtrain_tfidf2.shape)
+print(xvalid_tfidf2.shape)
+
+model2 = svm.SVC(kernel='linear', probability = True)
+model2.fit(xtrain_tfidf2, train_y2) # Class weight, coef0, degree?
+
+# predict the labels on validation dataset
+predictions2 = model2.predict(xvalid_tfidf2)
+
+print(metrics.accuracy_score(predictions2, valid_y2))
+print(metrics.recall_score(predictions2, valid_y2))
+print(metrics.precision_score(predictions2, valid_y2))
+print(metrics.f1_score(predictions2, valid_y2))
+
+# Run on full sample
+vectorizer1 = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3, ngram_range=(1, 2))
+smp_trans = vectorizer1.fit_transform(fourth_rd_al['cleaned'])
+smp_trans = smp_trans.toarray()
+smp_dv = fourth_rd_al['ground_truth_pol']
+print(smp_trans.shape)
+print(smp_dv.shape)
+
+clf = svm.SVC(kernel='linear', probability = True)
+clf.fit(smp_trans, smp_dv)
+
+# Plot top coefficients - second round
+feature_names = vectorizer1.get_feature_names() 
+coefs_with_fns = sorted(zip(clf.coef_[0], feature_names)) 
+coef = np.ravel(clf.coef_[0]) #.to_dense
+top_positive_coefficients = np.argsort(coef)[-20:]
+top_negative_coefficients = np.argsort(coef)[:20]
+top_coefficients = np.hstack([top_negative_coefficients, top_positive_coefficients])
+
+top_features=20
+xyz = vectorizer1.get_feature_names()
+plt.figure(figsize=([15, 12]))
+#plt.figure()
+colors = ['red' if c < 0 else 'blue' for c in coef[top_coefficients]]
+plt.bar(np.arange(2 * top_features), coef[top_coefficients], color=colors)
+feature_names = np.array(xyz)
+plt.xticks(np.arange(1, 1 + 2 * top_features), feature_names[top_coefficients], rotation=60, ha='right')
+plt.tick_params(axis='x', labelsize=18)
+#plt.show()
+plt.savefig('top_political_words_rd4_final.png')
+
+
+### Run classifier on first sample again
+df
