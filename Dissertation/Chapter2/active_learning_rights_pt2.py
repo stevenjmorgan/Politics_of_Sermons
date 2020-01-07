@@ -255,7 +255,7 @@ second_rd_al = df.append(tocode)
 print(second_rd_al.shape)
 
 # Train SVM again
-second_rd_al['ground_truth_rights'].value_counts() # 440 instances of political speech (out of 800)
+second_rd_al['ground_truth_rights'].value_counts() # 113 instances of political speech (out of 800)
 
 train_x2, valid_x2, train_y2, valid_y2 = model_selection.train_test_split(second_rd_al['cleaned'], second_rd_al['ground_truth_rights'], test_size=0.3, random_state=24519)
 
@@ -512,11 +512,12 @@ top_coefficients = np.hstack([top_negative_coefficients, top_positive_coefficien
 
 top_features=20
 xyz = vectorizer1.get_feature_names()
-plt.figure(figsize=([15, 12]))
+plt.figure(figsize=([15, 13]))
 #plt.figure()
 colors = ['red' if c < 0 else 'blue' for c in coef[top_coefficients]]
 plt.bar(np.arange(2 * top_features), coef[top_coefficients], color=colors)
 feature_names = np.array(xyz)
+feature_names[6029] = 'suprem court'
 plt.xticks(np.arange(1, 1 + 2 * top_features), feature_names[top_coefficients], rotation=60, ha='right')
 plt.tick_params(axis='x', labelsize=18)
 #plt.show()
@@ -525,11 +526,12 @@ plt.savefig('top_rights_rd4_final.png')
 
 ### Top positive coefficients
 top_positive_coefficients = np.argsort(coef)[-40:]
-plt.figure(figsize=([15, 12]))
+plt.figure(figsize=([15, 13]))
 #plt.figure()
 colors = ['red' if c < 0 else 'blue' for c in coef[top_positive_coefficients]]
 plt.bar(np.arange(2 * top_features), coef[top_positive_coefficients], color=colors)
 feature_names = np.array(xyz)
+feature_names[6029] = 'suprem court'
 plt.xticks(np.arange(1, 1 + 2 * top_features), feature_names[top_positive_coefficients], rotation=60, ha='right')
 plt.tick_params(axis='x', labelsize=18)
 #plt.show()
