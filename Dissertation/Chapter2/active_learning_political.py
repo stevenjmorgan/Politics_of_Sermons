@@ -527,11 +527,66 @@ plt.figure(figsize=([15, 12]))
 colors = ['red' if c < 0 else 'blue' for c in coef[top_coefficients]]
 plt.bar(np.arange(2 * top_features), coef[top_coefficients], color=colors)
 feature_names = np.array(xyz)
+feature_names[2242] = 'homosexu'
 plt.xticks(np.arange(1, 1 + 2 * top_features), feature_names[top_coefficients], rotation=60, ha='right')
 plt.tick_params(axis='x', labelsize=18)
 #plt.show()
 plt.savefig('top_political_words_rd4_final.png')
 
 
+### Top positive coefficients
+top_positive_coefficients = np.argsort(coef)[-40:]
+plt.figure(figsize=([15, 12]))
+#plt.figure()
+colors = ['red' if c < 0 else 'blue' for c in coef[top_positive_coefficients]]
+plt.bar(np.arange(2 * top_features), coef[top_positive_coefficients], color=colors)
+feature_names = np.array(xyz)
+feature_names[2242] = 'homosexu'
+feature_names[7935] = 'democraci'
+feature_names[233] = 'court'
+plt.xticks(np.arange(1, 1 + 2 * top_features), feature_names[top_positive_coefficients], rotation=60, ha='right')
+plt.tick_params(axis='x', labelsize=18)
+#plt.show()
+plt.savefig('top_political_words_rd4_final_only_pos.png')
+
+### Run on full dataset
+print(full_vect1.shape)
+final_preds = clf.predict(full_vect1)
+
+# Append to full dataset
+full['political_final_active_pred'] = final_preds
+print(full['political_final_active_pred'].describe())
+
+
 ### Run classifier on first sample again
-df
+#df.columns
+#
+#### DV imbalance
+#df['ground_truth_pol'].value_counts() # 255 instances of political speech
+#
+## Train-test split
+#train_x, valid_x, train_y, valid_y = model_selection.train_test_split(df['cleaned'], df['ground_truth_pol'], test_size=0.3, random_state=24519)
+#
+####### Implement SVM - linear
+#vectorizer = TfidfVectorizer(max_features=10000, max_df = 0.8, min_df = 3, ngram_range=(1, 2))
+#vectorizer.fit(df['cleaned'])
+##vectorizer.fit(full['cleaned'])
+#xtrain_tfidf = vectorizer.fit_transform(train_x)
+#xtrain_tfidf = xtrain_tfidf.toarray()
+#
+## Evaluate model
+#xvalid_tfidf = vectorizer.transform(valid_x)
+#xvalid_tfidf = xvalid_tfidf.toarray()
+#
+#print(xtrain_tfidf.shape)
+#print(xvalid_tfidf.shape)
+#
+#predictions_initial = clf.predict(xvalid_tfidf) # Class weight, coef0, degree?
+#
+#print(metrics.accuracy_score(predictions_initial, valid_y))
+#print(metrics.recall_score(predictions_initial, valid_y))
+#print(metrics.precision_score(predictions_initial, valid_y))
+#print(metrics.f1_score(predictions_initial, valid_y))
+
+
+
