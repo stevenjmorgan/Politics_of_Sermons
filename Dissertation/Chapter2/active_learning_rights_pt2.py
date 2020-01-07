@@ -542,4 +542,3 @@ print(len(full[(full['rights_final_active_pred']==1)]))
 
 # Write final predictions to .csv
 full.to_csv('sermon_final_active_learn_rights.csv')
-
