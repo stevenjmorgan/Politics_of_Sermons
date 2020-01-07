@@ -174,6 +174,7 @@ model.fit(xtrain_tfidf, train_y) # Class weight, coef0, degree?
 # predict the labels on validation dataset
 predictions = model.predict(xvalid_tfidf)
 
+print('Round 1 metrics')
 print(metrics.accuracy_score(predictions, valid_y))
 print(metrics.recall_score(predictions, valid_y))
 print(metrics.precision_score(predictions, valid_y))
@@ -277,6 +278,7 @@ model2.fit(xtrain_tfidf2, train_y2) # Class weight, coef0, degree?
 # predict the labels on validation dataset
 predictions2 = model2.predict(xvalid_tfidf2)
 
+print('Round 2 metrics')
 print(metrics.accuracy_score(predictions2, valid_y2))
 print(metrics.recall_score(predictions2, valid_y2))
 print(metrics.precision_score(predictions2, valid_y2))
@@ -381,6 +383,7 @@ model2.fit(xtrain_tfidf2, train_y2) # Class weight, coef0, degree?
 # predict the labels on validation dataset
 predictions2 = model2.predict(xvalid_tfidf2)
 
+print('Round 3 metrics')
 print(metrics.accuracy_score(predictions2, valid_y2))
 print(metrics.recall_score(predictions2, valid_y2))
 print(metrics.precision_score(predictions2, valid_y2))
@@ -482,6 +485,7 @@ model2.fit(xtrain_tfidf2, train_y2) # Class weight, coef0, degree?
 # predict the labels on validation dataset
 predictions2 = model2.predict(xvalid_tfidf2)
 
+print('Round 4 metrics')
 print(metrics.accuracy_score(predictions2, valid_y2))
 print(metrics.recall_score(predictions2, valid_y2))
 print(metrics.precision_score(predictions2, valid_y2))
