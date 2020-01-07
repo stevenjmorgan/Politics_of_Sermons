@@ -556,7 +556,10 @@ final_preds = clf.predict(full_vect1)
 # Append to full dataset
 full['political_final_active_pred'] = final_preds
 print(full['political_final_active_pred'].describe())
+print(len(full[(full['political_final_active_pred']==1)]))
 
+# Write final predictions to .csv
+full.to_csv('sermon_final_active_learn_political.csv')
 
 ### Run classifier on first sample again
 #df.columns
