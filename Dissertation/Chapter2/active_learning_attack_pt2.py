@@ -53,7 +53,7 @@ def attack_count(row):
     matches = [test_value in attack_dict 
                for test_value in row["cleaned"].split(' ')]
 
-    if sum(matches) > 2:
+    if sum(matches) >= 2:
         return 1
     else:
         return 0
@@ -114,12 +114,12 @@ attack_dict = ['lgbtq', 'transgend', 'activist',
                  'abortion', 'abortionist', 'amend', 'euthanasia', 'freedom']
 
 df['is_attack'] = df.apply(attack_count, axis=1)
-df['is_attack'].value_counts() # 97 instances of political speech
+df['is_attack'].value_counts() # 130 instances of political speech
 
 
 ### DV imbalance
 #df['ground_truth_pol'] = df['is_political']
-df['ground_truth_attack'].value_counts() # 95 instances of political speech
+df['ground_truth_attack'].value_counts() # 61 instances of political speech
 
 # Train-test split
 train_x, valid_x, train_y, valid_y = model_selection.train_test_split(df['cleaned'], df['ground_truth_attack'], test_size=0.3, random_state=24519)
@@ -255,7 +255,7 @@ second_rd_al = df.append(tocode)
 print(second_rd_al.shape)
 
 # Train SVM again
-second_rd_al['ground_truth_attack'].value_counts() # 440 instances of political speech (out of 800)
+second_rd_al['ground_truth_attack'].value_counts() # 79 instances of political speech (out of 800)
 
 train_x2, valid_x2, train_y2, valid_y2 = model_selection.train_test_split(second_rd_al['cleaned'], second_rd_al['ground_truth_attack'], test_size=0.3, random_state=24519)
 
