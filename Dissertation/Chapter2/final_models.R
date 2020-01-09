@@ -287,22 +287,37 @@ serms.merge$hh_income <- serms.merge$hh_income/1000
 serms.merge$female.pastor <- ifelse(serms.merge$gender.final == 'female', 1, 0)
 
 ### Models w/ controls
-full.rights <- glm(rights_talk_xgboost~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+#full.rights <- glm(rights_talk_xgboost~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+#                     muslim.rate.rescale+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+#                     api.final+hh_income+rural+as.factor(STABBR), 
+#                   data = serms.merge)
+#summary(full.rights)
+full.rights <- glm(rights.final~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
                      muslim.rate.rescale+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
                      api.final+hh_income+rural+as.factor(STABBR), 
                    data = serms.merge)
 summary(full.rights)
 
-full.attacks <- glm(is.attack~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
-                     muslim.rate.rescale+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
-                     api.final+hh_income+rural+as.factor(STABBR), 
-                   data = serms.merge)
-summary(full.attacks)
-
-full.pol <- glm(is.pol~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+#full.attacks <- glm(is.attack~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+#                     muslim.rate.rescale+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+#                     api.final+hh_income+rural+as.factor(STABBR), 
+#                   data = serms.merge)
+#summary(full.attacks)
+full.attacks <- glm(attack.final~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
                       muslim.rate.rescale+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
                       api.final+hh_income+rural+as.factor(STABBR), 
                     data = serms.merge)
+summary(full.attacks)
+
+#full.pol <- glm(is.pol~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+#                      muslim.rate.rescale+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+#                      api.final+hh_income+rural+as.factor(STABBR), 
+#                    data = serms.merge)
+#summary(full.pol)
+full.pol <- glm(pol.final~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+                  muslim.rate.rescale+female.pastor+log(pop10)+census_region+other+evang+black.final+hispanic.final+
+                  api.final+hh_income+rural+as.factor(STABBR), 
+                data = serms.merge)
 summary(full.pol)
 
 
@@ -350,21 +365,21 @@ serms.merge$meth <- ifelse(serms.merge$denom.top9 == 'Methodist', 1, 0)
 
 
 ### Models w/ controls and denom's
-denom.rights <- glm(rights_talk_xgboost~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+denom.rights <- glm(rights.final~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
                      muslim.rate.rescale+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
                       pentecostal+assembly+lutheran+presybterian+bible+meth+black.final+hispanic.final+
                      api.final+hh_income+rural+as.factor(STABBR), 
                    data = serms.merge)
 summary(denom.rights)
 
-denom.attacks <- glm(is.attack~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+denom.attacks <- glm(attack.final~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
                       muslim.rate.rescale+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
                        pentecostal+assembly+lutheran+presybterian+bible+meth+black.final+hispanic.final+
                       api.final+hh_income+rural+as.factor(STABBR), 
                     data = serms.merge)
 summary(denom.attacks)
 
-denom.pol <- glm(is.pol~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+denom.pol <- glm(pol.final~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
                   muslim.rate.rescale+female.pastor+log(pop10)+census_region+baptist+church.christ+non.denom+
                    pentecostal+assembly+lutheran+presybterian+bible+meth+black.final+hispanic.final+
                   api.final+hh_income+rural+as.factor(STABBR), 
