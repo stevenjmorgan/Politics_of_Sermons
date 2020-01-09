@@ -1,5 +1,6 @@
 # This script implements models for Ch. 2.
 
+rm(list=ls())
 setwd("C:/Users/SF515-51T/Desktop/Dissertation")
 load('serms_with_measures.RData')
 
@@ -103,6 +104,76 @@ serms.merge$muslim.rate.fix <- serms.merge$MSLMRATE / 100
 
 # Remove catholics
 serms.merge <- serms.merge[which(serms.merge$cath == 0),]
+
+serms.merge$clean <- gsub('[[:punct:]]+', '', serms.merge$clean)
+#serms.merge$clean[1]
+
+### New Active Learning measures
+colnames(serms.merge)
+
+library(stringr)
+pol.dict <- paste(c('republican', 'democrat', 'congress', 'senate', 'gop', 'dem', 
+                    'mcconel', 'schumer', 'trumpcar', 'lawmak', 'senat', 'legisl', 
+                    'obama', 'racist', 'constitut', 'immigr', 'dreamer', 'daca', 
+                    'deport', 'muslim', 'racism', 'lgbtq', 'transgend', 'activist',
+                    'freedom', 'constitut', 'antilgbtq', 'liberti', 'civil', 
+                    'anticivil','bigotri', 'judici', 'nomine', 'gorusch', 'clinton', 
+                    'kennedi', 'feder','protest', 'pelosi','policymak', 'bipartisan',
+                    'bipartisanship','congress', 'legisl', 'medicaid', 'medicar', 
+                    'aca', 'democraci', 'lgbt', 'lgbtq', 'filibust', 'capitol',
+                    'antiimigr','obamacar','migrant', 'refuge','asylum',
+                    'salvadoran', 'elsalvador', 'detent', 'deport', 'incarcer',
+                    'detain','border', 'discriminatori', 'antiabort', 'welfar', 
+                    'grassley','politician', 'aclu', 'partisan', 'delegitim',
+                    'transgend', 'unborn', 'abort', 'kamala', 'vote', 'ballot', 
+                    'voter','abort', 'prolif', 'environ','ideolog', 
+                    'kavanaugh','unconstitut', 'ideologu', 'proabort','antiabort',
+                    'legislatur', 'homosexual', 'president', 'abortion', 'voter',
+                    'political', 'inequ', 'capit', 'fetu', 'govern', 'abortionist',
+                    'amend', 'euthanasia', 'freedom', 'suprem court'), collapse='|')
+serms.merge$pol.count.x <- str_count(serms.merge$clean, pol.dict)
+summary(serms.merge$pol.count.x)
+
+rights.dict <- paste(c('lgbtq', 'transgend', 'activist',
+                       'freedom', 'constitut', 'antilgbtq', 'liberti', 'civil', 
+                       'anticivil','bigotri', 'judici', 'nomine', 'gorusch', 'lgbtq', 
+                       'abort', 'prolif', 'ideolog', 
+                       'kavanaugh','unconstitut', 'ideologu', 'proabort','antiabort',
+                       'abortion', 'abortionist', 'amend', 'euthanasia', 'freedom', 'suprem court'), collapse='|')
+serms.merge$rights.count.x <- str_count(serms.merge$clean, rights.dict)
+summary(serms.merge$rights.count.x)
+
+
+cor(serms.merge$pol.count.x, serms.merge$rights.count.x)
+
+# Change dictionary -> FW plots
+attack.dict <- paste(c('persecut', 'murder', 'transgend', 'muslim', 'islam',
+                       'rape', 'proabort', 'liber', 'hollywood', 'lgbtq', 
+                       'bigotri', 'attack', 'abort', 'prolif', 'ideolog', 
+                       'kavanaugh','unconstitut', 'ideologu', 'proabort','antiabort',
+                       'abortion', 'abortionist'), collapse='|')
+
+serms.merge$attack.count.x <- str_count(serms.merge$clean, attack.dict)
+summary(serms.merge$attack.count.x)
+
+cor(serms.merge$rights.count.x, serms.merge$attack.count.x)
+
+### Final measures
+serms.merge$pol.final <- ifelse(serms.merge$pol.count.x >5, 1, 0)
+summary(serms.merge$pol.final==1) #12.8%
+
+serms.merge$rights.final <- ifelse(serms.merge$rights.count.x>3, 1, 0)
+summary(serms.merge$rights.final==1) #3.3%
+
+cor(serms.merge$pol.final, serms.merge$rights.final) #0.43
+
+
+serms.merge$attack.final <- ifelse(serms.merge$attack.count.x>5, 1, 0)
+summary(serms.merge$attack.final==1) #3.7%
+
+cor(serms.merge$rights.final, serms.merge$attack.final) # 0.22
+
+cor(serms.merge$pol.final, serms.merge$attack.final) # 0.21
 
 
 ### Table w/ correlations (in Latex)
