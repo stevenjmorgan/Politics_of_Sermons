@@ -178,34 +178,56 @@ cor(serms.merge$pol.final, serms.merge$attack.final) # 0.21
 
 ### Table w/ correlations (in Latex)
 ## Rights
-cor(serms.merge$rights_talk_xgboost, serms.merge$dem.share, use = 'complete.obs')
-cor.test(serms.merge$rights_talk_xgboost, serms.merge$dem.share, use = 'complete.obs')
-cor.test(serms.merge$rights_talk_xgboost, serms.merge$comp.rescale, use = 'complete.obs')
-cor.test(serms.merge$rights_talk_xgboost, serms.merge$tot.rate.fix, use = 'complete.obs')
-cor.test(serms.merge$rights_talk_xgboost, serms.merge$evan.rate.fix, use = 'complete.obs')
-cor.test(serms.merge$rights_talk_xgboost, serms.merge$elect.szn.2wk, use = 'complete.obs')
-cor.test(serms.merge$rights_talk_xgboost, serms.merge$muslim.rate.fix, use = 'complete.obs')
+# cor(serms.merge$rights_talk_xgboost, serms.merge$dem.share, use = 'complete.obs')
+# cor.test(serms.merge$rights_talk_xgboost, serms.merge$dem.share, use = 'complete.obs')
+# cor.test(serms.merge$rights_talk_xgboost, serms.merge$comp.rescale, use = 'complete.obs')
+# cor.test(serms.merge$rights_talk_xgboost, serms.merge$tot.rate.fix, use = 'complete.obs')
+# cor.test(serms.merge$rights_talk_xgboost, serms.merge$evan.rate.fix, use = 'complete.obs')
+# cor.test(serms.merge$rights_talk_xgboost, serms.merge$elect.szn.2wk, use = 'complete.obs')
+# cor.test(serms.merge$rights_talk_xgboost, serms.merge$muslim.rate.fix, use = 'complete.obs')
+
+cor(serms.merge$rights.final, serms.merge$dem.share, use = 'complete.obs')
+cor.test(serms.merge$rights.final, serms.merge$dem.share, use = 'complete.obs')
+cor.test(serms.merge$rights.final, serms.merge$comp.rescale, use = 'complete.obs')
+cor.test(serms.merge$rights.final, serms.merge$tot.rate.fix, use = 'complete.obs')
+cor.test(serms.merge$rights.final, serms.merge$evan.rate.fix, use = 'complete.obs')
+cor.test(serms.merge$rights.final, serms.merge$elect.szn.2wk, use = 'complete.obs')
+cor.test(serms.merge$rights.final, serms.merge$muslim.rate.fix, use = 'complete.obs')
 
 library(ltm)
-biserial.cor(serms.merge$dem.share, serms.merge$rights_talk_xgboost, use = 'complete.obs')
+biserial.cor(serms.merge$dem.share, serms.merge$rights.final, use = 'complete.obs')
 
 ## Attack
-cor.test(serms.merge$is.attack, serms.merge$dem.share, use = 'complete.obs')
-cor.test(serms.merge$is.attack, serms.merge$comp.rescale, use = 'complete.obs')
-cor.test(serms.merge$is.attack, serms.merge$tot.rate.fix, use = 'complete.obs')
-cor.test(serms.merge$is.attack, serms.merge$evan.rate.fix, use = 'complete.obs')
-cor.test(serms.merge$is.attack, serms.merge$elect.szn.2wk, use = 'complete.obs')
-cor.test(serms.merge$is.attack, serms.merge$muslim.rate.fix, use = 'complete.obs')
+# cor.test(serms.merge$is.attack, serms.merge$dem.share, use = 'complete.obs')
+# cor.test(serms.merge$is.attack, serms.merge$comp.rescale, use = 'complete.obs')
+# cor.test(serms.merge$is.attack, serms.merge$tot.rate.fix, use = 'complete.obs')
+# cor.test(serms.merge$is.attack, serms.merge$evan.rate.fix, use = 'complete.obs')
+# cor.test(serms.merge$is.attack, serms.merge$elect.szn.2wk, use = 'complete.obs')
+# cor.test(serms.merge$is.attack, serms.merge$muslim.rate.fix, use = 'complete.obs')
+
+cor.test(serms.merge$attack.final, serms.merge$dem.share, use = 'complete.obs')
+cor.test(serms.merge$attack.final, serms.merge$comp.rescale, use = 'complete.obs')
+cor.test(serms.merge$attack.final, serms.merge$tot.rate.fix, use = 'complete.obs')
+cor.test(serms.merge$attack.final, serms.merge$evan.rate.fix, use = 'complete.obs')
+cor.test(serms.merge$attack.final, serms.merge$elect.szn.2wk, use = 'complete.obs')
+cor.test(serms.merge$attack.final, serms.merge$muslim.rate.fix, use = 'complete.obs')
 
 #cor.test(serms.merge$is.attack, serms.merge$elect.szn.2wk, use = 'complete.obs', method='kendall')
 
 ## Political
-cor.test(serms.merge$is.pol, serms.merge$dem.share, use = 'complete.obs')
-cor.test(serms.merge$is.pol, serms.merge$comp.rescale, use = 'complete.obs')
-cor.test(serms.merge$is.pol, serms.merge$tot.rate.fix, use = 'complete.obs')
-cor.test(serms.merge$is.pol, serms.merge$evan.rate.fix, use = 'complete.obs')
-cor.test(serms.merge$is.pol, serms.merge$elect.szn.2wk, use = 'complete.obs')
-cor.test(serms.merge$is.pol, serms.merge$muslim.rate.fix, use = 'complete.obs')
+# cor.test(serms.merge$is.pol, serms.merge$dem.share, use = 'complete.obs')
+# cor.test(serms.merge$is.pol, serms.merge$comp.rescale, use = 'complete.obs')
+# cor.test(serms.merge$is.pol, serms.merge$tot.rate.fix, use = 'complete.obs')
+# cor.test(serms.merge$is.pol, serms.merge$evan.rate.fix, use = 'complete.obs')
+# cor.test(serms.merge$is.pol, serms.merge$elect.szn.2wk, use = 'complete.obs')
+# cor.test(serms.merge$is.pol, serms.merge$muslim.rate.fix, use = 'complete.obs')
+
+cor.test(serms.merge$pol.final, serms.merge$dem.share, use = 'complete.obs')
+cor.test(serms.merge$pol.final, serms.merge$comp.rescale, use = 'complete.obs')
+cor.test(serms.merge$pol.final, serms.merge$tot.rate.fix, use = 'complete.obs')
+cor.test(serms.merge$pol.final, serms.merge$evan.rate.fix, use = 'complete.obs')
+cor.test(serms.merge$pol.final, serms.merge$elect.szn.2wk, use = 'complete.obs')
+cor.test(serms.merge$pol.final, serms.merge$muslim.rate.fix, use = 'complete.obs')
 
 ### Rescale key IV's to 0-100
 library(scales)
@@ -218,21 +240,36 @@ serms.merge$muslim.rate.rescale <- rescale(serms.merge$muslim.rate.fix, to = c(0
 
 ### Baseline models
 # Rights
-base.rights <- glm(rights_talk_xgboost~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+# base.rights <- glm(rights_talk_xgboost~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+#                      muslim.rate.rescale+as.factor(STABBR), 
+#                    data = serms.merge)
+# summary(base.rights)
+
+base.rights <- glm(rights.final~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
                      muslim.rate.rescale+as.factor(STABBR), 
                    data = serms.merge)
 summary(base.rights)
 
 # Attacks
-base.attacks <- glm(is.attack~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+# base.attacks <- glm(is.attack~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+#                       muslim.rate.rescale+as.factor(STABBR), 
+#                     data = serms.merge)
+# summary(base.attacks)
+
+base.attacks <- glm(attack.final~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
                       muslim.rate.rescale+as.factor(STABBR), 
                     data = serms.merge)
 summary(base.attacks)
 
 # Political
-base.pol <- glm(is.pol~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+# base.pol <- glm(is.pol~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
+#                   muslim.rate.rescale+as.factor(STABBR), 
+#                   data = serms.merge)
+# summary(base.pol)
+
+base.pol <- glm(pol.final~dem.share.rescale+comp.rescale+tot.rate.rescale+evan.rate.rescale+elect.szn.2wk+
                   muslim.rate.rescale+as.factor(STABBR), 
-                  data = serms.merge)
+                data = serms.merge)
 summary(base.pol)
 
 
