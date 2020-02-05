@@ -229,6 +229,12 @@ cor.test(serms.merge$pol.final, serms.merge$evan.rate.fix, use = 'complete.obs')
 cor.test(serms.merge$pol.final, serms.merge$elect.szn.2wk, use = 'complete.obs')
 cor.test(serms.merge$pol.final, serms.merge$muslim.rate.fix, use = 'complete.obs')
 
+
+### Correlation of ch1 politics measure and ch2 politics measure
+cor.test(serms.merge$pol.final, serms.merge$pol.count.x, use = 'complete.obs')
+cor.test(serms.merge$pol.final, serms.merge$is.pol, use = 'complete.obs')
+
+
 ### Rescale key IV's to 0-100
 library(scales)
 serms.merge$dem.share.rescale <- rescale(serms.merge$dem.share, to = c(0, 100))
