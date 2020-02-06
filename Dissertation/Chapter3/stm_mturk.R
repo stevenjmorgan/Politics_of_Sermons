@@ -139,6 +139,29 @@ plot(prep.mturk, covariate = "moral",
      custom.labels = labels)
 dev.off()
 
+##################################################################################################
+plot(prep.mturk, covariate = "moral",
+     model = mturkfit, method = "difference",
+     cov.value1 = 1, cov.value2 = 0,
+     xlab = "Control                                                                               Moral Frame",
+     main = "Estimated Marginal Effect of Moral Frame: Topic Prevalence",
+     xlim = c(-.05, .05), 
+     labeltype = "custom",
+     custom.labels = labels)
+
+plot(prep.mturk, covariate = "rights",
+     model = mturkfit, method = "difference",
+     cov.value1 = 1, cov.value2 = 0,
+     xlab = "Control                                                                               Moral Frame",
+     #main = "Estimated Marginal Effect of Moral Frame: Topic Prevalence",
+     xlim = c(-.05, .05), 
+     labeltype = "custom",
+     custom.labels = labels, add = T)
+
+##################################################################################################
+
+
+
 # Attack frame
 pdf('attack_stm.pdf')
 plot(prep.mturk, covariate = "attack",
