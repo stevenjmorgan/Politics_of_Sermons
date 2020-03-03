@@ -4,7 +4,7 @@
 rm(list=ls())
 #setwd("C:/Users/sum410/Dropbox/Dissertation/Data/Census")
 #setwd("C:/Users/steve/Dropbox/Dissertation/Data/Census")
-setwd("C:/Users/SF515-51T/Desktop/Dissertation")
+setwd("C:/Users/SF515-51T/Desktop/Dissertation_Final/Dissertation")
 
 library(foreign)
 library(xlsx)
